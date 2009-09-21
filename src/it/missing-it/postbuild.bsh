@@ -1,0 +1,6 @@
+try {
+    return oe.maven.plugins.revision.IntegrationTestHelper.verifyRevision(basedir, "r\\d+ !");
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}

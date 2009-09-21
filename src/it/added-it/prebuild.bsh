@@ -1,0 +1,6 @@
+try {
+    return oe.maven.plugins.revision.IntegrationTestHelper.addFile(basedir, "src/test/resources/added.txt", true);
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}

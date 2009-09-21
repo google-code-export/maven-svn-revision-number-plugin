@@ -1,0 +1,6 @@
+try {
+    return oe.maven.plugins.revision.IntegrationTestHelper.removeSvnFolders(basedir);
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}

@@ -1,0 +1,22 @@
+ ---
+ Introduction
+ ---
+
+${project.name}
+
+  ${project.description}
+
+* Goals Overview
+
+  General information about the goals.
+
+  * {{{revision-mojo.html}${project.artifactId}:release}} Retrieves the status and revision number of the subversion
+    working copy directory.
+
+* Usage
+
+  General instructions on how to use the plugin can be found on the {{{usage.html}usage page}}.
+
+  If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
+  {{{issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
+  concern.

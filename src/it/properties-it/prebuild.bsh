@@ -1,0 +1,6 @@
+try {
+    return oe.maven.plugins.revision.IntegrationTestHelper.setProperty(basedir, "src/test/resources/normal.txt", "test-property", "test-value");
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}

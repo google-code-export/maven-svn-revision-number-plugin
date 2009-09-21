@@ -1,0 +1,11 @@
+try {
+    if (oe.maven.plugins.revision.IntegrationTestHelper.getProperty(basedir, "src/test/resources", "svn:ignore").contains("ignored.txt")) {
+        return oe.maven.plugins.revision.IntegrationTestHelper.addFile(basedir, "src/test/resources/ignored.txt", false);
+    } else {
+        System.out.println("set svn:ignore=ignored.txt on src/test/resources");
+        return false;
+    }
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}

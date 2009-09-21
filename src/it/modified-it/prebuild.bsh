@@ -1,0 +1,6 @@
+try {
+    return oe.maven.plugins.revision.IntegrationTestHelper.modifyFile(basedir, "src/test/resources/modified.txt");
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}

@@ -1,0 +1,6 @@
+try {
+    return oe.maven.plugins.revision.IntegrationTestHelper.deleteFile(basedir, "src/test/resources/deleted.txt", true);
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}
