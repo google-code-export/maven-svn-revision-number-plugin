@@ -1,1 +1,2 @@
 revision = ${workingCopyDirectory.revision}
+path = ${workingCopyDirectory.path}

@@ -1,5 +1,5 @@
 try {
-    return oe.maven.plugins.revision.IntegrationTestHelper.verifyRevision(basedir, "unversioned");
+    return oe.maven.plugins.revision.IntegrationTestHelper.verifyResult(basedir, "unversioned", "");
 } catch (Throwable t) {
     t.printStackTrace();
     return false;

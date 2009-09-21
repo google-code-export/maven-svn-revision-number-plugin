@@ -42,6 +42,7 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.internal.wc.admin.SVNEntry;
 import org.tmatesoft.svn.core.wc.ISVNStatusHandler;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -82,12 +83,29 @@ public class RevisionMojo extends AbstractMojo {
     private File workingCopyDirectory;
 
     /**
+     * The name of the property that will contain the root of the remote repository of the working copy directory
+     * entry.
+     *
+     * @parameter default-value="workingCopyDirectory.repository"
+     */
+    private String repositoryPropertyName;
+
+    /**
+     * The name of the property that will contain the path of the working copy directory entry relative
+     * to the root of the remote repository.
+     *
+     * @parameter default-value="workingCopyDirectory.path"
+     */
+    private String pathPropertyName;
+
+    /**
      * The name of the property that will contain the aggregated status and revision number of the  working copy
      * directory.
      *
      * @parameter default-value="workingCopyDirectory.revision"
      */
     private String revisionPropertyName;
+
 
     /**
      * Whether to report the mixed revisions information. If set to {@code false} then only the maximum revision number
@@ -137,37 +155,50 @@ public class RevisionMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (verbose) {
             getLog().info("${workingCopyDirectory}: " + workingCopyDirectory);
-        }
-        try {
-            String revision = SVNWCUtil.isVersionedDirectory(workingCopyDirectory)
-                    ? getRevision(workingCopyDirectory)
-                    : "unversioned";
-            project.getProperties().setProperty(revisionPropertyName, revision);
-            if (verbose) {
-                getLog().info("${" + revisionPropertyName + "} is set to \"" + revision + '\"');
-            }
-        } catch (SVNException e) {
-            throw new MojoExecutionException("failed", e);
-        }
-    }
-
-    private String getRevision(File directory) throws SVNException {
-        if (verbose) {
             getLog().info("report mixed revisions: " + reportMixedRevisions);
             getLog().info("report status: " + reportStatus);
             getLog().info("report unversioned: " + reportUnversioned);
             getLog().info("report ignored: " + reportIgnored);
             getLog().info("report out-of-date: " + reportOutOfDate);
         }
-        SVNClientManager clientManager = SVNClientManager.newInstance();
-        SVNStatusClient statusClient = clientManager.getStatusClient();
-        StatusCollector statusCollector = new StatusCollector();
-        statusClient.doStatus(directory,
-                SVNRevision.HEAD, SVNDepth.INFINITY,
-                reportOutOfDate, true, reportIgnored, false,
-                statusCollector,
-                null);
-        return statusCollector.toString();
+        try {
+            String repository;
+            String path;
+            String revision;
+            if (SVNWCUtil.isVersionedDirectory(workingCopyDirectory)) {
+                SVNClientManager clientManager = SVNClientManager.newInstance();
+                SVNStatusClient statusClient = clientManager.getStatusClient();
+
+                SVNEntry entry = statusClient.doStatus(workingCopyDirectory, false).getEntry();
+                repository = entry.getRepositoryRoot();
+                path = entry.getURL().substring(repository.length());
+                if (path.startsWith("/")) {
+                    path = path.substring(1);
+                }
+
+                StatusCollector statusCollector = new StatusCollector();
+                statusClient.doStatus(workingCopyDirectory,
+                        SVNRevision.HEAD, SVNDepth.INFINITY,
+                        reportOutOfDate, true, reportIgnored, false,
+                        statusCollector,
+                        null);
+                revision = statusCollector.toString();
+            } else {
+                repository = "";
+                path = "";
+                revision = "unversioned";
+            }
+            project.getProperties().setProperty(repositoryPropertyName, repository);
+            project.getProperties().setProperty(pathPropertyName, path);
+            project.getProperties().setProperty(revisionPropertyName, revision);
+            if (verbose) {
+                getLog().info("${" + repositoryPropertyName + "} is set to \"" + repository + '\"');
+                getLog().info("${" + pathPropertyName + "} is set to \"" + path + '\"');
+                getLog().info("${" + revisionPropertyName + "} is set to \"" + revision + '\"');
+            }
+        } catch (SVNException e) {
+            throw new MojoExecutionException("failed to obtain revision information", e);
+        }
     }
 
 

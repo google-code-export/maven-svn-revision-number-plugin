@@ -1,5 +1,5 @@
 try {
-    return oe.maven.plugins.revision.IntegrationTestHelper.verifyRevision(basedir, "r\\d+ A");
+    return oe.maven.plugins.revision.IntegrationTestHelper.verifyResult(basedir, "r\\d+ A", "trunk/src/it/added-it/src");
 } catch (Throwable t) {
     t.printStackTrace();
     return false;
