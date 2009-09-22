@@ -86,7 +86,7 @@ public class RevisionMojo extends AbstractMojo {
      * The name of the property that will contain the root of the remote repository of the working copy directory
      * entry.
      *
-     * @parameter expression="${workingCopyDirectory.repositoryPropertyName}" default-value="workingCopyDirectory.repository"
+     * @parameter expression="${repositoryPropertyName}" default-value="workingCopyDirectory.repository"
      */
     private String repositoryPropertyName;
 
@@ -94,7 +94,7 @@ public class RevisionMojo extends AbstractMojo {
      * The name of the property that will contain the path of the working copy directory entry relative
      * to the root of the remote repository.
      *
-     * @parameter expression="${workingCopyDirectory.pathPropertyName}" default-value="workingCopyDirectory.path"
+     * @parameter expression="${pathPropertyName}" default-value="workingCopyDirectory.path"
      */
     private String pathPropertyName;
 
@@ -102,7 +102,7 @@ public class RevisionMojo extends AbstractMojo {
      * The name of the property that will contain the aggregated status and revision number of the  working copy
      * directory.
      *
-     * @parameter expression="${workingCopyDirectory.revisionPropertyName}" default-value="workingCopyDirectory.revision"
+     * @parameter expression="${revisionPropertyName}" default-value="workingCopyDirectory.revision"
      */
     private String revisionPropertyName;
 

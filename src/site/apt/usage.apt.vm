@@ -28,12 +28,12 @@ Usage
   Depending on the state of the working copy directory the revision property will be set to one of the following
   values:
 
-  * <<<"unversioned">>> if the directory is not under version control.
+  * <<<"unversioned">>> - the directory is not under version control.
 
-  * <<<"rNNN">>> if working copy is up-to-date and has no local modifications.\
+  * <<<"rNNN">>> - the working copy is up-to-date and has no local modifications.\
     The <<<NNN>>> is the working copy revision number.
 
-  * <<<"rNNN-rMMM">>> if reporting of mixed revisions is on and the working copy contains
+  * <<<"rNNN-rMMM">>> - the reporting of mixed revisions is on and the working copy contains
     {{{http://svnbook.red-bean.com/nightly/en/svn.basic.in-action.html#svn.basic.in-action.mixedrevs}mixed revisions}}
     but otherwise has no local modifications.\
     The <<<NNN>>> is the maximum revision number and <<<MMM>>> is the minimum revision number in the working copy.\
@@ -105,18 +105,6 @@ Usage
             </plugin>
         </plugins>
     </build>
-    ...
-</project>
----
-
-* Configuring additional plugin repository
-
-  todo explain why
-
----
-<project>
-    ...
-    todo explain how
     ...
 </project>
 ---
