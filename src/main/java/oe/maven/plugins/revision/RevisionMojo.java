@@ -77,7 +77,7 @@ public class RevisionMojo extends AbstractMojo {
     /**
      * The subversion working copy directory.
      *
-     * @parameter default-value="${basedir}
+     * @parameter expression="${workingCopyDirectory}" default-value="${basedir}"
      * @required
      */
     private File workingCopyDirectory;
@@ -86,7 +86,7 @@ public class RevisionMojo extends AbstractMojo {
      * The name of the property that will contain the root of the remote repository of the working copy directory
      * entry.
      *
-     * @parameter default-value="workingCopyDirectory.repository"
+     * @parameter expression="${workingCopyDirectory.repositoryPropertyName}" default-value="workingCopyDirectory.repository"
      */
     private String repositoryPropertyName;
 
@@ -94,7 +94,7 @@ public class RevisionMojo extends AbstractMojo {
      * The name of the property that will contain the path of the working copy directory entry relative
      * to the root of the remote repository.
      *
-     * @parameter default-value="workingCopyDirectory.path"
+     * @parameter expression="${workingCopyDirectory.pathPropertyName}" default-value="workingCopyDirectory.path"
      */
     private String pathPropertyName;
 
@@ -102,7 +102,7 @@ public class RevisionMojo extends AbstractMojo {
      * The name of the property that will contain the aggregated status and revision number of the  working copy
      * directory.
      *
-     * @parameter default-value="workingCopyDirectory.revision"
+     * @parameter expression="${workingCopyDirectory.revisionPropertyName}" default-value="workingCopyDirectory.revision"
      */
     private String revisionPropertyName;
 
@@ -111,7 +111,7 @@ public class RevisionMojo extends AbstractMojo {
      * Whether to report the mixed revisions information. If set to {@code false} then only the maximum revision number
      * will be reported.
      *
-     * @parameter default-value="true"
+     * @parameter expression="${reportMixedRevisions}" default-value="true"
      */
     private boolean reportMixedRevisions;
 
@@ -119,35 +119,35 @@ public class RevisionMojo extends AbstractMojo {
      * Whether to report the status information. If set to {@code false} then only the revision number will be
      * reported.
      *
-     * @parameter default-value="true"
+     * @parameter expression="${reportStatus}" default-value="true"
      */
     private boolean reportStatus;
 
     /**
      * Whether to collect the status information on items that are not under version control.
      *
-     * @parameter default-value="true"
+     * @parameter expression="${reportUnversioned}" default-value="true"
      */
     private boolean reportUnversioned;
 
     /**
      * Whether to collect the status information on items that were set to be ignored.
      *
-     * @parameter default-value="false"
+     * @parameter expression="${reportIgnored}" default-value="false"
      */
     private boolean reportIgnored;
 
     /**
      * Whether to check the remote repository and report if the local items are out-of-date.
      *
-     * @parameter default-value="false"
+     * @parameter expression="${reportOutOfDate}" default-value="false"
      */
     private boolean reportOutOfDate;
 
     /**
      * Provides detailed messages while this goal is running.
      *
-     * @parameter default-value="false"
+     * @parameter expression="${verbose}" default-value="false"
      */
     private boolean verbose;
 
@@ -221,10 +221,11 @@ public class RevisionMojo extends AbstractMojo {
         public void handleStatus(SVNStatus status) {
             SVNStatusType contentsStatusType = status.getContentsStatus();
             localStatusTypes.add(contentsStatusType);
-            if (SVNStatusType.STATUS_NORMAL.equals(contentsStatusType)
-                    || SVNStatusType.STATUS_MODIFIED.equals(contentsStatusType)) {
-                long revisionNumber = status.getRevision().getNumber();
+            long revisionNumber = status.getRevision().getNumber();
+            if (revisionNumber >= 0L) {
                 maximumRevisionNumber = Math.max(maximumRevisionNumber, revisionNumber);
+            }
+            if (revisionNumber > 0L) {
                 minimumRevisionNumber = Math.min(minimumRevisionNumber, revisionNumber);
             }
             SVNStatusType propertiesStatusType = status.getPropertiesStatus();
@@ -248,7 +249,7 @@ public class RevisionMojo extends AbstractMojo {
             if (maximumRevisionNumber != Long.MIN_VALUE) {
                 result.append('r').append(maximumRevisionNumber);
                 if (minimumRevisionNumber != maximumRevisionNumber && reportMixedRevisions) {
-                    result.append('-').append('r').append(maximumRevisionNumber);
+                    result.append('-').append('r').append(minimumRevisionNumber);
                 }
             }
             if (reportStatus) {
