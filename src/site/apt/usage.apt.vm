@@ -4,7 +4,26 @@
 
 Usage
 
-* Decoding revision property value
+* Output properties
+
+  The following properties will be available after running the <<<revision>>> goal:
+
+  * <<<$\{workingCopyDirectory.repository\}>>> (the property name can be configured via <<<$\{repositoryPropertyName\}>>>)
+   will contain the remote repository root.
+
+  * <<<$\{workingCopyDirectory.path\}>>> (the property name can be configured via <<<$\{pathPropertyName\}>>>)
+   will contain the path of the path of the working copy directory entry relative to the root of the remote repository.
+
+  * <<<$\{workingCopyDirectory.revision\}>>> (the property name can be configured via <<<$\{revisionPropertyName\}>>>)
+   will be set to the aggregated status and revision number of the working copy directory.
+
+  []
+
+  If the supplied directory is not under version control then <<<$\{workingCopyDirectory.repository\}>>> and
+  <<<$\{workingCopyDirectory.path\}>>> will be empty strings and <<<$\{workingCopyDirectory.revision\}>>> will be set
+  to <<<"unversioned">>>.
+
+* Decoding <<<$\{workingCopyDirectory.revision\}>>> property value
 
   Depending on the state of the working copy directory the revision property will be set to one of the following
   values:
@@ -60,11 +79,11 @@ Usage
   The status characters are consistent with the output of the
   {{{http://svnbook.red-bean.com/nightly/en/svn.ref.svn.c.status.html}svn status}} command.
 
-* Running the plugin during the validation phase.
+* Running the <<<revision>>> goal during the validation phase.
 
-  This example shows the preferred way of using the plugin in the pom.
-  Binding the plugin to the validation phase allows to use the revision property in subsequent phases, for example
-  during resource filtering.
+  This example shows the preferred way of using the plugin.
+  Binding the <<<revision>>> goal to the validation phase allows to use its output properties in the subsequent phases,
+  for example during the resource filtering.
 
 ---
 <project>
