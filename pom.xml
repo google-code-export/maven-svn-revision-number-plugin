@@ -21,6 +21,14 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <id>oleg.estekhin</id>
+            <name>Oleg Estekhin</name>
+            <email>oleg.estekhin@gmail.com</email>
+        </developer>
+    </developers>
+
     <scm>
         <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/trunk/</connection>
         <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/trunk/</developerConnection>
@@ -31,14 +39,6 @@
         <system>Google Code</system>
         <url>http://code.google.com/p/maven-svn-revision-number-plugin/issues/list</url>
     </issueManagement>
-
-    <developers>
-        <developer>
-            <id>oleg.estekhin</id>
-            <name>Oleg Estekhin</name>
-            <email>oleg.estekhin@gmail.com</email>
-        </developer>
-    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
