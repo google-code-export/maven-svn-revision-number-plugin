@@ -1,5 +1,5 @@
 try {
-    return oe.maven.plugins.revision.IntegrationTestHelper.verifyResult(basedir, "r\\d+ D", "trunk/src/it/deleted-it/src");
+    return oe.maven.plugins.revision.IntegrationTestHelper.verifyResult(basedir, "r\\d+ R", "trunk/src/it/replaced-it/src");
 } catch (Throwable t) {
     t.printStackTrace();
     return false;

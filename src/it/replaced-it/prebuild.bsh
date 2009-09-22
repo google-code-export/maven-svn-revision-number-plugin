@@ -1,6 +1,6 @@
 try {
     boolean delete = oe.maven.plugins.revision.IntegrationTestHelper.deleteFile(basedir, "src/test/resources/replaced.txt", true);
-    boolean add = oe.maven.plugins.revision.IntegrationTestHelper.deleteFile(basedir, "src/test/resources/replaced.txt", true);
+    boolean add = oe.maven.plugins.revision.IntegrationTestHelper.addFile(basedir, "src/test/resources/replaced.txt", true);
     return delete && add;
 } catch (Throwable t) {
     t.printStackTrace();
