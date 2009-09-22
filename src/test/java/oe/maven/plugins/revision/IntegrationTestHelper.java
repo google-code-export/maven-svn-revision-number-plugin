@@ -22,7 +22,7 @@ public final class IntegrationTestHelper {
 
     public static boolean modifyFile(File basedir, String fileName) throws IOException {
         File file = new File(basedir, fileName);
-        System.out.println("modifying " + file);
+        System.out.println("modifying file " + file);
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
@@ -40,7 +40,7 @@ public final class IntegrationTestHelper {
 
     public static boolean addFile(File basedir, String fileName, boolean useVersionControl) throws IOException, SVNException {
         File file = new File(basedir, fileName);
-        System.out.println("adding " + file + (useVersionControl ? " with " : " without ") + "version control");
+        System.out.println("adding file " + file + (useVersionControl ? " with " : " without ") + "version control");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
@@ -58,6 +58,17 @@ public final class IntegrationTestHelper {
             clientManager.getWCClient().doAdd(file, false, false, false, SVNDepth.INFINITY, false, false, false);
         }
         return true;
+    }
+
+    public static boolean addDirectory(File basedir, String fileName, boolean useVersionControl) throws SVNException {
+        File file = new File(basedir, fileName);
+        System.out.println("adding directory " + file + (useVersionControl ? " with " : " without ") + "version control");
+        boolean result = file.mkdirs();
+        if (result && useVersionControl) {
+            SVNClientManager clientManager = SVNClientManager.newInstance();
+            clientManager.getWCClient().doAdd(file, false, false, false, SVNDepth.INFINITY, false, false, false);
+        }
+        return result;
     }
 
     public static boolean deleteFile(File basedir, String fileName, boolean useVersionControl) throws SVNException {
@@ -100,7 +111,7 @@ public final class IntegrationTestHelper {
 
     public static boolean verifyResult(File basedir, String revisionPattern, String pathPattern) throws IOException {
         File file = new File(basedir, "dest/main/classes/revision.txt");
-        System.out.println("reading " + file);
+        System.out.println("reading file " + file);
         Properties properties = new Properties();
         Reader reader = null;
         try {

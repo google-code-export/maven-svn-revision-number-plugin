@@ -1,0 +1,6 @@
+try {
+    return oe.maven.plugins.revision.IntegrationTestHelper.verifyResult(basedir, "r\\d+ ~", "trunk/src/it/obstructed-it/src");
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}

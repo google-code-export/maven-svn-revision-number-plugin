@@ -1,0 +1,8 @@
+try {
+    boolean delete = oe.maven.plugins.revision.IntegrationTestHelper.deleteFile(basedir, "src/test/resources/obstructed.txt", false);
+    boolean add = oe.maven.plugins.revision.IntegrationTestHelper.addDirectory(basedir, "src/test/resources/obstructed.txt", false);
+    return delete && add;
+} catch (Throwable t) {
+    t.printStackTrace();
+    return false;
+}
