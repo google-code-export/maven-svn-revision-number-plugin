@@ -6,17 +6,118 @@ ${project.name}
 
   ${project.description}
 
-* Goals Overview
+  The {{{http://svnkit.com/}SVNKit}} library is used for all Subversion-related operations.
 
-  General information about the goals.
+* Goals Overview
 
   * {{{revision-mojo.html}${project.artifactId}:release}} Retrieves the status and revision number of the subversion
     working copy directory.
 
-* Usage
+* Using the plugin
 
-  General instructions on how to use the plugin can be found on the {{{usage.html}usage page}}.
+  This example shows the preferred way of using the plugin.
+  The <<<revision>>> goal is bound to the <<<initialize>>> phase by default, which allows to use its output properties
+  in the subsequent phases, for example during the resource filtering.
 
-  If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
-  {{{issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
-  concern.
+---
+<project>
+    ...
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    ...
+</project>
+---
+
+* Configuring the working copy directory location
+
+  The location of the working copy directory is configured via <<<$\{workingCopyDirectory\}>>> property.
+  The default value is the project's <<<$\{basedir\}>>>.
+
+* Output properties
+
+  The following properties will be available after running the <<<revision>>> goal:
+
+  * <<<$\{workingCopyDirectory.repository\}>>> (the property name can be configured via <<<$\{repositoryPropertyName\}>>>)
+   will contain the remote repository root.
+
+  * <<<$\{workingCopyDirectory.path\}>>> (the property name can be configured via <<<$\{pathPropertyName\}>>>)
+   will contain the path of the path of the working copy directory entry relative to the root of the remote repository.
+
+  * <<<$\{workingCopyDirectory.revision\}>>> (the property name can be configured via <<<$\{revisionPropertyName\}>>>)
+   will be set to the aggregated status and revision number of the working copy directory.
+
+  []
+
+  If the supplied directory is not under version control then <<<$\{workingCopyDirectory.repository\}>>> and
+  <<<$\{workingCopyDirectory.path\}>>> will be empty strings and <<<$\{workingCopyDirectory.revision\}>>> will be set
+  to <<<"unversioned">>>.
+
+* Decoding <<<$\{workingCopyDirectory.revision\}>>> property value
+
+  Depending on the state of the working copy directory the revision property will be set to one of the following
+  values:
+
+  * <<<"unversioned">>> - the directory is not under version control.
+
+  * <<<"rNNN">>> - the working copy is up-to-date and has no local modifications.\
+    The <<<NNN>>> is the working copy revision number.
+
+  * <<<"rNNN-rMMM">>> - the reporting of mixed revisions is on and the working copy contains
+    {{{http://svnbook.red-bean.com/nightly/en/svn.basic.in-action.html#svn.basic.in-action.mixedrevs}mixed revisions}}
+    but otherwise has no local modifications.\
+    The <<<NNN>>> is the maximum revision number and <<<MMM>>> is the minimum revision number in the working copy.\
+    The reporting of mixed revisions is on by default.
+
+  []
+
+  If reporting of working copy status is on and the working copy directory has uncommitted local modifications or
+  is out-of-date, then an additional status information is appended to the <<<"rNNN">>> or <<<"rNNN-rMMM">>> value
+  specified above in the form of <<<"rNNN SSS">>> or <<<"rNNN-rMMM SSS">>>, where <<<SSS>>> consists of one or more of
+  the following characters:
+
+  * <<<'M'>>> - some item in the working copy has local modifications.
+
+  * <<<'A'>>> - some item in the working copy is scheduled for addition to the repository.
+
+  * <<<'D'>>> - some item in the working copy is scheduled for deletion from the repository.
+
+  * <<<'?'>>> - the reporting of unversioned items is on and the working copy contains unversioned items.\
+    The reporting of unversioned items is on by default.
+
+  * <<<'!'>>> - either some items in the working copy are missing (the most common case is deleting the file or
+    directory without using svn) or some directory is incomplete (a checkout or update operation was interrupted).
+
+  * <<<'R'>>> - some item in the working copy was replaced (it was scheduled for deletion, and then a new item with
+    the same name was scheduled for addition).
+
+  * <<<'C'>>> - the contents or properties of some item conflict with updates received from the repository.
+
+  * <<<'~'>>> - some item in the working copy is obstructed (it is versioned as a file or a directory but has been
+    replaced by a directory or a file respectively).
+
+  * <<<'I'>>> - the reporting of ignored items is on and the working copy contains ignored items.\
+    The reporting of ignored items is off by default.
+
+  * <<<'X'>>> - some item in the working copy is present because of an externals definition.
+
+  * <<<'*'>>> - the reporting of out-of-date items is on and a newer revision of some item exists in the repository.\
+    The reporting of out-of-date items is off by default.
+
+  []
+
+  The status characters are consistent with the output of the
+  {{{http://svnbook.red-bean.com/nightly/en/svn.ref.svn.c.status.html}svn status}} command.

@@ -55,6 +55,7 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
  * Retrieves the status and revision number of the subversion working copy directory.
  *
  * @goal revision
+ * @phase initialize
  * @requiresProject
  */
 public class RevisionMojo extends AbstractMojo {
@@ -76,6 +77,7 @@ public class RevisionMojo extends AbstractMojo {
 
     /**
      * The subversion working copy directory.
+     * The plugin will evaluate the aggregated status and revision number of this directory and its contents.
      *
      * @parameter expression="${workingCopyDirectory}" default-value="${basedir}"
      * @required
@@ -197,7 +199,7 @@ public class RevisionMojo extends AbstractMojo {
                 getLog().info("${" + revisionPropertyName + "} is set to \"" + revision + '\"');
             }
         } catch (SVNException e) {
-            throw new MojoExecutionException("failed to obtain revision information", e);
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 

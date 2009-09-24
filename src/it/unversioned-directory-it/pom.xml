@@ -35,7 +35,6 @@
                 <version>@pom.version@</version>
                 <executions>
                     <execution>
-                        <phase>validate</phase>
                         <goals>
                             <goal>revision</goal>
                         </goals>
