@@ -9,7 +9,7 @@
 
     <name>Maven SVN Revision Number Plugin</name>
     <description>This plugin retrieves the status and revision number of the Subversion working copy directory.</description>
-    <url>http://code.google.com/p/maven-svn-revision-number-plugin/</url>
+    <url>http://code.google.com/p/maven-svn-revision-number-plugin</url>
 
     <inceptionYear>2009</inceptionYear>
 
@@ -30,15 +30,32 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/trunk/</connection>
-        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/trunk/</developerConnection>
-        <url>http://code.google.com/p/maven-svn-revision-number-plugin/source/browse/</url>
+        <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</developerConnection>
+        <url>http://code.google.com/p/maven-svn-revision-number-plugin/source/browse</url>
     </scm>
 
     <issueManagement>
         <system>Google Code</system>
         <url>http://code.google.com/p/maven-svn-revision-number-plugin/issues/list</url>
     </issueManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>maven-svn-revision-number-plugin.googlecode.com/svn/m2/release</id>
+            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/release</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+        <snapshotRepository>
+            <id>maven-svn-revision-number-plugin.googlecode.com/svn/m2/snapshot</id>
+            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/snapshot</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+        <site>
+            <id>maven-svn-revision-number-plugin.googlecode.com/svn/m2/site</id>
+            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/site</url>
+        </site>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -74,6 +91,13 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>maven-svn-wagon.googlecode.com/svn/m2/release</id>
+            <url>http://maven-svn-wagon.googlecode.com/svn/m2/release</url>
+        </repository>
+    </repositories>
+
     <build>
         <outputDirectory>${project.build.directory}/main/classes</outputDirectory>
         <testOutputDirectory>${project.build.directory}/test/classes</testOutputDirectory>
@@ -106,6 +130,13 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>com.google.code.maven-svn-wagon</groupId>
+                <artifactId>maven-svn-wagon</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>
     </build>
 
     <reporting>
@@ -170,6 +201,33 @@
                                 <goals>
                                     <goal>install</goal>
                                     <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.0-alpha-4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
