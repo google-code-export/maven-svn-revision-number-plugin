@@ -95,6 +95,9 @@
         <repository>
             <id>maven-svn-wagon.googlecode.com/svn/m2/release</id>
             <url>http://maven-svn-wagon.googlecode.com/svn/m2/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
