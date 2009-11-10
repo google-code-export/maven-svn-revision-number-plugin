@@ -13,14 +13,6 @@
     </properties>
 
     <build>
-        <directory>dest</directory>
-
-        <sourceDirectory>src/main/java</sourceDirectory>
-        <outputDirectory>dest/main/classes</outputDirectory>
-
-        <testSourceDirectory>src/test/java</testSourceDirectory>
-        <testOutputDirectory>dest/test/classes</testOutputDirectory>
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
