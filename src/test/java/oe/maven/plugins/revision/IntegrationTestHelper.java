@@ -110,7 +110,7 @@ public final class IntegrationTestHelper {
     }
 
     public static boolean verifyResult(File basedir, String revisionPattern, String pathPattern) throws IOException {
-        File file = new File(basedir, "target/main/classes/revision.txt");
+        File file = new File(basedir, "target/classes/revision.txt");
         System.out.println("reading file " + file);
         Properties properties = new Properties();
         Reader reader = null;
