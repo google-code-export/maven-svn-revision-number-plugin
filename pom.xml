@@ -42,18 +42,16 @@
 
     <distributionManagement>
         <repository>
-            <id>maven-svn-revision-number-plugin.googlecode.com/svn/m2/release</id>
-            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/release</url>
-            <uniqueVersion>false</uniqueVersion>
+            <id>oss.sonatype.org</id>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
-            <id>maven-svn-revision-number-plugin.googlecode.com/svn/m2/snapshot</id>
-            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/snapshot</url>
-            <uniqueVersion>false</uniqueVersion>
+            <id>oss.sonatype.org</id>
+            <url>http://oss.sonatype.org/content/repositories/googlecode-snapshots</url>
         </snapshotRepository>
         <site>
-            <id>maven-svn-revision-number-plugin.googlecode.com/svn/m2/site</id>
-            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/site</url>
+            <id>${project.artifactId} site</id>
+            <url>file://${project.build.directory}/staging/deploy/site</url>
         </site>
     </distributionManagement>
 
@@ -101,16 +99,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>maven-svn-wagon.googlecode.com/svn/m2/release</id>
-            <url>http://maven-svn-wagon.googlecode.com/svn/m2/release</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
@@ -145,13 +133,6 @@
                 <version>2.0-beta-9</version>
             </plugin>
         </plugins>
-        <extensions>
-            <extension>
-                <groupId>com.google.code.maven-svn-wagon</groupId>
-                <artifactId>maven-svn-wagon</artifactId>
-                <version>1.0</version>
-            </extension>
-        </extensions>
     </build>
 
     <reporting>
