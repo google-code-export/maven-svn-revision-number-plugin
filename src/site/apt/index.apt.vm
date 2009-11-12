@@ -19,18 +19,8 @@ ${project.name}
   The <<<revision>>> goal is bound to the <<<initialize>>> phase by default, which allows to use its output properties
   in the subsequent phases, for example during the resource filtering.
 
-  The additional repository is required to download the plugin artifacts from the project repository hosted on the
-  Google Code.
-
 ---
 <project>
-    ...
-    <repositories>
-        <repository>
-            <id>maven-svn-revision-number-plugin.googlecode.com/svn/m2/release</id>
-            <url>http://maven-svn-revision-number-plugin.googlecode.com/svn/m2/release</url>
-        </repository>
-    </repositories>
     ...
     <build>
         <plugins>
