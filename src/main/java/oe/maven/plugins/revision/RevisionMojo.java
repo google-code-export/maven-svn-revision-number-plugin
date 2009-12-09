@@ -52,7 +52,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 /**
- * Retrieves the status and revision number of the subversion working copy directory.
+ * Retrieves the status and revision number of the Subversion working copy directory.
  *
  * @goal revision
  * @phase initialize
@@ -76,7 +76,7 @@ public class RevisionMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
-     * The subversion working copy directory.
+     * The Subversion working copy directory.
      * The plugin will evaluate the aggregated status and revision number of this directory and its contents.
      *
      * @parameter expression="${workingCopyDirectory}" default-value="${basedir}"
