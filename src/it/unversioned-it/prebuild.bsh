@@ -1,6 +1,8 @@
+import oe.maven.plugins.revision.IntegrationTestHelper;
+
 try {
-    return oe.maven.plugins.revision.IntegrationTestHelper.addFile(basedir, "src/test/resources/unversioned.txt", false);
-} catch (Throwable t) {
+    return IntegrationTestHelper.addFile( basedir, "src/test/resources/unversioned.txt", false );
+} catch ( Throwable t ) {
     t.printStackTrace();
     return false;
 }

@@ -138,8 +138,8 @@ public final class IntegrationTestHelper {
         return true;
     }
 
-    public static boolean verifyResult( File basedir, String revisionPattern, String pathPattern ) throws IOException {
-        File file = new File( basedir, "target/classes/revision.txt" );
+    public static Properties loadProperties( File basedir, String fileName ) throws IOException {
+        File file = new File( basedir, fileName );
         System.out.println( "reading file " + file );
         Properties properties = new Properties();
         Reader reader = null;
@@ -154,13 +154,7 @@ public final class IntegrationTestHelper {
                 }
             }
         }
-        String revision = properties.getProperty( "revision" );
-        boolean revisionResult = revision.matches( revisionPattern );
-        System.out.println( "revision \"" + revision + "\" matches \"" + revisionPattern + "\" = " + revisionResult );
-        String path = properties.getProperty( "path" );
-        boolean pathResult = path.matches( pathPattern );
-        System.out.println( "path \"" + path + "\" matches \"" + pathPattern + "\" = " + pathResult );
-        return revisionResult && pathResult;
+        return properties;
     }
 
 

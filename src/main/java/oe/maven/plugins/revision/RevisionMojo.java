@@ -75,6 +75,7 @@ public class RevisionMojo extends AbstractMojo {
      */
     private MavenProject project;
 
+
     /**
      * The Subversion working copy directory.
      * The plugin will evaluate the aggregated status and revision number of this directory and its contents.
@@ -107,6 +108,15 @@ public class RevisionMojo extends AbstractMojo {
      * @parameter expression="${revisionPropertyName}" default-value="workingCopyDirectory.revision"
      */
     private String revisionPropertyName;
+
+    /**
+     * The name of the property that will contain the aggregated status and revision number of the working copy
+     * directory.
+     * This property will contain only characters allowed in the file names.
+     *
+     * @parameter expression="${fileNameSafeRevisionPropertyName}" default-value="workingCopyDirectory.fileNameSafeRevision"
+     */
+    private String fileNameSafeRevisionPropertyName;
 
 
     /**
@@ -167,6 +177,7 @@ public class RevisionMojo extends AbstractMojo {
             String repository;
             String path;
             String revision;
+            String fileNameSafeRevision;
             if ( SVNWCUtil.isVersionedDirectory( workingCopyDirectory ) ) {
                 SVNClientManager clientManager = SVNClientManager.newInstance();
                 SVNStatusClient statusClient = clientManager.getStatusClient();
@@ -184,19 +195,23 @@ public class RevisionMojo extends AbstractMojo {
                         reportOutOfDate, true, reportIgnored, false,
                         statusCollector,
                         null );
-                revision = statusCollector.toString();
+                revision = statusCollector.getStandardStatus();
+                fileNameSafeRevision = statusCollector.getFileNameSafeStatus();
             } else {
                 repository = "";
                 path = "";
                 revision = "unversioned";
+                fileNameSafeRevision = revision;
             }
             project.getProperties().setProperty( repositoryPropertyName, repository );
             project.getProperties().setProperty( pathPropertyName, path );
             project.getProperties().setProperty( revisionPropertyName, revision );
+            project.getProperties().setProperty( fileNameSafeRevisionPropertyName, fileNameSafeRevision );
             if ( verbose ) {
                 getLog().info( "${" + repositoryPropertyName + "} is set to \"" + repository + '\"' );
                 getLog().info( "${" + pathPropertyName + "} is set to \"" + path + '\"' );
                 getLog().info( "${" + revisionPropertyName + "} is set to \"" + revision + '\"' );
+                getLog().info( "${" + fileNameSafeRevisionPropertyName + "} is set to \"" + fileNameSafeRevision + '\"' );
             }
         } catch ( SVNException e ) {
             throw new MojoExecutionException( e.getMessage(), e );
@@ -245,8 +260,8 @@ public class RevisionMojo extends AbstractMojo {
             }
         }
 
-        @Override
-        public String toString() {
+        public String getStandardStatus() {
+            Set<SVNStatusType> tempStatusTypes = new HashSet<SVNStatusType>( localStatusTypes );
             StringBuilder result = new StringBuilder();
             if ( maximumRevisionNumber != Long.MIN_VALUE ) {
                 result.append( 'r' ).append( maximumRevisionNumber );
@@ -255,50 +270,108 @@ public class RevisionMojo extends AbstractMojo {
                 }
             }
             if ( reportStatus ) {
-                localStatusTypes.remove( SVNStatusType.STATUS_NONE );
-                localStatusTypes.remove( SVNStatusType.STATUS_NORMAL );
-                if ( !localStatusTypes.isEmpty() ) {
+                tempStatusTypes.remove( SVNStatusType.STATUS_NONE );
+                tempStatusTypes.remove( SVNStatusType.STATUS_NORMAL );
+                if ( !tempStatusTypes.isEmpty() ) {
                     result.append( ' ' );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_MODIFIED ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MODIFIED ) ) {
                     result.append( SVNStatusType.STATUS_MODIFIED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
                     result.append( SVNStatusType.STATUS_ADDED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_DELETED ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_DELETED ) ) {
                     result.append( SVNStatusType.STATUS_DELETED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_UNVERSIONED ) && reportUnversioned ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_UNVERSIONED ) && reportUnversioned ) {
                     result.append( SVNStatusType.STATUS_UNVERSIONED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
                     result.append( SVNStatusType.STATUS_MISSING.getCode() );
-                    localStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ); // same status code '!'
+                    tempStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ); // same status code '!'
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
                     result.append( SVNStatusType.STATUS_REPLACED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_CONFLICTED ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_CONFLICTED ) ) {
                     result.append( SVNStatusType.STATUS_CONFLICTED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
                     result.append( SVNStatusType.STATUS_OBSTRUCTED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_IGNORED ) && reportIgnored ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_IGNORED ) && reportIgnored ) {
                     result.append( SVNStatusType.STATUS_IGNORED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ) ) {
                     result.append( SVNStatusType.STATUS_CONFLICTED.getCode() );
                 }
-                if ( localStatusTypes.remove( SVNStatusType.STATUS_EXTERNAL ) ) {
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_EXTERNAL ) ) {
                     result.append( SVNStatusType.STATUS_EXTERNAL.getCode() );
                 }
-                if ( !localStatusTypes.isEmpty() ) {
-                    getLog().warn( "unprocessed svn statuses: " + localStatusTypes );
+                if ( !tempStatusTypes.isEmpty() ) {
+                    getLog().warn( "unprocessed svn statuses: " + tempStatusTypes );
                 }
                 if ( remoteChanges && reportOutOfDate ) {
                     result.append( '*' );
+                }
+            }
+            return result.toString();
+        }
+
+        public String getFileNameSafeStatus() {
+            Set<SVNStatusType> tempStatusTypes = new HashSet<SVNStatusType>( localStatusTypes );
+            StringBuilder result = new StringBuilder();
+            if ( maximumRevisionNumber != Long.MIN_VALUE ) {
+                result.append( 'r' ).append( maximumRevisionNumber );
+                if ( minimumRevisionNumber != maximumRevisionNumber && reportMixedRevisions ) {
+                    result.append( '-' ).append( 'r' ).append( minimumRevisionNumber );
+                }
+            }
+            if ( reportStatus ) {
+                tempStatusTypes.remove( SVNStatusType.STATUS_NONE );
+                tempStatusTypes.remove( SVNStatusType.STATUS_NORMAL );
+                if ( !tempStatusTypes.isEmpty() ) {
+                    result.append( '-' );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MODIFIED ) ) {
+                    result.append( SVNStatusType.STATUS_MODIFIED.getCode() );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
+                    result.append( SVNStatusType.STATUS_ADDED.getCode() );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_DELETED ) ) {
+                    result.append( SVNStatusType.STATUS_DELETED.getCode() );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_UNVERSIONED ) && reportUnversioned ) {
+                    result.append( 'u' );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
+                    result.append( SVNStatusType.STATUS_MISSING.getCode() );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
+                    result.append( SVNStatusType.STATUS_REPLACED.getCode() );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_CONFLICTED ) ) {
+                    result.append( SVNStatusType.STATUS_CONFLICTED.getCode() );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
+                    result.append( 'o' );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_IGNORED ) && reportIgnored ) {
+                    result.append( SVNStatusType.STATUS_IGNORED.getCode() );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ) ) {
+                    result.append( 'i' );
+                }
+                if ( tempStatusTypes.remove( SVNStatusType.STATUS_EXTERNAL ) ) {
+                    result.append( SVNStatusType.STATUS_EXTERNAL.getCode() );
+                }
+                if ( !tempStatusTypes.isEmpty() ) {
+                    getLog().warn( "unprocessed svn statuses: " + tempStatusTypes );
+                }
+                if ( remoteChanges && reportOutOfDate ) {
+                    result.append( 'd' );
                 }
             }
             return result.toString();

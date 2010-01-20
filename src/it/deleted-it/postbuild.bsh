@@ -1,6 +1,13 @@
+import java.util.Properties;
+import oe.maven.plugins.revision.IntegrationTestHelper;
+
 try {
-    return oe.maven.plugins.revision.IntegrationTestHelper.verifyResult(basedir, "r\\d+ D", "trunk/src/it/deleted-it/src");
-} catch (Throwable t) {
+    Properties properties = IntegrationTestHelper.loadProperties( basedir, "target/classes/revision.txt" );
+
+    return properties.getProperty( "revision", "#missing" ).matches( "r\\d+ D" )
+            && properties.getProperty( "fileNameSafeRevision", "#missing" ).matches( "r\\d+-D" )
+            && properties.getProperty( "path", "#missing" ).matches( "trunk/src/it/deleted-it/src" );
+} catch ( Throwable t ) {
     t.printStackTrace();
     return false;
 }
