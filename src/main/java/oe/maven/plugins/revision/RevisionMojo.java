@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2009, Oleg Estekhin
+ * Copyright (c) 2009-2010, Oleg Estekhin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -101,7 +101,7 @@ public class RevisionMojo extends AbstractMojo {
     private String pathPropertyName;
 
     /**
-     * The name of the property that will contain the aggregated status and revision number of the  working copy
+     * The name of the property that will contain the aggregated status and revision number of the working copy
      * directory.
      *
      * @parameter expression="${revisionPropertyName}" default-value="workingCopyDirectory.revision"
