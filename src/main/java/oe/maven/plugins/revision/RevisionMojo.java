@@ -112,6 +112,7 @@ public class RevisionMojo extends AbstractMojo {
     /**
      * The name of the property that will contain the aggregated status and revision number of the working copy
      * directory.
+     * <p/>
      * This property will contain only characters allowed in the file names.
      *
      * @parameter expression="${fileNameSafeRevisionPropertyName}" default-value="workingCopyDirectory.fileNameSafeRevision"
@@ -195,8 +196,8 @@ public class RevisionMojo extends AbstractMojo {
                         reportOutOfDate, true, reportIgnored, false,
                         statusCollector,
                         null );
-                revision = statusCollector.getStandardStatus();
-                fileNameSafeRevision = statusCollector.getFileNameSafeStatus();
+                revision = statusCollector.getStatus( StatusCharacters.STANDARD );
+                fileNameSafeRevision = statusCollector.getStatus( StatusCharacters.FILE_NAME_SAFE );
             } else {
                 repository = "";
                 path = "";
@@ -260,7 +261,7 @@ public class RevisionMojo extends AbstractMojo {
             }
         }
 
-        public String getStandardStatus() {
+        public String getStatus( StatusCharacters statusCharacters ) {
             Set<SVNStatusType> tempStatusTypes = new HashSet<SVNStatusType>( localStatusTypes );
             StringBuilder result = new StringBuilder();
             if ( maximumRevisionNumber != Long.MIN_VALUE ) {
@@ -273,108 +274,129 @@ public class RevisionMojo extends AbstractMojo {
                 tempStatusTypes.remove( SVNStatusType.STATUS_NONE );
                 tempStatusTypes.remove( SVNStatusType.STATUS_NORMAL );
                 if ( !tempStatusTypes.isEmpty() ) {
-                    result.append( ' ' );
+                    result.append( statusCharacters.separator );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_MODIFIED ) ) {
-                    result.append( SVNStatusType.STATUS_MODIFIED.getCode() );
+                    result.append( statusCharacters.modified );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
-                    result.append( SVNStatusType.STATUS_ADDED.getCode() );
+                    result.append( statusCharacters.added );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_DELETED ) ) {
-                    result.append( SVNStatusType.STATUS_DELETED.getCode() );
+                    result.append( statusCharacters.deleted );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_UNVERSIONED ) && reportUnversioned ) {
-                    result.append( SVNStatusType.STATUS_UNVERSIONED.getCode() );
+                    result.append( statusCharacters.unversioned );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
-                    result.append( SVNStatusType.STATUS_MISSING.getCode() );
-                    tempStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ); // same status code '!'
+                    result.append( statusCharacters.missing );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
-                    result.append( SVNStatusType.STATUS_REPLACED.getCode() );
+                    result.append( statusCharacters.replaced );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_CONFLICTED ) ) {
-                    result.append( SVNStatusType.STATUS_CONFLICTED.getCode() );
+                    result.append( statusCharacters.conflicted );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
-                    result.append( SVNStatusType.STATUS_OBSTRUCTED.getCode() );
+                    result.append( statusCharacters.obstructed );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_IGNORED ) && reportIgnored ) {
-                    result.append( SVNStatusType.STATUS_IGNORED.getCode() );
+                    result.append( statusCharacters.ignored );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ) ) {
-                    result.append( SVNStatusType.STATUS_CONFLICTED.getCode() );
+                    result.append( statusCharacters.incomplete );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_EXTERNAL ) ) {
-                    result.append( SVNStatusType.STATUS_EXTERNAL.getCode() );
+                    result.append( statusCharacters.external );
                 }
                 if ( !tempStatusTypes.isEmpty() ) {
                     getLog().warn( "unprocessed svn statuses: " + tempStatusTypes );
                 }
                 if ( remoteChanges && reportOutOfDate ) {
-                    result.append( '*' );
+                    result.append( statusCharacters.outOfDate );
                 }
             }
             return result.toString();
         }
 
-        public String getFileNameSafeStatus() {
-            Set<SVNStatusType> tempStatusTypes = new HashSet<SVNStatusType>( localStatusTypes );
-            StringBuilder result = new StringBuilder();
-            if ( maximumRevisionNumber != Long.MIN_VALUE ) {
-                result.append( 'r' ).append( maximumRevisionNumber );
-                if ( minimumRevisionNumber != maximumRevisionNumber && reportMixedRevisions ) {
-                    result.append( '-' ).append( 'r' ).append( minimumRevisionNumber );
-                }
-            }
-            if ( reportStatus ) {
-                tempStatusTypes.remove( SVNStatusType.STATUS_NONE );
-                tempStatusTypes.remove( SVNStatusType.STATUS_NORMAL );
-                if ( !tempStatusTypes.isEmpty() ) {
-                    result.append( '-' );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MODIFIED ) ) {
-                    result.append( SVNStatusType.STATUS_MODIFIED.getCode() );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
-                    result.append( SVNStatusType.STATUS_ADDED.getCode() );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_DELETED ) ) {
-                    result.append( SVNStatusType.STATUS_DELETED.getCode() );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_UNVERSIONED ) && reportUnversioned ) {
-                    result.append( 'u' );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
-                    result.append( 'm' );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
-                    result.append( SVNStatusType.STATUS_REPLACED.getCode() );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_CONFLICTED ) ) {
-                    result.append( SVNStatusType.STATUS_CONFLICTED.getCode() );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
-                    result.append( 'o' );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_IGNORED ) && reportIgnored ) {
-                    result.append( SVNStatusType.STATUS_IGNORED.getCode() );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ) ) {
-                    result.append( 'i' );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_EXTERNAL ) ) {
-                    result.append( SVNStatusType.STATUS_EXTERNAL.getCode() );
-                }
-                if ( !tempStatusTypes.isEmpty() ) {
-                    getLog().warn( "unprocessed svn statuses: " + tempStatusTypes );
-                }
-                if ( remoteChanges && reportOutOfDate ) {
-                    result.append( 'd' );
-                }
-            }
-            return result.toString();
+    }
+
+    private static final class StatusCharacters {
+
+        public static final StatusCharacters STANDARD = new StatusCharacters(
+                ' ',
+                SVNStatusType.STATUS_MODIFIED.getCode(),
+                SVNStatusType.STATUS_ADDED.getCode(),
+                SVNStatusType.STATUS_DELETED.getCode(),
+                SVNStatusType.STATUS_UNVERSIONED.getCode(),
+                SVNStatusType.STATUS_MISSING.getCode(),
+                SVNStatusType.STATUS_REPLACED.getCode(),
+                SVNStatusType.STATUS_CONFLICTED.getCode(),
+                SVNStatusType.STATUS_OBSTRUCTED.getCode(),
+                SVNStatusType.STATUS_IGNORED.getCode(),
+                SVNStatusType.STATUS_INCOMPLETE.getCode(),
+                SVNStatusType.STATUS_EXTERNAL.getCode(),
+                '*'
+        );
+
+        public static final StatusCharacters FILE_NAME_SAFE = new StatusCharacters(
+                '-',
+                SVNStatusType.STATUS_MODIFIED.getCode(),
+                SVNStatusType.STATUS_ADDED.getCode(),
+                SVNStatusType.STATUS_DELETED.getCode(),
+                'u', // SVNStatusType.STATUS_UNVERSIONED.getCode(),
+                'm', // SVNStatusType.STATUS_MISSING.getCode(),
+                SVNStatusType.STATUS_REPLACED.getCode(),
+                SVNStatusType.STATUS_CONFLICTED.getCode(),
+                'o', // SVNStatusType.STATUS_OBSTRUCTED.getCode(),
+                SVNStatusType.STATUS_IGNORED.getCode(),
+                'i', // SVNStatusType.STATUS_INCOMPLETE.getCode(),
+                SVNStatusType.STATUS_EXTERNAL.getCode(),
+                'd'
+        );
+
+
+        public final char separator;
+
+        public final char modified;
+
+        public final char added;
+
+        public final char deleted;
+
+        public final char unversioned;
+
+        public final char missing;
+
+        public final char replaced;
+
+        public final char conflicted;
+
+        public final char obstructed;
+
+        public final char ignored;
+
+        public final char incomplete;
+
+        public final char external;
+
+        public final char outOfDate;
+
+
+        private StatusCharacters( char separator, char modified, char added, char deleted, char unversioned, char missing, char replaced, char conflicted, char obstructed, char ignored, char incomplete, char external, char outOfDate ) {
+            this.separator = separator;
+            this.modified = modified;
+            this.added = added;
+            this.deleted = deleted;
+            this.unversioned = unversioned;
+            this.missing = missing;
+            this.replaced = replaced;
+            this.conflicted = conflicted;
+            this.obstructed = obstructed;
+            this.ignored = ignored;
+            this.incomplete = incomplete;
+            this.external = external;
+            this.outOfDate = outOfDate;
         }
 
     }
