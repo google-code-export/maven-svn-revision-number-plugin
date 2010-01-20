@@ -60,16 +60,20 @@ ${project.name}
   * <<<$\{workingCopyDirectory.revision\}>>> (the property name can be configured via <<<$\{revisionPropertyName\}>>>)
    will be set to the aggregated status and revision number of the working copy directory.
 
+  * <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> (the property name can be configured via <<<$\{fileNameSafeRevisionPropertyName\}>>>)
+   will be set to the aggregated status and revision number of the working copy directory but it will contain only
+   characters allowed in the file names.
+
   []
 
   If the supplied directory is not under version control then <<<$\{workingCopyDirectory.repository\}>>> and
-  <<<$\{workingCopyDirectory.path\}>>> will be empty strings and <<<$\{workingCopyDirectory.revision\}>>> will be set
-  to <<<"unversioned">>>.
+  <<<$\{workingCopyDirectory.path\}>>> will be empty strings and <<<$\{workingCopyDirectory.revision\}>>> and
+  <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> will be set to <<<"unversioned">>>.
 
-* Decoding <<<$\{workingCopyDirectory.revision\}>>> property value
+* <<<$\{workingCopyDirectory.revision\}>>> property value
 
-  Depending on the state of the working copy directory the revision property will be set to one of the following
-  values:
+  Depending on the state of the working copy directory the <<<$\{workingCopyDirectory.revision\}>>> property will be set
+  to one of the following values:
 
   * <<<"unversioned">>> - the directory is not under version control.
 
@@ -86,7 +90,7 @@ ${project.name}
 
   If reporting of working copy status is enabled and the working copy directory has uncommitted local modifications or
   is out-of-date, then an additional status information is appended to the <<<"rNNN">>> or <<<"rNNN-rMMM">>> value
-  specified above in the form of <<<"rNNN SSS">>> or <<<"rNNN-rMMM SSS">>>, where <<<SSS>>> consists of one or more of
+  specified above in the form of <<<"rNNN SSS">>> or <<<"rNNN-rMMM SSS">>>, where <<<"SSS">>> consists of one or more of
   the following characters:
 
   * <<<'M'>>> - some item in the working copy has local modifications.
@@ -98,8 +102,8 @@ ${project.name}
   * <<<'?'>>> - the reporting of unversioned items is enabled and the working copy contains unversioned items.\
     The reporting of unversioned items is enabled by default.
 
-  * <<<'!'>>> - either some items in the working copy are missing (the most common case is deleting the file or
-    directory without using svn) or some directory is incomplete (a checkout or update operation was interrupted).
+  * <<<'!'>>> - some items in the working copy are missing (the most common case is deleting the file or
+    directory without using svn).
 
   * <<<'R'>>> - some item in the working copy was replaced (it was scheduled for deletion, and then a new item with
     the same name was scheduled for addition).
@@ -112,6 +116,8 @@ ${project.name}
   * <<<'I'>>> - the reporting of ignored items is enabled and the working copy contains ignored items.\
     The reporting of ignored items is disabled by default.
 
+  * <<<'!'>>> - some directory in the working copy is incomplete (a checkout or update operation was interrupted).
+
   * <<<'X'>>> - some item in the working copy is present because of an externals definition.
 
   * <<<'*'>>> - the reporting of out-of-date items is enabled and a newer revision of some item exists in the remote
@@ -121,5 +127,25 @@ ${project.name}
 
   []
 
-  The status characters are consistent with the output of the
+  The status characters for <<<$\{workingCopyDirectory.revision\}>>> property are consistent with the output of the
   {{{http://svnbook.red-bean.com/nightly/en/svn.ref.svn.c.status.html}svn status}} command.
+
+* <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> property value
+
+  The <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> property will contain the same information as the
+  <<<$\{workingCopyDirectory.revision\}>>> property but with some alterations that allow to use the value of this
+  property in the file names:
+
+  * The revision number and status information are separated by the <<<'-'>>> instead of the <<<' '>>>.
+
+  * Unversioned items are reported using the <<<'u'>>> instead of the <<<'?'>>>.
+
+  * Missing items are reported using the <<<'m'>>> instead of the <<<'!'>>>.
+
+  * Obstructed items are reported using the <<<'o'>>> instead of the <<<'~'>>>.
+
+  * Incomplete items are reported using the <<<'i'>>> instead of the <<<'!'>>>.
+
+  * Out-of-date items are reported using the <<<'d'>>> instead of the <<<'*'>>>.
+
+  []
