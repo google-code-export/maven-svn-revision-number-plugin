@@ -347,7 +347,7 @@ public class RevisionMojo extends AbstractMojo {
                     result.append( 'u' );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
-                    result.append( SVNStatusType.STATUS_MISSING.getCode() );
+                    result.append( 'm' );
                 }
                 if ( tempStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
                     result.append( SVNStatusType.STATUS_REPLACED.getCode() );
