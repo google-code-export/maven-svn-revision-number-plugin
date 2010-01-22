@@ -86,7 +86,7 @@ public class RevisionMojo extends AbstractMojo {
     private File workingCopyDirectory;
 
     /**
-     * The name of the property that will contain the root of the remote repository of the working copy directory
+     * The name of the output property that will contain the root of the remote repository of the working copy directory
      * entry.
      *
      * @parameter expression="${repositoryPropertyName}" default-value="workingCopyDirectory.repository"
@@ -94,7 +94,7 @@ public class RevisionMojo extends AbstractMojo {
     private String repositoryPropertyName;
 
     /**
-     * The name of the property that will contain the path of the working copy directory entry relative
+     * The name of the output property that will contain the path of the working copy directory entry relative
      * to the root of the remote repository.
      *
      * @parameter expression="${pathPropertyName}" default-value="workingCopyDirectory.path"
@@ -102,7 +102,7 @@ public class RevisionMojo extends AbstractMojo {
     private String pathPropertyName;
 
     /**
-     * The name of the property that will contain the aggregated status and revision number of the working copy
+     * The name of the output property that will contain the aggregated status and revision number of the working copy
      * directory.
      *
      * @parameter expression="${revisionPropertyName}" default-value="workingCopyDirectory.revision"
@@ -110,7 +110,7 @@ public class RevisionMojo extends AbstractMojo {
     private String revisionPropertyName;
 
     /**
-     * The name of the property that will contain the aggregated status and revision number of the working copy
+     * The name of the output property that will contain the aggregated status and revision number of the working copy
      * directory.
      * <p/>
      * This property will contain only characters allowed in the file names.
@@ -202,7 +202,7 @@ public class RevisionMojo extends AbstractMojo {
                 repository = "";
                 path = "";
                 revision = "unversioned";
-                fileNameSafeRevision = revision;
+                fileNameSafeRevision = "unversioned";
             }
             project.getProperties().setProperty( repositoryPropertyName, repository );
             project.getProperties().setProperty( pathPropertyName, path );

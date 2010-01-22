@@ -51,18 +51,20 @@ ${project.name}
 
   The following properties will be available after running the <<<revision>>> goal:
 
-  * <<<$\{workingCopyDirectory.repository\}>>> (the property name can be configured via <<<$\{repositoryPropertyName\}>>>)
-   will contain the remote repository root.
+  * <<<$\{workingCopyDirectory.repository\}>>> will contain the remote repository root.\
+  The name of this output property can be configured via <<<$\{repositoryPropertyName\}>>>.
 
-  * <<<$\{workingCopyDirectory.path\}>>> (the property name can be configured via <<<$\{pathPropertyName\}>>>)
-   will contain the path of the path of the working copy directory entry relative to the root of the remote repository.
+  * <<<$\{workingCopyDirectory.path\}>>> will contain the path of the path of the working copy directory entry relative
+  to the root of the remote repository.\
+  The name of this output property can be configured via <<<$\{pathPropertyName\}>>>.
 
-  * <<<$\{workingCopyDirectory.revision\}>>> (the property name can be configured via <<<$\{revisionPropertyName\}>>>)
-   will be set to the aggregated status and revision number of the working copy directory.
+  * <<<$\{workingCopyDirectory.revision\}>>> will be set to the aggregated status and revision number of the working
+  copy directory.\
+  The name of this output property can be configured via <<<$\{revisionPropertyName\}>>>)
 
-  * <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> (the property name can be configured via <<<$\{fileNameSafeRevisionPropertyName\}>>>)
-   will be set to the aggregated status and revision number of the working copy directory but it will contain only
-   characters allowed in the file names.
+  * <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> will be set to the aggregated status and revision number of
+  the working copy directory but it will contain only characters allowed in the file names.\
+  The name of this output property can be configured via <<<$\{fileNameSafeRevisionPropertyName\}>>>)
 
   []
 
@@ -126,6 +128,8 @@ ${project.name}
     The reporting of out-of-date items is disabled by default.
 
   []
+
+  The reporting of working copy status is enabled by default.
 
   The status characters for <<<$\{workingCopyDirectory.revision\}>>> property are consistent with the output of the
   {{{http://svnbook.red-bean.com/nightly/en/svn.ref.svn.c.status.html}svn status}} command.
