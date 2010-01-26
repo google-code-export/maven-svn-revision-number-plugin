@@ -52,7 +52,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 /**
- * Retrieves the status and revision number of the Subversion working copy directory.
+ * Retrieves the revision number and the status of the Subversion working copy directory.
  *
  * @goal revision
  * @phase initialize
@@ -84,40 +84,6 @@ public class RevisionMojo extends AbstractMojo {
      * @required
      */
     private File workingCopyDirectory;
-
-    /**
-     * The name of the output property that will contain the root of the remote repository of the working copy directory
-     * entry.
-     *
-     * @parameter expression="${repositoryPropertyName}" default-value="workingCopyDirectory.repository"
-     */
-    private String repositoryPropertyName;
-
-    /**
-     * The name of the output property that will contain the path of the working copy directory entry relative
-     * to the root of the remote repository.
-     *
-     * @parameter expression="${pathPropertyName}" default-value="workingCopyDirectory.path"
-     */
-    private String pathPropertyName;
-
-    /**
-     * The name of the output property that will contain the aggregated status and revision number of the working copy
-     * directory.
-     *
-     * @parameter expression="${revisionPropertyName}" default-value="workingCopyDirectory.revision"
-     */
-    private String revisionPropertyName;
-
-    /**
-     * The name of the output property that will contain the aggregated status and revision number of the working copy
-     * directory.
-     * <p/>
-     * This property will contain only characters allowed in the file names.
-     *
-     * @parameter expression="${fileNameSafeRevisionPropertyName}" default-value="workingCopyDirectory.fileNameSafeRevision"
-     */
-    private String fileNameSafeRevisionPropertyName;
 
 
     /**
@@ -156,6 +122,7 @@ public class RevisionMojo extends AbstractMojo {
      * @parameter expression="${reportOutOfDate}" default-value="false"
      */
     private boolean reportOutOfDate;
+
 
     /**
      * Provides detailed messages while this goal is running.
@@ -204,15 +171,15 @@ public class RevisionMojo extends AbstractMojo {
                 revision = "unversioned";
                 fileNameSafeRevision = "unversioned";
             }
-            project.getProperties().setProperty( repositoryPropertyName, repository );
-            project.getProperties().setProperty( pathPropertyName, path );
-            project.getProperties().setProperty( revisionPropertyName, revision );
-            project.getProperties().setProperty( fileNameSafeRevisionPropertyName, fileNameSafeRevision );
+            project.getProperties().setProperty( "workingCopyDirectory.repository", repository );
+            project.getProperties().setProperty( "workingCopyDirectory.path", path );
+            project.getProperties().setProperty( "workingCopyDirectory.revision", revision );
+            project.getProperties().setProperty( "workingCopyDirectory.fileNameSafeRevision", fileNameSafeRevision );
             if ( verbose ) {
-                getLog().info( "${" + repositoryPropertyName + "} is set to \"" + repository + '\"' );
-                getLog().info( "${" + pathPropertyName + "} is set to \"" + path + '\"' );
-                getLog().info( "${" + revisionPropertyName + "} is set to \"" + revision + '\"' );
-                getLog().info( "${" + fileNameSafeRevisionPropertyName + "} is set to \"" + fileNameSafeRevision + '\"' );
+                getLog().info( "${workingCopyDirectory.repository} is set to \"" + repository + '\"' );
+                getLog().info( "${workingCopyDirectory.path} is set to \"" + path + '\"' );
+                getLog().info( "${workingCopyDirectory.revision} is set to \"" + revision + '\"' );
+                getLog().info( "${workingCopyDirectory.fileNameSafeRevision} is set to \"" + fileNameSafeRevision + '\"' );
             }
         } catch ( SVNException e ) {
             throw new MojoExecutionException( e.getMessage(), e );

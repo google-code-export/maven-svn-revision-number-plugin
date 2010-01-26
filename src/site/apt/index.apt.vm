@@ -10,8 +10,8 @@ ${project.name}
 
 * Goals Overview
 
-  * {{{revision-mojo.html}${project.artifactId}:release}} Retrieves the status and revision number of the Subversion
-    working copy directory.
+  * {{{revision-mojo.html}${project.artifactId}:release}} Retrieves the revision number and the status of the
+  Subversion working copy directory.
 
 * Using the plugin
 
@@ -35,6 +35,9 @@ ${project.name}
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <!-- put your configurations here -->
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -42,29 +45,50 @@ ${project.name}
 </project>
 ---
 
-* Configuring the working copy directory location
+* Configuration
 
   The location of the working copy directory is configured via <<<$\{workingCopyDirectory\}>>> property.
   The default value is the project's <<<$\{basedir\}>>>.
+
+  The amount of the information reported by the plugin is configured using the following properties:
+
+  * <<<$\{reportMixedRevisions\}>>> specifies whether to report
+  {{{http://svnbook.red-bean.com/nightly/en/svn.basic.in-action.html#svn.basic.in-action.mixedrevs}mixed revisions}}.
+  If set to <<<false>>> then only the maximum revision number will be reported.\
+  The reporting of mixed revisions is enabled by default.
+
+  * <<<$\{reportStatus\}>>> specifies whether to report the status information. If set to <<<false>>> then only the
+  revision number will be reported.\
+  The reporting of working copy status is enabled by default.
+
+  * <<<$\{reportUnversioned\}>>> specifies whether to report items that are not under version control.\
+  The reporting of unversioned items is enabled by default.
+
+  * <<<$\{reportIgnored\}>>> specifies whether to report
+  {{{http://svnbook.red-bean.com/nightly/en/svn.advanced.props.special.ignore.html}ignored items}}.\
+  The reporting of ignored items is disabled by default.
+
+  * <<<$\{reportOutOfDate\}>>> specifies whether to report out-of-date items. If this option is enabled then plugin
+  will have to check the remote repository for modifications.\
+  The reporting of out-of-date items is disabled by default.
+
+  []
 
 * Output properties
 
   The following properties will be available after running the <<<revision>>> goal:
 
-  * <<<$\{workingCopyDirectory.repository\}>>> will contain the remote repository root.\
-  The name of this output property can be configured via <<<$\{repositoryPropertyName\}>>>.
+  * <<<$\{workingCopyDirectory.repository\}>>> will contain the remote repository root.
 
   * <<<$\{workingCopyDirectory.path\}>>> will contain the path of the path of the working copy directory entry relative
-  to the root of the remote repository.\
-  The name of this output property can be configured via <<<$\{pathPropertyName\}>>>.
+  to the root of the remote repository.
 
-  * <<<$\{workingCopyDirectory.revision\}>>> will be set to the aggregated status and revision number of the working
-  copy directory.\
-  The name of this output property can be configured via <<<$\{revisionPropertyName\}>>>)
+  * <<<$\{workingCopyDirectory.revision\}>>> will contain the aggregated status and revision number of the working
+  copy directory using characters consistent with the output of the
+  {{{http://svnbook.red-bean.com/nightly/en/svn.ref.svn.c.status.html}svn status}} command.
 
-  * <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> will be set to the aggregated status and revision number of
-  the working copy directory but it will contain only characters allowed in the file names.\
-  The name of this output property can be configured via <<<$\{fileNameSafeRevisionPropertyName\}>>>)
+  * <<<$\{workingCopyDirectory.fileNameSafeRevision\}>>> will contain the aggregated status and revision number of
+  the working copy directory using only characters allowed in the file names.
 
   []
 
