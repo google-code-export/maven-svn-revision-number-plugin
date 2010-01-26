@@ -80,7 +80,7 @@ ${project.name}
 
   * <<<$\{workingCopyDirectory.repository\}>>> will contain the remote repository root.
 
-  * <<<$\{workingCopyDirectory.path\}>>> will contain the path of the path of the working copy directory entry relative
+  * <<<$\{workingCopyDirectory.path\}>>> will contain the path of the working copy directory entry relative
   to the root of the remote repository.
 
   * <<<$\{workingCopyDirectory.revision\}>>> will contain the aggregated status and revision number of the working
