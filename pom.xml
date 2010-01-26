@@ -4,7 +4,7 @@
 
     <groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
     <artifactId>maven-svn-revision-number-plugin</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <packaging>maven-plugin</packaging>
 
     <name>Maven SVN Revision Number Plugin</name>
@@ -30,9 +30,9 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</connection>
-        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</developerConnection>
-        <url>http://code.google.com/p/maven-svn-revision-number-plugin/source/browse</url>
+        <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/tags/maven-svn-revision-number-plugin-1.2</connection>
+        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/tags/maven-svn-revision-number-plugin-1.2</developerConnection>
+        <url>http://code.google.com/p/maven-svn-revision-number-plugin/source/browse/tags/maven-svn-revision-number-plugin-1.2</url>
     </scm>
 
     <issueManagement>
