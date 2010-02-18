@@ -10,7 +10,7 @@ ${project.name}
 
 * Goals Overview
 
-  * {{{revision-mojo.html}${project.artifactId}:release}} Retrieves the revision number and the status of the
+  * {{{./revision-mojo.html}${project.artifactId}:release}} Retrieves the revision number and the status of the
   Subversion working copy directory.
 
 * Using the plugin
