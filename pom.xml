@@ -168,7 +168,9 @@
                         <configuration>
                             <projectsDirectory>src/it</projectsDirectory>
                             <pomIncludes>
-                                <pomInclude>**/pom.xml</pomInclude>
+                                <!--todo re-enable all it-->
+                                <!--<pomInclude>**/pom.xml</pomInclude>-->
+                                <pomInclude>normal-it/pom.xml</pomInclude>
                             </pomIncludes>
                             <settingsFile>src/it/settings.xml</settingsFile>
                             <localRepositoryPath>${project.build.directory}/local-repository</localRepositoryPath>

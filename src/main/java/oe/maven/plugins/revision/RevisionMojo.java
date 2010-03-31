@@ -29,8 +29,10 @@
 
 package oe.maven.plugins.revision;
 
-import java.io.File;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -49,7 +51,6 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.tmatesoft.svn.core.wc.SVNStatusClient;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 /**
  * Retrieves the revision number and the status of the Subversion working copy directory.
@@ -75,295 +76,328 @@ public class RevisionMojo extends AbstractMojo {
      */
     private MavenProject project;
 
-
     /**
-     * The Subversion working copy directory.
-     * The plugin will evaluate the aggregated status and revision number of this directory and its contents.
+     * The list of entries to inspect.
+     * <p/>
+     * todo describe entry configuration
      *
-     * @parameter expression="${workingCopyDirectory}" default-value="${basedir}"
+     * @parameter
      * @required
      */
-    private File workingCopyDirectory;
-
-
-    /**
-     * Whether to report the mixed revisions information. If set to {@code false} then only the maximum revision number
-     * will be reported.
-     *
-     * @parameter expression="${reportMixedRevisions}" default-value="true"
-     */
-    private boolean reportMixedRevisions;
+    private Entry[] entries;
 
     /**
-     * Whether to report the status information. If set to {@code false} then only the revision number will be
-     * reported.
+     * Specifies whether the plugin runs in verbose mode.
      *
-     * @parameter expression="${reportStatus}" default-value="true"
-     */
-    private boolean reportStatus;
-
-    /**
-     * Whether to collect the status information on items that are not under version control.
-     *
-     * @parameter expression="${reportUnversioned}" default-value="true"
-     */
-    private boolean reportUnversioned;
-
-    /**
-     * Whether to collect the status information on items that were set to be ignored.
-     *
-     * @parameter expression="${reportIgnored}" default-value="false"
-     */
-    private boolean reportIgnored;
-
-    /**
-     * Whether to check the remote repository and report if the local items are out-of-date.
-     *
-     * @parameter expression="${reportOutOfDate}" default-value="false"
-     */
-    private boolean reportOutOfDate;
-
-
-    /**
-     * Provides detailed messages while this goal is running.
-     *
-     * @parameter expression="${verbose}" default-value="false"
+     * @parameter
      */
     private boolean verbose;
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if ( verbose ) {
-            getLog().info( "${workingCopyDirectory}: " + workingCopyDirectory );
-            getLog().info( "report mixed revisions: " + reportMixedRevisions );
-            getLog().info( "report status: " + reportStatus );
-            getLog().info( "report unversioned: " + reportUnversioned );
-            getLog().info( "report ignored: " + reportIgnored );
-            getLog().info( "report out-of-date: " + reportOutOfDate );
+        SVNStatusClient statusClient = SVNClientManager.newInstance().getStatusClient();
+
+        for ( Entry entry : entries ) {
+            Map<String, Object> entryProperties = getEntryProperties( entry, statusClient );
+            setProjectProperties( entry.getPrefix(), entryProperties );
         }
+    }
+
+    private Map<String, Object> getEntryProperties( Entry entry, SVNStatusClient statusClient ) throws MojoExecutionException {
+        entry.validate();
+
+        logInfo( "inspecting " + entry.getPath() );
+        logDebugInfo( "  properties prefix = " + entry.getPrefix() );
+        logDebugInfo( "  recursive = " + entry.isRecursive() );
+
+        boolean reportUnversioned = false; // todo from entry parameters
+        boolean reportIgnored = false; // todo from entry parameters
+        boolean reportOutOfDate = false; // todo from entry parameters
+
+        logDebugInfo( "  report unversioned = " + reportUnversioned );
+        logDebugInfo( "  report ignored = " + reportIgnored );
+        logDebugInfo( "  report out-of-date = " + reportOutOfDate );
+
+        SVNStatus svnStatus;
         try {
-            String repository;
-            String path;
-            String revision;
-            String fileNameSafeRevision;
-            if ( SVNWCUtil.isVersionedDirectory( workingCopyDirectory ) ) {
-                SVNClientManager clientManager = SVNClientManager.newInstance();
-                SVNStatusClient statusClient = clientManager.getStatusClient();
+            svnStatus = statusClient.doStatus( entry.getPath(), false );
+        } catch ( SVNException ignored ) {
+            // the entry path is not under version control
+            svnStatus = null;
+        }
 
-                SVNEntry entry = statusClient.doStatus( workingCopyDirectory, false ).getEntry();
-                repository = entry.getRepositoryRoot();
-                path = entry.getURL().substring( repository.length() );
-                if ( path.startsWith( "/" ) ) {
-                    path = path.substring( 1 );
-                }
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        if ( svnStatus == null ) {
+            logDebugInfo( " the path is not under version control" );
 
-                StatusCollector statusCollector = new StatusCollector();
-                statusClient.doStatus( workingCopyDirectory,
-                        SVNRevision.HEAD, SVNDepth.INFINITY,
+            properties.put( "repository", "" );
+            properties.put( "path", "" );
+            properties.put( "revision", -1L );
+            properties.put( "mixedRevisions", "false" );
+            properties.put( "committedRevision", -1L );
+            properties.put( "status", EntryStatusSymbols.DEFAULT.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
+            properties.put( "specialStatus", EntryStatusSymbols.SPECIAL.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
+        } else {
+            SVNEntry svnEntry = svnStatus.getEntry();
+            String repositoryRoot = svnEntry.getRepositoryRoot();
+            String repositoryPath = svnEntry.getURL().substring( repositoryRoot.length() );
+            if ( repositoryPath.startsWith( "/" ) ) {
+                repositoryPath = repositoryPath.substring( 1 );
+            }
+
+            EntryStatusHandler entryStatusHandler = new EntryStatusHandler();
+            try {
+                logDebugInfo( " collecting status information" );
+                statusClient.doStatus( entry.getPath(),
+                        SVNRevision.UNDEFINED, entry.isRecursive() ? SVNDepth.INFINITY : SVNDepth.EMPTY,
                         reportOutOfDate, true, reportIgnored, false,
-                        statusCollector,
+                        entryStatusHandler,
                         null );
-                revision = statusCollector.getStatus( StatusCharacters.STANDARD );
-                fileNameSafeRevision = statusCollector.getStatus( StatusCharacters.FILE_NAME_SAFE );
-            } else {
-                repository = "";
-                path = "";
-                revision = "unversioned";
-                fileNameSafeRevision = "unversioned";
+            } catch ( SVNException e ) {
+                throw new MojoExecutionException( e.getMessage(), e );
             }
-            project.getProperties().setProperty( "workingCopyDirectory.repository", repository );
-            project.getProperties().setProperty( "workingCopyDirectory.path", path );
-            project.getProperties().setProperty( "workingCopyDirectory.revision", revision );
-            project.getProperties().setProperty( "workingCopyDirectory.fileNameSafeRevision", fileNameSafeRevision );
-            if ( verbose ) {
-                getLog().info( "${workingCopyDirectory.repository} is set to \"" + repository + '\"' );
-                getLog().info( "${workingCopyDirectory.path} is set to \"" + path + '\"' );
-                getLog().info( "${workingCopyDirectory.revision} is set to \"" + revision + '\"' );
-                getLog().info( "${workingCopyDirectory.fileNameSafeRevision} is set to \"" + fileNameSafeRevision + '\"' );
-            }
-        } catch ( SVNException e ) {
-            throw new MojoExecutionException( e.getMessage(), e );
+
+            properties.put( "repository", repositoryRoot );
+            properties.put( "path", repositoryPath );
+            properties.put( "revision", entryStatusHandler.getMaximumRevisionNumber() );
+            properties.put( "mixedRevisions", entryStatusHandler.getMaximumRevisionNumber() != entryStatusHandler.getMinimumRevisionNumber() );
+            properties.put( "committedRevision", entryStatusHandler.getMaximumCommittedRevisionNumber() );
+            properties.put( "status", constructStatus( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.DEFAULT ) );
+            properties.put( "specialStatus", constructStatus( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.SPECIAL ) );
+        }
+        return properties;
+    }
+
+    private String constructStatus( Entry entry, Set<SVNStatusType> localStatusTypes, Set<SVNStatusType> remoteStatusTypes, EntryStatusSymbols symbols ) {
+        StringBuilder status = new StringBuilder();
+
+        localStatusTypes.remove( SVNStatusType.STATUS_NONE );
+        localStatusTypes.remove( SVNStatusType.STATUS_NORMAL );
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_ADDED ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_CONFLICTED ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_CONFLICTED ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_DELETED ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_DELETED ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_IGNORED ) && entry.reportIgnored() ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_IGNORED ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_MODIFIED ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_MODIFIED ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_REPLACED ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_EXTERNAL ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_EXTERNAL ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_UNVERSIONED ) && entry.reportUnversioned() ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_MISSING ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_INCOMPLETE ) );
+        }
+        if ( localStatusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
+            status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_OBSTRUCTED ) );
+        }
+        if ( !localStatusTypes.isEmpty() ) {
+            // future proofing
+            logWarning( "the following svn statuses are not taken into account: " + localStatusTypes );
+        }
+
+        remoteStatusTypes.remove( SVNStatusType.STATUS_NONE );
+        if ( !remoteStatusTypes.isEmpty() && entry.reportOutOfDate() ) {
+            status.append( symbols.getOutOfDateSymbol() );
+        }
+
+        return status.toString();
+    }
+
+
+    private void setProjectProperties( String prefix, Map<String, Object> entryProperties ) {
+        logDebugInfo( " setting properties" );
+        for ( Map.Entry<String, Object> entryProperty : entryProperties.entrySet() ) {
+            setProjectProperty( prefix + '.' + entryProperty.getKey(), String.valueOf( entryProperty.getValue() ) );
+        }
+    }
+
+    private void setProjectProperty( String name, String value ) {
+        Properties projectProperties = project.getProperties();
+        if ( projectProperties.getProperty( name ) != null ) {
+            logWarning( "the \"" + name + "\" property is already defined, its value will be overwritten. Consider another value for the entry properties prefix." );
+        }
+        projectProperties.setProperty( name, value );
+        logDebugInfo( "  " + name + " = " + value );
+    }
+
+
+    private void logInfo( CharSequence message ) {
+        if ( getLog().isInfoEnabled() ) {
+            getLog().info( message );
+        }
+    }
+
+    private void logWarning( CharSequence message ) {
+        if ( getLog().isWarnEnabled() ) {
+            getLog().warn( message );
+        }
+    }
+
+    private void logDebugInfo( CharSequence message ) {
+        if ( verbose ) {
+            getLog().info( message );
+        } else if ( getLog().isDebugEnabled() ) {
+            getLog().debug( message );
+        }
+    }
+
+    private void logDebug( CharSequence message ) {
+        if ( getLog().isDebugEnabled() ) {
+            getLog().debug( message );
         }
     }
 
 
-    private final class StatusCollector implements ISVNStatusHandler {
+    /** todo write javadoc for EntryStatusCollector. */
+    private final class EntryStatusHandler implements ISVNStatusHandler {
 
         private long maximumRevisionNumber;
 
         private long minimumRevisionNumber;
 
-        private Set<SVNStatusType> localStatusTypes;
 
-        private boolean remoteChanges;
+        private long maximumCommittedRevisionNumber;
 
-        private StatusCollector() {
+        private long minimumCommittedRevisionNumber;
+
+
+        private final Set<SVNStatusType> localStatusTypes;
+
+        private final Set<SVNStatusType> remoteStatusTypes;
+
+
+        private EntryStatusHandler() {
             maximumRevisionNumber = Long.MIN_VALUE;
             minimumRevisionNumber = Long.MAX_VALUE;
+
+            maximumCommittedRevisionNumber = Long.MIN_VALUE;
+            minimumCommittedRevisionNumber = Long.MAX_VALUE;
+
             localStatusTypes = new HashSet<SVNStatusType>();
+            remoteStatusTypes = new HashSet<SVNStatusType>();
         }
+
 
         public void handleStatus( SVNStatus status ) {
-            SVNStatusType contentsStatusType = status.getContentsStatus();
-            localStatusTypes.add( contentsStatusType );
             long revisionNumber = status.getRevision().getNumber();
-            if ( revisionNumber >= 0L ) {
+            if ( SVNRevision.isValidRevisionNumber( revisionNumber ) ) {
                 maximumRevisionNumber = Math.max( maximumRevisionNumber, revisionNumber );
-            }
-            if ( revisionNumber > 0L ) {
                 minimumRevisionNumber = Math.min( minimumRevisionNumber, revisionNumber );
             }
+            long committedRevisionNumber = status.getCommittedRevision().getNumber();
+            if ( SVNRevision.isValidRevisionNumber( committedRevisionNumber ) ) {
+                maximumCommittedRevisionNumber = Math.max( maximumCommittedRevisionNumber, committedRevisionNumber );
+                minimumCommittedRevisionNumber = Math.min( minimumCommittedRevisionNumber, committedRevisionNumber );
+            }
+
+            SVNStatusType contentsStatusType = status.getContentsStatus();
+            localStatusTypes.add( contentsStatusType );
+
             SVNStatusType propertiesStatusType = status.getPropertiesStatus();
             localStatusTypes.add( propertiesStatusType );
-            boolean remoteStatusTypes = !SVNStatusType.STATUS_NONE.equals( status.getRemotePropertiesStatus() )
-                    || !SVNStatusType.STATUS_NONE.equals( status.getRemoteContentsStatus() );
-            remoteChanges = remoteChanges || remoteStatusTypes;
-            if ( verbose ) {
-                StringBuilder buffer = new StringBuilder();
-                buffer.append( status.getContentsStatus().getCode() ).append( status.getPropertiesStatus().getCode() );
-                buffer.append( remoteStatusTypes ? '*' : ' ' );
-                buffer.append( ' ' ).append( String.format( "%6d", status.getRevision().getNumber() ) );
-                buffer.append( ' ' ).append( status.getFile() );
-                getLog().info( buffer.toString() );
-            }
+
+            SVNStatusType remoteContentsStatusType = status.getRemoteContentsStatus();
+            remoteStatusTypes.add( remoteContentsStatusType );
+            SVNStatusType remotePropertiesStatusType = status.getRemotePropertiesStatus();
+            remoteStatusTypes.add( remotePropertiesStatusType );
+
+            boolean entryOutOfDate = !SVNStatusType.STATUS_NONE.equals( remoteContentsStatusType )
+                    || !SVNStatusType.STATUS_NONE.equals( remotePropertiesStatusType );
+
+            StringBuilder buffer = new StringBuilder();
+            buffer.append( "  " );
+            buffer.append( contentsStatusType.getCode() ).append( propertiesStatusType.getCode() );
+            buffer.append( entryOutOfDate ? '*' : ' ' );
+            buffer.append( ' ' ).append( String.format( "%6d", revisionNumber ) );
+            buffer.append( ' ' ).append( String.format( "%6d", committedRevisionNumber ) );
+            buffer.append( ' ' ).append( status.getFile() );
+            logDebugInfo( buffer.toString() );
         }
 
-        public String getStatus( StatusCharacters statusCharacters ) {
-            Set<SVNStatusType> tempStatusTypes = new HashSet<SVNStatusType>( localStatusTypes );
-            StringBuilder result = new StringBuilder();
-            if ( maximumRevisionNumber != Long.MIN_VALUE ) {
-                result.append( 'r' ).append( maximumRevisionNumber );
-                if ( minimumRevisionNumber != maximumRevisionNumber && reportMixedRevisions ) {
-                    result.append( '-' ).append( 'r' ).append( minimumRevisionNumber );
-                }
-            }
-            if ( reportStatus ) {
-                tempStatusTypes.remove( SVNStatusType.STATUS_NONE );
-                tempStatusTypes.remove( SVNStatusType.STATUS_NORMAL );
-                if ( !tempStatusTypes.isEmpty() ) {
-                    result.append( statusCharacters.separator );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MODIFIED ) ) {
-                    result.append( statusCharacters.modified );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
-                    result.append( statusCharacters.added );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_DELETED ) ) {
-                    result.append( statusCharacters.deleted );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_UNVERSIONED ) && reportUnversioned ) {
-                    result.append( statusCharacters.unversioned );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_MISSING ) ) {
-                    result.append( statusCharacters.missing );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_REPLACED ) ) {
-                    result.append( statusCharacters.replaced );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_CONFLICTED ) ) {
-                    result.append( statusCharacters.conflicted );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
-                    result.append( statusCharacters.obstructed );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_IGNORED ) && reportIgnored ) {
-                    result.append( statusCharacters.ignored );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_INCOMPLETE ) ) {
-                    result.append( statusCharacters.incomplete );
-                }
-                if ( tempStatusTypes.remove( SVNStatusType.STATUS_EXTERNAL ) ) {
-                    result.append( statusCharacters.external );
-                }
-                if ( !tempStatusTypes.isEmpty() ) {
-                    getLog().warn( "unprocessed svn statuses: " + tempStatusTypes );
-                }
-                if ( remoteChanges && reportOutOfDate ) {
-                    result.append( statusCharacters.outOfDate );
-                }
-            }
-            return result.toString();
+
+        public long getMaximumRevisionNumber() {
+            return maximumRevisionNumber == Long.MIN_VALUE ? -1L : maximumRevisionNumber;
+        }
+
+        public long getMinimumRevisionNumber() {
+            return maximumRevisionNumber == Long.MAX_VALUE ? -1L : maximumRevisionNumber;
+        }
+
+
+        public long getMaximumCommittedRevisionNumber() {
+            return maximumCommittedRevisionNumber == Long.MIN_VALUE ? -1L : maximumCommittedRevisionNumber;
+        }
+
+        public long getMinimumCommittedRevisionNumber() {
+            return minimumCommittedRevisionNumber == Long.MAX_VALUE ? -1L : minimumCommittedRevisionNumber;
+        }
+
+        public Set<SVNStatusType> getLocalStatusTypes() {
+            Set<SVNStatusType> result = new HashSet<SVNStatusType>( localStatusTypes );
+            result.remove( SVNStatusType.STATUS_NONE );
+            result.remove( SVNStatusType.STATUS_NORMAL );
+            return result;
+        }
+
+        public Set<SVNStatusType> getRemoteStatusTypes() {
+            Set<SVNStatusType> result = new HashSet<SVNStatusType>( remoteStatusTypes );
+            result.remove( SVNStatusType.STATUS_NONE );
+            return result;
         }
 
     }
 
-    private static final class StatusCharacters {
+    private static class EntryStatusSymbols {
 
-        public static final StatusCharacters STANDARD = new StatusCharacters(
-                ' ',
-                SVNStatusType.STATUS_MODIFIED.getCode(),
-                SVNStatusType.STATUS_ADDED.getCode(),
-                SVNStatusType.STATUS_DELETED.getCode(),
-                SVNStatusType.STATUS_UNVERSIONED.getCode(),
-                SVNStatusType.STATUS_MISSING.getCode(),
-                SVNStatusType.STATUS_REPLACED.getCode(),
-                SVNStatusType.STATUS_CONFLICTED.getCode(),
-                SVNStatusType.STATUS_OBSTRUCTED.getCode(),
-                SVNStatusType.STATUS_IGNORED.getCode(),
-                SVNStatusType.STATUS_INCOMPLETE.getCode(),
-                SVNStatusType.STATUS_EXTERNAL.getCode(),
-                '*'
-        );
+        public static final EntryStatusSymbols DEFAULT = new EntryStatusSymbols();
 
-        public static final StatusCharacters FILE_NAME_SAFE = new StatusCharacters(
-                '-',
-                SVNStatusType.STATUS_MODIFIED.getCode(),
-                SVNStatusType.STATUS_ADDED.getCode(),
-                SVNStatusType.STATUS_DELETED.getCode(),
-                'u', // SVNStatusType.STATUS_UNVERSIONED.getCode(),
-                'm', // SVNStatusType.STATUS_MISSING.getCode(),
-                SVNStatusType.STATUS_REPLACED.getCode(),
-                SVNStatusType.STATUS_CONFLICTED.getCode(),
-                'o', // SVNStatusType.STATUS_OBSTRUCTED.getCode(),
-                SVNStatusType.STATUS_IGNORED.getCode(),
-                'i', // SVNStatusType.STATUS_INCOMPLETE.getCode(),
-                SVNStatusType.STATUS_EXTERNAL.getCode(),
-                'd'
-        );
+        public static final EntryStatusSymbols SPECIAL = new EntryStatusSymbols() {
+            @Override
+            public char getStatusSymbol( SVNStatusType svnStatusType ) {
+                if ( SVNStatusType.STATUS_UNVERSIONED.equals( svnStatusType ) ) {
+                    return 'u';
+                } else if ( SVNStatusType.STATUS_MISSING.equals( svnStatusType ) ) {
+                    return 'm';
+                } else if ( SVNStatusType.STATUS_INCOMPLETE.equals( svnStatusType ) ) {
+                    return 'i';
+                } else if ( SVNStatusType.STATUS_OBSTRUCTED.equals( svnStatusType ) ) {
+                    return 'o';
+                } else {
+                    return super.getStatusSymbol( svnStatusType );
+                }
+            }
 
+            @Override
+            public char getOutOfDateSymbol() {
+                return 'd';
+            }
+        };
 
-        public final char separator;
+        private EntryStatusSymbols() {
+        }
 
-        public final char modified;
+        public char getStatusSymbol( SVNStatusType svnStatusType ) {
+            return svnStatusType.getCode();
+        }
 
-        public final char added;
-
-        public final char deleted;
-
-        public final char unversioned;
-
-        public final char missing;
-
-        public final char replaced;
-
-        public final char conflicted;
-
-        public final char obstructed;
-
-        public final char ignored;
-
-        public final char incomplete;
-
-        public final char external;
-
-        public final char outOfDate;
-
-
-        private StatusCharacters( char separator, char modified, char added, char deleted, char unversioned, char missing, char replaced, char conflicted, char obstructed, char ignored, char incomplete, char external, char outOfDate ) {
-            this.separator = separator;
-            this.modified = modified;
-            this.added = added;
-            this.deleted = deleted;
-            this.unversioned = unversioned;
-            this.missing = missing;
-            this.replaced = replaced;
-            this.conflicted = conflicted;
-            this.obstructed = obstructed;
-            this.ignored = ignored;
-            this.incomplete = incomplete;
-            this.external = external;
-            this.outOfDate = outOfDate;
+        public char getOutOfDateSymbol() {
+            return '*';
         }
 
     }
