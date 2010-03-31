@@ -53,7 +53,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusClient;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
 
 /**
- * Retrieves the revision number and the status of the Subversion working copy directory.
+ * Retrieves the status and revision number of a file or a directory under Subversion version control.
  *
  * @goal revision
  * @phase initialize
@@ -77,9 +77,22 @@ public class RevisionMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
-     * The list of entries to inspect.
+     * Specifies the list of entries to inspect. Each entry has a separate configuration consisting of local path,
+     * report options and prefix for the output properties.
      * <p/>
-     * todo describe entry configuration
+     * Example:
+     * <pre>
+     * &lt;entries&gt;
+     *   &lt;entry&gt;
+     *     &lt;path&gt;path&lt;path&gt;
+     *     &lt;prefix&gt;prefix&lt;prefix&gt;
+     *     &lt;recursive&gt;true&lt;recursive&gt;
+     *     &lt;reportUnversioned&gt;false&lt;reportUnversioned&gt;
+     *     &lt;reportIgnored&gt;false&lt;reportIgnored&gt;
+     *     &lt;reportOutOfDate&gt;false&lt;reportOutOfDate&gt;
+     *   &lt;entry&gt;
+     * &lt;entries&gt;
+     * </pre>
      *
      * @parameter
      * @required
@@ -87,7 +100,7 @@ public class RevisionMojo extends AbstractMojo {
     private Entry[] entries;
 
     /**
-     * Specifies whether the plugin runs in verbose mode.
+     * Specifies whether the goal runs in verbose mode.
      *
      * @parameter
      */
@@ -109,14 +122,9 @@ public class RevisionMojo extends AbstractMojo {
         logInfo( "inspecting " + entry.getPath() );
         logDebugInfo( "  properties prefix = " + entry.getPrefix() );
         logDebugInfo( "  recursive = " + entry.isRecursive() );
-
-        boolean reportUnversioned = false; // todo from entry parameters
-        boolean reportIgnored = false; // todo from entry parameters
-        boolean reportOutOfDate = false; // todo from entry parameters
-
-        logDebugInfo( "  report unversioned = " + reportUnversioned );
-        logDebugInfo( "  report ignored = " + reportIgnored );
-        logDebugInfo( "  report out-of-date = " + reportOutOfDate );
+        logDebugInfo( "  report unversioned = " + entry.reportUnversioned() );
+        logDebugInfo( "  report ignored = " + entry.reportIgnored() );
+        logDebugInfo( "  report out-of-date = " + entry.reportOutOfDate() );
 
         SVNStatus svnStatus;
         try {
@@ -150,7 +158,7 @@ public class RevisionMojo extends AbstractMojo {
                 logDebugInfo( " collecting status information" );
                 statusClient.doStatus( entry.getPath(),
                         SVNRevision.UNDEFINED, entry.isRecursive() ? SVNDepth.INFINITY : SVNDepth.EMPTY,
-                        reportOutOfDate, true, reportIgnored, false,
+                        entry.reportOutOfDate(), true, entry.reportIgnored(), false,
                         entryStatusHandler,
                         null );
             } catch ( SVNException e ) {
@@ -257,14 +265,7 @@ public class RevisionMojo extends AbstractMojo {
         }
     }
 
-    private void logDebug( CharSequence message ) {
-        if ( getLog().isDebugEnabled() ) {
-            getLog().debug( message );
-        }
-    }
 
-
-    /** todo write javadoc for EntryStatusCollector. */
     private final class EntryStatusHandler implements ISVNStatusHandler {
 
         private long maximumRevisionNumber;
@@ -273,8 +274,6 @@ public class RevisionMojo extends AbstractMojo {
 
 
         private long maximumCommittedRevisionNumber;
-
-        private long minimumCommittedRevisionNumber;
 
 
         private final Set<SVNStatusType> localStatusTypes;
@@ -287,7 +286,6 @@ public class RevisionMojo extends AbstractMojo {
             minimumRevisionNumber = Long.MAX_VALUE;
 
             maximumCommittedRevisionNumber = Long.MIN_VALUE;
-            minimumCommittedRevisionNumber = Long.MAX_VALUE;
 
             localStatusTypes = new HashSet<SVNStatusType>();
             remoteStatusTypes = new HashSet<SVNStatusType>();
@@ -303,7 +301,6 @@ public class RevisionMojo extends AbstractMojo {
             long committedRevisionNumber = status.getCommittedRevision().getNumber();
             if ( SVNRevision.isValidRevisionNumber( committedRevisionNumber ) ) {
                 maximumCommittedRevisionNumber = Math.max( maximumCommittedRevisionNumber, committedRevisionNumber );
-                minimumCommittedRevisionNumber = Math.min( minimumCommittedRevisionNumber, committedRevisionNumber );
             }
 
             SVNStatusType contentsStatusType = status.getContentsStatus();
@@ -344,21 +341,13 @@ public class RevisionMojo extends AbstractMojo {
             return maximumCommittedRevisionNumber == Long.MIN_VALUE ? -1L : maximumCommittedRevisionNumber;
         }
 
-        public long getMinimumCommittedRevisionNumber() {
-            return minimumCommittedRevisionNumber == Long.MAX_VALUE ? -1L : minimumCommittedRevisionNumber;
-        }
 
         public Set<SVNStatusType> getLocalStatusTypes() {
-            Set<SVNStatusType> result = new HashSet<SVNStatusType>( localStatusTypes );
-            result.remove( SVNStatusType.STATUS_NONE );
-            result.remove( SVNStatusType.STATUS_NORMAL );
-            return result;
+            return new HashSet<SVNStatusType>( localStatusTypes );
         }
 
         public Set<SVNStatusType> getRemoteStatusTypes() {
-            Set<SVNStatusType> result = new HashSet<SVNStatusType>( remoteStatusTypes );
-            result.remove( SVNStatusType.STATUS_NONE );
-            return result;
+            return new HashSet<SVNStatusType>( remoteStatusTypes );
         }
 
     }
@@ -389,8 +378,10 @@ public class RevisionMojo extends AbstractMojo {
             }
         };
 
+
         private EntryStatusSymbols() {
         }
+
 
         public char getStatusSymbol( SVNStatusType svnStatusType ) {
             return svnStatusType.getCode();
