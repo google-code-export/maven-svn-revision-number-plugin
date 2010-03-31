@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.google.code.maven-svn-revision-number-plugin.it</groupId>
-    <artifactId>properties-it</artifactId>
+    <artifactId>modified-properties-it</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

@@ -5,7 +5,7 @@ try {
     Properties properties = IntegrationTestHelper.loadProperties( basedir, "target/classes/revision.txt" );
 
     boolean result = true;
-    if ( !properties.getProperty( "path1", "#missing" ).equals( "trunk/src/it/normal-it/src" ) ) {
+    if ( !properties.getProperty( "path1", "#missing" ).equals( "trunk/src/it/multiple-entries-it/src/main" ) ) {
         System.out.println( "wrong path1: " + properties.getProperty( "path1" ) );
         result = false;
     }
@@ -30,7 +30,7 @@ try {
         result = false;
     }
 
-    if ( !properties.getProperty( "path2", "#missing" ).equals( "trunk/src/it/normal-it/src" ) ) {
+    if ( !properties.getProperty( "path2", "#missing" ).equals( "trunk/src/it/multiple-entries-it/src/test" ) ) {
         System.out.println( "wrong path2: " + properties.getProperty( "path2" ) );
         result = false;
     }
