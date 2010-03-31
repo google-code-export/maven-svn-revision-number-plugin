@@ -1,0 +1,61 @@
+import java.util.Properties;
+import oe.maven.plugins.revision.IntegrationTestHelper;
+
+try {
+    Properties properties = IntegrationTestHelper.loadProperties( basedir, "target/classes/revision.txt" );
+
+    boolean result = true;
+    if ( !properties.getProperty( "path1", "#missing" ).equals( "trunk/src/it/entries-dir-dir/src/main" ) ) {
+        System.out.println( "wrong path1: " + properties.getProperty( "path1" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "revision1", "#missing" ).matches( "\\d+" ) ) {
+        System.out.println( "wrong revision1: " + properties.getProperty( "revision1" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "mixedRevisions1", "#missing" ).equals( "false" ) ) {
+        System.out.println( "wrong mixedRevisions1: " + properties.getProperty( "mixedRevisions1" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "committedRevision1", "#missing" ).matches( "\\d+" ) ) {
+        System.out.println( "wrong committedRevision1: " + properties.getProperty( "committedRevision1" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "status1", "#missing" ).isEmpty() ) {
+        System.out.println( "wrong status1: " + properties.getProperty( "status1" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "specialStatus1", "#missing" ).isEmpty() ) {
+        System.out.println( "wrong specialStatus1: " + properties.getProperty( "specialStatus1" ) );
+        result = false;
+    }
+
+    if ( !properties.getProperty( "path2", "#missing" ).equals( "trunk/src/it/entries-dir-dir/src/test" ) ) {
+        System.out.println( "wrong path2: " + properties.getProperty( "path2" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "revision2", "#missing" ).matches( "\\d+" ) ) {
+        System.out.println( "wrong revision2: " + properties.getProperty( "revision2" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "mixedRevisions2", "#missing" ).equals( "false" ) ) {
+        System.out.println( "wrong mixedRevisions2: " + properties.getProperty( "mixedRevisions2" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "committedRevision2", "#missing" ).matches( "\\d+" ) ) {
+        System.out.println( "wrong committedRevision2: " + properties.getProperty( "committedRevision2" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "status2", "#missing" ).isEmpty() ) {
+        System.out.println( "wrong status2: " + properties.getProperty( "status2" ) );
+        result = false;
+    }
+    if ( !properties.getProperty( "specialStatus2", "#missing" ).isEmpty() ) {
+        System.out.println( "wrong specialStatus2: " + properties.getProperty( "specialStatus2" ) );
+        result = false;
+    }
+    return result;
+} catch ( Throwable t ) {
+    t.printStackTrace();
+    return false;
+}
