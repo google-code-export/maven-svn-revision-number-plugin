@@ -336,7 +336,7 @@ public class RevisionMojo extends AbstractMojo {
         }
 
         public long getMinimumRevisionNumber() {
-            return maximumRevisionNumber == Long.MAX_VALUE ? -1L : maximumRevisionNumber;
+            return minimumRevisionNumber == Long.MAX_VALUE ? -1L : minimumRevisionNumber;
         }
 
 
