@@ -26,9 +26,14 @@
                 <artifactId>maven-svn-revision-number-plugin</artifactId>
                 <version>@pom.version@</version>
                 <configuration>
-                    <workingCopyDirectory>src</workingCopyDirectory>
+                    <entries>
+                        <entry>
+                            <path>src</path>
+                            <prefix>prefix</prefix>
+                            <reportIgnored>true</reportIgnored>
+                        </entry>
+                    </entries>
                     <verbose>true</verbose>
-                    <reportIgnored>true</reportIgnored>
                 </configuration>
                 <executions>
                     <execution>

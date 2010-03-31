@@ -296,7 +296,9 @@ public class RevisionMojo extends AbstractMojo {
             long revisionNumber = status.getRevision().getNumber();
             if ( SVNRevision.isValidRevisionNumber( revisionNumber ) ) {
                 maximumRevisionNumber = Math.max( maximumRevisionNumber, revisionNumber );
-                minimumRevisionNumber = Math.min( minimumRevisionNumber, revisionNumber );
+                if ( revisionNumber != 0 ) {
+                    minimumRevisionNumber = Math.min( minimumRevisionNumber, revisionNumber );
+                }
             }
             long committedRevisionNumber = status.getCommittedRevision().getNumber();
             if ( SVNRevision.isValidRevisionNumber( committedRevisionNumber ) ) {

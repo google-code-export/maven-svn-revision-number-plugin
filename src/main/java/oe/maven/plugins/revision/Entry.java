@@ -22,7 +22,7 @@ public class Entry {
     private boolean recursive = true;
 
     /** Specifies whether to report items that are not under version control. */
-    private boolean reportUnversioned = false;
+    private boolean reportUnversioned = true;
 
     /** Specifies whether to report items that were set to be ignored. */
     private boolean reportIgnored = false;
