@@ -13,6 +13,10 @@
 
     <inceptionYear>2009</inceptionYear>
 
+    <organization>
+        <name>Oleg Estekhin</name>
+    </organization>
+
     <licenses>
         <license>
             <name>New BSD License</name>
