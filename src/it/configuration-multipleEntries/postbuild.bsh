@@ -30,7 +30,7 @@ try {
         result = false;
     }
 
-    if ( !properties.getProperty( "path2", "#missing" ).equals( "trunk/src/it/entries-dir-dir/src/test" ) ) {
+    if ( !properties.getProperty( "path2", "#missing" ).equals( "trunk/src/it/configuration-multipleEntries/src/test" ) ) {
         System.out.println( "wrong path2: " + properties.getProperty( "path2" ) );
         result = false;
     }
