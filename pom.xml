@@ -33,6 +33,16 @@
         </developer>
     </developers>
 
+    <mailingLists>
+        <mailingList>
+            <name>Mailing List</name>
+            <subscribe>maven-svn-revision-number-plugin+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>maven-svn-revision-number-plugin+unsubscribe@googlegroups.com</unsubscribe>
+            <post>maven-svn-revision-number-plugin@googlegroups.com</post>
+            <archive>http://groups.google.com/group/maven-svn-revision-number-plugin</archive>
+        </mailingList>
+    </mailingLists>
+
     <scm>
         <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</connection>
         <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</developerConnection>
@@ -147,8 +157,9 @@
                     <reportSet>
                         <reports>
                             <report>summary</report>
-                            <report>project-team</report>
                             <report>license</report>
+                            <report>project-team</report>
+                            <report>mailing-list</report>
                             <report>scm</report>
                             <report>issue-tracking</report>
                             <report>dependencies</report>
