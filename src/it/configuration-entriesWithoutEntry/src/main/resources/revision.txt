@@ -1,0 +1,7 @@
+repository = ${configuration-entriesWithoutEntry.repository}
+path = ${configuration-entriesWithoutEntry.path}
+revision = ${configuration-entriesWithoutEntry.revision}
+mixedRevisions = ${configuration-entriesWithoutEntry.mixedRevisions}
+committedRevision = ${configuration-entriesWithoutEntry.committedRevision}
+status = ${configuration-entriesWithoutEntry.status}
+specialStatus = ${configuration-entriesWithoutEntry.specialStatus}

@@ -31,6 +31,22 @@ public class Entry {
     private boolean reportOutOfDate = false;
 
 
+    /** Creates a new {@code Entry} object. */
+    public Entry() {
+    }
+
+    /**
+     * Creates a new {@code Entry} object with the specified path and properties prefix.
+     *
+     * @param path the local path
+     * @param prefix the properties prefix
+     */
+    public Entry( File path, String prefix ) {
+        this.path = path;
+        this.prefix = prefix;
+    }
+
+
     /**
      * Returns the entry local path.
      *
@@ -41,12 +57,30 @@ public class Entry {
     }
 
     /**
+     * Sets the entry local path.
+     *
+     * @param path the new local path
+     */
+    public void setPath( File path ) {
+        this.path = path;
+    }
+
+    /**
      * Returns the prefix for entry properties.
      *
      * @return the properties prefix
      */
     public String getPrefix() {
         return prefix;
+    }
+
+    /**
+     * Sets the the prefix for entry properties.
+     *
+     * @param prefix the new properties prefix
+     */
+    public void setPrefix( String prefix ) {
+        this.prefix = prefix;
     }
 
     /**

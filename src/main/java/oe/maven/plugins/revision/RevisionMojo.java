@@ -93,9 +93,11 @@ public class RevisionMojo extends AbstractMojo {
      *   &lt;entry&gt;
      * &lt;entries&gt;
      * </pre>
+     * <p/>
+     * If entries configuration is not specified then the goal will operate on the default entry with entry path equal
+     * to the project basedir and properties prefix equal to the project artifactId.
      *
      * @parameter
-     * @required
      */
     private Entry[] entries;
 
@@ -108,17 +110,35 @@ public class RevisionMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if ( entries == null ) {
+            logDebug( "entries configuration is not specified, creating default entry" );
+            // defaulting to the path = project.basedir, prefix = project.artifactId, recursive, reporting unversioned
+            entries = new Entry[] {
+                    new Entry( project.getBasedir(), project.getArtifactId() ),
+            };
+        } else if ( entries.length == 0 ) {
+            // does not happen?
+            throw new MojoExecutionException( "entries list is empty" );
+        }
+
         SVNStatusClient statusClient = SVNClientManager.newInstance().getStatusClient();
 
         for ( Entry entry : entries ) {
+            if ( entry.getPath() == null ) {
+                logDebug( "entry path is not specified, using project.basedir: " + project.getBasedir() );
+                entry.setPath( project.getBasedir() );
+            }
+            if ( entry.getPrefix() == null ) {
+                logDebug( "entry properties prefix is not specified, using project.artifactId: " + project.getArtifactId() );
+                entry.setPrefix( project.getArtifactId() );
+            }
+            entry.validate();
             Map<String, Object> entryProperties = getEntryProperties( entry, statusClient );
             setProjectProperties( entry.getPrefix(), entryProperties );
         }
     }
 
     private Map<String, Object> getEntryProperties( Entry entry, SVNStatusClient statusClient ) throws MojoExecutionException {
-        entry.validate();
-
         logInfo( "inspecting " + entry.getPath() );
         logDebugInfo( "  properties prefix = " + entry.getPrefix() );
         logDebugInfo( "  recursive = " + entry.isRecursive() );
@@ -168,7 +188,7 @@ public class RevisionMojo extends AbstractMojo {
             properties.put( "repository", repositoryRoot );
             properties.put( "path", repositoryPath );
             properties.put( "revision", entryStatusHandler.getMaximumRevisionNumber() );
-            properties.put( "mixedRevisions", entryStatusHandler.getMaximumRevisionNumber() != entryStatusHandler.getMinimumRevisionNumber() );
+            properties.put( "mixedRevisions", entryStatusHandler.isMixedRevisions() );
             properties.put( "committedRevision", entryStatusHandler.getMaximumCommittedRevisionNumber() );
             properties.put( "status", constructStatus( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.DEFAULT ) );
             properties.put( "specialStatus", constructStatus( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.SPECIAL ) );
@@ -265,6 +285,12 @@ public class RevisionMojo extends AbstractMojo {
         }
     }
 
+    private void logDebug( CharSequence message ) {
+        if ( getLog().isDebugEnabled() ) {
+            getLog().debug( message );
+        }
+    }
+
 
     private final class EntryStatusHandler implements ISVNStatusHandler {
 
@@ -336,6 +362,11 @@ public class RevisionMojo extends AbstractMojo {
 
         public long getMinimumRevisionNumber() {
             return minimumRevisionNumber == Long.MAX_VALUE ? -1L : minimumRevisionNumber;
+        }
+
+        public boolean isMixedRevisions() {
+            return getMaximumRevisionNumber() > 0L && getMinimumRevisionNumber() > 0L
+                    && getMaximumRevisionNumber() != getMinimumRevisionNumber();
         }
 
 
