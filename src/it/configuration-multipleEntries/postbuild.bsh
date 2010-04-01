@@ -5,7 +5,7 @@ try {
     Properties properties = IntegrationTestHelper.loadProperties( basedir, "target/classes/revision.txt" );
 
     boolean result = true;
-    if ( !properties.getProperty( "path1", "#missing" ).equals( "trunk/src/it/entries-dir-dir/src/main" ) ) {
+    if ( !properties.getProperty( "path1", "#missing" ).equals( "trunk/src/it/configuration-multipleEntries/src/main" ) ) {
         System.out.println( "wrong path1: " + properties.getProperty( "path1" ) );
         result = false;
     }
