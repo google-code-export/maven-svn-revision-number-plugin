@@ -21,11 +21,12 @@ try {
         System.out.println( "wrong committedRevision: " + properties.getProperty( "committedRevision" ) );
         result = false;
     }
-    if ( !properties.getProperty( "status", "#missing" ).isEmpty() ) {
+    // pom.xml will be modified and build.log will be unversioned
+    if ( !properties.getProperty( "status", "#missing" ).equals( "M?" ) ) {
         System.out.println( "wrong status: " + properties.getProperty( "status" ) );
         result = false;
     }
-    if ( !properties.getProperty( "specialStatus", "#missing" ).isEmpty() ) {
+    if ( !properties.getProperty( "specialStatus", "#missing" ).equals( "Mu" ) ) {
         System.out.println( "wrong specialStatus: " + properties.getProperty( "specialStatus" ) );
         result = false;
     }
