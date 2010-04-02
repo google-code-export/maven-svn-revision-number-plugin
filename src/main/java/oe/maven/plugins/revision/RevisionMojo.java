@@ -53,7 +53,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusClient;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
 
 /**
- * Retrieves the status and revision number of a file or a directory under Subversion version control.
+ * Retrieves retrieves the revision number and the status of a file or a directory under Subversion version control.
  *
  * @goal revision
  * @phase initialize
@@ -77,8 +77,8 @@ public class RevisionMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
-     * Specifies the list of entries to inspect. Each entry has a separate configuration consisting of local path,
-     * report options and prefix for the output properties.
+     * Specifies the list of entries to inspect. Each entry has a separate configuration consisting of the local path,
+     * report options and the prefix for the output properties.
      * <p/>
      * Example:
      * <pre>
@@ -119,7 +119,7 @@ public class RevisionMojo extends AbstractMojo {
         } else if ( entries.length == 0 ) {
             // does not happen with Maven 2.2.1
             // happens with Maven 3.0 alphas when <entries> is present but has no <entry>'s in it
-            // (configuration-entriesWithoutEntry it) 
+            // the configuration-entriesWithoutEntry it will fail on Maven 3.0 
             throw new MojoExecutionException( "entries list is empty" );
         }
 

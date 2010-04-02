@@ -19,7 +19,7 @@ ${project.name}
 
 * Using the plugin
 
-  General instructions on how to use the Plugin Name can be found on the {{{./usage.html}usage page}}. Some more
+  General instructions on how to use the ${project.name} can be found on the {{{./usage.html}usage page}}. Some more
   specific use cases are described in the examples given below.
 
   If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our

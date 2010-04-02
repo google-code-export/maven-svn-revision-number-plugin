@@ -86,8 +86,9 @@ Usage
   * <<<reportUnversioned>>> specifies whether to report items that are not under version control.\
   The default value is <<<true>>>.
 
-  * <<<reportIgnored>>> specifies whether to report items that were set to be ignored either in the global
-  Subversion configuration or in the <<<svn:ignore>>> property.\
+  * <<<reportIgnored>>> specifies whether to report items that were set to be
+  {{{http://svnbook.red-bean.com/nightly/en/svn.advanced.props.special.ignore.html}ignored}} either in the global
+  Subversion configuration or by the <<<svn:ignore>>> property.\
   The default value is <<<false>>>.
 
   * <<<reportOutOfDate>>> specifies whether to report items that are out of date. If this option is enabled then

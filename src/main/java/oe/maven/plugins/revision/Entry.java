@@ -110,8 +110,8 @@ public class Entry {
     /**
      * Specifies whether the status information should be collected recursively.
      *
-     * @return {@code true} if status information should be collected and aggregated both for entry path and all files
-     *         and directories below it; {@code false} is only the entry path itself should be inspected
+     * @return {@code true} if the status information should be collected both for the entry path and all files and
+     *         directories below it; {@code false} if only the entry path itself should be inspected
      */
     public boolean isRecursive() {
         return recursive;
@@ -148,7 +148,7 @@ public class Entry {
     /**
      * Validates the entry configuration.
      *
-     * @throws MojoExecutionException if entry configuration is invalid
+     * @throws MojoExecutionException if the entry configuration is invalid
      */
     public void validate() throws MojoExecutionException {
         if ( path == null ) {
