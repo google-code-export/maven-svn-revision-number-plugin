@@ -2,7 +2,7 @@
 <settings>
     <profiles>
         <profile>
-            <id>integration-test-repository</id>
+            <id>it-repository</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>

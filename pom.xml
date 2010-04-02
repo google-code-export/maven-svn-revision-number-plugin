@@ -225,7 +225,7 @@
                                 <pomInclude>**/pom.xml</pomInclude>
                             </pomIncludes>
                             <settingsFile>src/it/settings.xml</settingsFile>
-                            <localRepositoryPath>${project.build.directory}/local-repository</localRepositoryPath>
+                            <localRepositoryPath>${project.build.directory}/it-repository</localRepositoryPath>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                             <cloneAllFiles>true</cloneAllFiles>
                             <addTestClassPath>true</addTestClassPath>
