@@ -117,7 +117,9 @@ public class RevisionMojo extends AbstractMojo {
                     new Entry( project.getBasedir(), project.getArtifactId() ),
             };
         } else if ( entries.length == 0 ) {
-            // does not happen?
+            // does not happen with Maven 2.2.1
+            // happens with Maven 3.0 alphas when <entries> is present but has no <entry>'s in it
+            // (configuration-entriesWithoutEntry it) 
             throw new MojoExecutionException( "entries list is empty" );
         }
 
