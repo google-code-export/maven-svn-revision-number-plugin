@@ -86,7 +86,7 @@ public class RevisionMojo extends AbstractMojo {
      *   &lt;entry&gt;
      *     &lt;path&gt;path&lt;path&gt;
      *     &lt;prefix&gt;prefix&lt;prefix&gt;
-     *     &lt;recursive&gt;true&lt;recursive&gt;
+     *     &lt;depth&gt;infinity&lt;depth&gt;
      *     &lt;reportUnversioned&gt;false&lt;reportUnversioned&gt;
      *     &lt;reportIgnored&gt;false&lt;reportIgnored&gt;
      *     &lt;reportOutOfDate&gt;false&lt;reportOutOfDate&gt;
@@ -112,7 +112,7 @@ public class RevisionMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         if ( entries == null ) {
             logDebug( "entries configuration is not specified, creating default entry" );
-            // defaulting to the path = project.basedir, prefix = project.artifactId, recursive, reporting unversioned
+            // defaulting to the path = project.basedir, prefix = project.artifactId, depth = infinity, reporting unversioned
             entries = new Entry[] {
                     new Entry( project.getBasedir(), project.getArtifactId() ),
             };
@@ -143,7 +143,7 @@ public class RevisionMojo extends AbstractMojo {
     private Map<String, Object> getEntryProperties( Entry entry, SVNStatusClient statusClient ) throws MojoExecutionException {
         logInfo( "inspecting " + entry.getPath() );
         logDebugInfo( "  properties prefix = " + entry.getPrefix() );
-        logDebugInfo( "  recursive = " + entry.isRecursive() );
+        logDebugInfo( "  depth = " + entry.getDepth() );
         logDebugInfo( "  report unversioned = " + entry.reportUnversioned() );
         logDebugInfo( "  report ignored = " + entry.reportIgnored() );
         logDebugInfo( "  report out-of-date = " + entry.reportOutOfDate() );
@@ -178,8 +178,20 @@ public class RevisionMojo extends AbstractMojo {
             EntryStatusHandler entryStatusHandler = new EntryStatusHandler();
             try {
                 logDebugInfo( " collecting status information" );
+                SVNDepth depth;
+                if ( "empty".equals( entry.getDepth() ) ) {
+                    depth = SVNDepth.EMPTY;
+                } else if ( "files".equals( entry.getDepth() ) ) {
+                    depth = SVNDepth.FILES;
+                } else if ( "immediates".equals( entry.getDepth() ) ) {
+                    depth = SVNDepth.IMMEDIATES;
+                } else if ( "infinity".equals( entry.getDepth() ) ) {
+                    depth = SVNDepth.INFINITY;
+                } else {
+                    throw new AssertionError( entry.getDepth() );
+                }
                 statusClient.doStatus( entry.getPath(),
-                        SVNRevision.UNDEFINED, entry.isRecursive() ? SVNDepth.INFINITY : SVNDepth.EMPTY,
+                        SVNRevision.UNDEFINED, depth,
                         entry.reportOutOfDate(), true, entry.reportIgnored(), false,
                         entryStatusHandler,
                         null );

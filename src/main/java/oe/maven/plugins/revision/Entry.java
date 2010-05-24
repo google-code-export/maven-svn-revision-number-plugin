@@ -42,8 +42,8 @@ public class Entry {
     /** The prefix for entry properties. */
     private String prefix;
 
-    /** Specifies whether the status information should be collected recursively. */
-    private boolean recursive = true;
+    /** Specifies the depth of the entries whose status information should be collected. */
+    private String depth = "infinity";
 
     /** Specifies whether to report items that are not under version control. */
     private boolean reportUnversioned = true;
@@ -108,13 +108,12 @@ public class Entry {
     }
 
     /**
-     * Specifies whether the status information should be collected recursively.
+     * Specifies the depth of the entries whose status information should be collected.
      *
-     * @return {@code true} if the status information should be collected both for the entry path and all files and
-     *         directories below it; {@code false} if only the entry path itself should be inspected
+     * @return the depth of operation
      */
-    public boolean isRecursive() {
-        return recursive;
+    public String getDepth() {
+        return depth;
     }
 
     /**
@@ -159,6 +158,12 @@ public class Entry {
         }
         if ( prefix == null ) {
             throw new MojoExecutionException( "entry prefix is not specified" );
+        }
+        if (depth == null) {
+            throw new MojoExecutionException( "entry depth is not specified" );
+        }
+        if (!"empty".equals( depth ) && !"files".equals( depth ) && !"immediates".equals( depth ) && !"infinity".equals( depth )) {
+            throw new MojoExecutionException( "entry depth is not one of empty/files/immediates/infinity" );
         }
     }
 

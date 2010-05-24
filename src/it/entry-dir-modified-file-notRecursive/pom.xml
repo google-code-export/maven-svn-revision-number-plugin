@@ -30,7 +30,7 @@
                         <entry>
                             <path>src</path>
                             <prefix>prefix</prefix>
-                            <recursive>false</recursive>
+                            <depth>empty</depth>
                         </entry>
                     </entries>
                     <verbose>true</verbose>
