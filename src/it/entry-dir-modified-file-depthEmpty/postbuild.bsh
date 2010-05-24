@@ -5,7 +5,7 @@ try {
     Properties properties = IntegrationTestHelper.loadProperties( basedir, "target/classes/revision.txt" );
 
     boolean result = true;
-    if ( !properties.getProperty( "path", "#missing" ).equals( "trunk/src/it/entry-dir-modified-file-notRecursive/src" ) ) {
+    if ( !properties.getProperty( "path", "#missing" ).equals( "trunk/src/it/entry-dir-modified-file-depthEmpty/src" ) ) {
         System.out.println( "wrong path: " + properties.getProperty( "path" ) );
         result = false;
     }
