@@ -3,7 +3,7 @@
  ---
  Oleg Estekhin
  ---
- 2010-04-02
+ 2010-05-24
  ---
 
 Usage
@@ -58,7 +58,7 @@ Usage
         <entry>
             <path>\${project.basedir}</path>
             <prefix>\${project.artifactId}</prefix>
-            <recursive>true</recursive>
+            <depth>infinity</depth>
             <reportUnversioned>true</reportUnversioned>
             <reportIgnored>false</reportIgnored>
             <reportOutOfDate>false</reportOutOfDate>
@@ -77,11 +77,23 @@ Usage
   with that prefix will be determined by the last checked entry.\
   The default value is the project's <<<artifactId>>>.
 
-  * <<<recursive>>> specifies whether the revision and status information should be aggregated by inspecting
-  the directory denoted by the entry path and all files and directories below it recursively.
-  If set to <<<false>>> then only the status of the entry path directory itself will be reported.
-  This option has no effect if the entry path specifies a file rather than a directory.\
-  The default value is <<<true>>>.
+  * <<<depth>>> specifies the depth of the entries whose status information should be collected. The possible values
+  are:
+
+    * <<<empty>>> - checks the status of the target entry only.
+
+    * <<<files>>> - checks the status of the target entry and, if it is a directory, files immediately below it.
+
+    * <<<immediates>>> - checks the status of the target entry and, if it is a directory, files and subdirectories
+    immediately below it. The contents of subdirectories will not be checked.
+
+    * <<<infinity>>> - checks the status of the target entry and, if it is a directory, all files and directories
+    below it.
+
+    []
+
+  The default value is <<<infinity>>>. The semantics of the <<<depth>>> parameter are consistent with the Subversion
+  {{{http://svnbook.red-bean.com/nightly/en/svn.advanced.sparsedirs.html}depth}} option.
 
   * <<<reportUnversioned>>> specifies whether to report items that are not under version control.\
   The default value is <<<true>>>.
@@ -175,12 +187,12 @@ Usage
   <<<prefix.revision>>> and <<<prefix.committedRevision>>> will be set to <<<"-1">>>, <<<prefix.mixedRevisions>>> to
   <<<"false">>>, <<<prefix.status>>> to <<<"?">>> and <<<prefix.specialStatus>>> to <<<"u">>>.
 
-  If the entry path denotes a file or if the <<<recursive>>> parameter is <<<false>>> then the output properties will
-  represent the status of the entry itself and <<<prefix.status>>> and <<<prefix.specialSstatus>>> will contain at most
-  one character.
+  If the entry path denotes a file or if the <<<depth>>> parameter is equal to <<<empty>>> then the output properties
+  will represent the status of the entry itself and <<<prefix.status>>> and <<<prefix.specialStatus>>> will contain at
+  most one character.
 
-  If the entry path denotes a directory and the <<<recursive>>> parameter is <<<true>>> then <<<prefix.revision>>> will
-  be set to the maximum revision number found inside the entry directory, the <<<prefix.committedRevision>>> will be set
-  to the maximum last committed revision number found inside the entry directory, and <<<prefix.status>>> and
-  <<<prefix.specialStatus>>> will contain a set of characters that describe all statuses encountered inside the entry
-  directory.
+  If the entry path denotes a directory and the <<<depth>>> parameter is one of <<<files>>>, <<<immediates>>> or
+  <<<infinity>>> then <<<prefix.revision>>> will be set to the maximum revision number found inside the entry directory,
+  the <<<prefix.committedRevision>>> will be set to the maximum last committed revision number found inside the entry
+  directory, and <<<prefix.status>>> and <<<prefix.specialStatus>>> will contain a set of characters that describe all
+  statuses encountered inside the entry directory.
