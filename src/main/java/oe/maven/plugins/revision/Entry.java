@@ -55,7 +55,7 @@ public class Entry {
     private boolean reportOutOfDate = false;
 
 
-    /** Creates a new {@code Entry} object with default parameters. */
+    /** Creates a new {@code Entry} object with the default parameters. */
     public Entry() {
     }
 

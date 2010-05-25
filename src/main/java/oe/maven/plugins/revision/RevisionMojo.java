@@ -80,14 +80,14 @@ public class RevisionMojo extends AbstractMojo {
      * Specifies the list of entries to inspect. Each entry has a separate configuration consisting of the local path,
      * report options and the prefix for the output properties.
      * <p/>
-     * Example:
+     * The following example shows the entry configured with the default properties:
      * <pre>
      * &lt;entries&gt;
      *   &lt;entry&gt;
-     *     &lt;path&gt;path&lt;path&gt;
-     *     &lt;prefix&gt;prefix&lt;prefix&gt;
+     *     &lt;path&gt;${project.basedir}&lt;path&gt;
+     *     &lt;prefix&gt;${project.artifactId}&lt;prefix&gt;
      *     &lt;depth&gt;infinity&lt;depth&gt;
-     *     &lt;reportUnversioned&gt;false&lt;reportUnversioned&gt;
+     *     &lt;reportUnversioned&gt;true&lt;reportUnversioned&gt;
      *     &lt;reportIgnored&gt;false&lt;reportIgnored&gt;
      *     &lt;reportOutOfDate&gt;false&lt;reportOutOfDate&gt;
      *   &lt;entry&gt;

@@ -155,7 +155,7 @@ Usage
     * <<<'~'>>> - some item in the working copy is obstructed (it is versioned as a file or a directory but has been
       replaced by a directory or a file respectively).
 
-    * <<<'*'>>> - a newer revision of some item exists in the remote repository.\
+    * <<<'*'>>> - a newer revision of some local item exists in the remote repository.\
       The reporting of out-of-date items is disabled by default.
 
     []
