@@ -19,8 +19,11 @@ try {
     // missing
     FileUtils.fileDelete( new File( basedir, "src/test/resources/missing/missing.txt" ).getAbsolutePath() );
 
-    // modified
-    FileUtils.fileAppend( new File( basedir, "src/test/resources/modified.txt" ).getAbsolutePath(), "UTF-8", "modified content\n" );
+    // modified content
+    FileUtils.fileAppend( new File( basedir, "src/test/resources/modifiedContent.txt" ).getAbsolutePath(), "UTF-8", "modified content\n" );
+
+    // modified properties
+    svnClient.doSetProperty( new File( basedir, "src/test/resources/modifiedProperties.txt" ).getAbsolutePath(), "test property", SVNPropertyValue.create( "test value" ), false, SVNDepth.IMMEDIATES, null, null );
 
     return true;
 } catch ( Throwable t ) {

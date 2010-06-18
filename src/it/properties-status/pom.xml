@@ -51,8 +51,12 @@
                                     <prefix>missing</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/modified.txt</path>
-                                    <prefix>modified</prefix>
+                                    <path>src/test/resources/modifiedContent.txt</path>
+                                    <prefix>modifiedContent</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/modifiedProperties.txt</path>
+                                    <prefix>modifiedProperties</prefix>
                                 </entry>
                             </entries>
                             <verbose>true</verbose>
