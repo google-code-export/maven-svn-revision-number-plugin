@@ -1,0 +1,18 @@
+import org.codehaus.plexus.util.FileUtils;
+
+import org.tmatesoft.svn.core.*;
+import org.tmatesoft.svn.core.wc.*;
+
+try {
+    SVNWCClient svnClient = SVNClientManager.newInstance().getWCClient();
+
+    FileUtils.fileWrite( new File( basedir, "src/test/resources/added.txt" ).getAbsolutePath(), "UTF-8", "new file, added to svn" );
+    svnClient.doAdd( new File( basedir, "src/test/resources/added.txt" ), false, false, false, SVNDepth.INFINITY, false, false, false );
+
+    svnClient.doDelete( new File( basedir, "src/test/resources/deleted.txt" ), false, true, false );
+
+    return true;
+} catch ( Throwable t ) {
+    t.printStackTrace();
+    return false;
+}

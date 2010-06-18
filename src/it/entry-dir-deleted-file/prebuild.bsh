@@ -1,8 +1,0 @@
-import oe.maven.plugins.revision.IntegrationTestHelper;
-
-try {
-    return IntegrationTestHelper.deleteFile( basedir, "src/test/resources/deleted.txt", true );
-} catch ( Throwable t ) {
-    t.printStackTrace();
-    return false;
-}
