@@ -1,3 +1,4 @@
 normal = p=${normal.path} r=${normal.revision} cr=${normal.committedRevision} m=${normal.mixedRevisions} s=${normal.status} ss=${normal.specialStatus}
 added = p=${added.path} r=${added.revision} cr=${added.committedRevision} m=${added.mixedRevisions} s=${added.status} ss=${added.specialStatus}
 deleted = p=${deleted.path} r=${deleted.revision} cr=${deleted.committedRevision} m=${deleted.mixedRevisions} s=${deleted.status} ss=${deleted.specialStatus}
+ignored = p=${ignored.path} r=${ignored.revision} cr=${ignored.committedRevision} m=${ignored.mixedRevisions} s=${ignored.status} ss=${ignored.specialStatus}
