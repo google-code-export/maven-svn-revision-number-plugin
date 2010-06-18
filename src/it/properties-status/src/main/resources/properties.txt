@@ -8,6 +8,8 @@ deleted = p=${deleted.path} r=${deleted.revision} cr=${deleted.committedRevision
 deletedParent = p=${deletedParent.path} r=${deletedParent.revision} cr=${deletedParent.committedRevision} m=${deletedParent.mixedRevisions} s=${deletedParent.status} ss=${deletedParent.specialStatus}
 
 ignored = p=${ignored.path} r=${ignored.revision} cr=${ignored.committedRevision} m=${ignored.mixedRevisions} s=${ignored.status} ss=${ignored.specialStatus}
+ignoredParent = p=${ignoredParent.path} r=${ignoredParent.revision} cr=${ignoredParent.committedRevision} m=${ignoredParent.mixedRevisions} s=${ignoredParent.status} ss=${ignoredParent.specialStatus}
+
 missing = p=${missing.path} r=${missing.revision} cr=${missing.committedRevision} m=${missing.mixedRevisions} s=${missing.status} ss=${missing.specialStatus}
 modifiedContent = p=${modifiedContent.path} r=${modifiedContent.revision} cr=${modifiedContent.committedRevision} m=${modifiedContent.mixedRevisions} s=${modifiedContent.status} ss=${modifiedContent.specialStatus}
 modifiedProperties = p=${modifiedProperties.path} r=${modifiedProperties.revision} cr=${modifiedProperties.committedRevision} m=${modifiedProperties.mixedRevisions} s=${modifiedProperties.status} ss=${modifiedProperties.specialStatus}

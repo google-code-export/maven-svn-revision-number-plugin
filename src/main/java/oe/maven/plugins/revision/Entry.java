@@ -160,7 +160,7 @@ public class Entry {
             throw new MojoExecutionException( "entry depth is not specified" );
         }
         if ( !"empty".equals( depth ) && !"files".equals( depth ) && !"immediates".equals( depth ) && !"infinity".equals( depth ) ) {
-            throw new MojoExecutionException( "entry depth is not one of empty/files/immediates/infinity" );
+            throw new MojoExecutionException( "entry depth is not one of {empty, files, immediates, infinity}" );
         }
     }
 

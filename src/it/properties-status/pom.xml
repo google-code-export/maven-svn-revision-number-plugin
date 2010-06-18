@@ -54,8 +54,13 @@
                                     <prefix>deletedParent</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/ignored.txt</path>
+                                    <path>src/test/resources/ignored/ignored.txt</path>
                                     <prefix>ignored</prefix>
+                                    <reportIgnored>true</reportIgnored>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/ignored</path>
+                                    <prefix>ignoredParent</prefix>
                                     <reportIgnored>true</reportIgnored>
                                 </entry>
                                 <entry>

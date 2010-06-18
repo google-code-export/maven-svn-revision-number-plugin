@@ -14,7 +14,7 @@ try {
     svnClient.doDelete( new File( basedir, "src/test/resources/deleted/deleted.txt" ), false, true, false );
 
     // ignored
-    FileUtils.fileWrite( new File( basedir, "src/test/resources/ignored.txt" ).getAbsolutePath(), "UTF-8", "new file, ignored by svn" );
+    FileUtils.fileWrite( new File( basedir, "src/test/resources/ignored/ignored.txt" ).getAbsolutePath(), "UTF-8", "new file, ignored by svn" );
 
     // missing
     FileUtils.fileDelete( new File( basedir, "src/test/resources/missing/missing.txt" ).getAbsolutePath() );
