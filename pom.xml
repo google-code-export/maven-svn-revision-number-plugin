@@ -8,7 +8,9 @@
     <packaging>maven-plugin</packaging>
 
     <name>Maven SVN Revision Number Plugin</name>
-    <description>This plugin retrieves the revision number and the status of the Subversion working copy directory.</description>
+    <description>
+        This plugin retrieves the revision number and the status of the Subversion working copy directory.
+    </description>
     <url>http://code.google.com/p/maven-svn-revision-number-plugin</url>
 
     <inceptionYear>2009</inceptionYear>
@@ -274,6 +276,15 @@
                     </plugin>
                 </plugins>
             </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-invoker-plugin</artifactId>
+                        <version>1.5</version>
+                    </plugin>
+                </plugins>
+            </reporting>
         </profile>
         <profile>
             <id>sign</id>
