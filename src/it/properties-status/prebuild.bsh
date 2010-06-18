@@ -17,7 +17,10 @@ try {
     FileUtils.fileWrite( new File( basedir, "src/test/resources/ignored.txt" ).getAbsolutePath(), "UTF-8", "new file, ignored by svn" );
 
     // missing
-    FileUtils.fileDelete( new File( basedir, "src/test/resources/missing.txt" ).getAbsolutePath() );
+    FileUtils.fileDelete( new File( basedir, "src/test/resources/missing/missing.txt" ).getAbsolutePath() );
+
+    // modified
+    FileUtils.fileAppend( new File( basedir, "src/test/resources/modified.txt" ).getAbsolutePath(), "UTF-8", "modified content\n" );
 
     return true;
 } catch ( Throwable t ) {
