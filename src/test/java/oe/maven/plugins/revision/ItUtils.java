@@ -38,8 +38,7 @@ import java.util.Properties;
 
 public class ItUtils {
 
-    public static boolean checkProperties( File basedir, String fileName, String[][] tests ) throws IOException {
-        File file = new File( basedir, fileName );
+    public static boolean checkProperties( File file, String[][] tests ) throws IOException {
         System.out.println( "reading " + file );
         Properties properties = new Properties();
         Reader reader = null;

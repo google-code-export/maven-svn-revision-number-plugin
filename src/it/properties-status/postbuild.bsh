@@ -1,0 +1,11 @@
+import java.util.Properties;
+import oe.maven.plugins.revision.ItUtils;
+
+try {
+    return ItUtils.checkProperties( new File( basedir, "target/classes/properties.txt" ), new String[][] {
+            { "normal", "p=trunk/src/it/properties-status/src/test/resources/normal.txt r=\\d+ cr=\\d+ m=false s= ss=" },
+    } );
+} catch ( Throwable t ) {
+    t.printStackTrace();
+    return false;
+}

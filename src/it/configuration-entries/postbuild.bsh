@@ -2,7 +2,7 @@ import java.util.Properties;
 import oe.maven.plugins.revision.ItUtils;
 
 try {
-    return ItUtils.checkProperties( basedir, "target/classes/properties.txt", new String[][] {
+    return ItUtils.checkProperties( new File( basedir, "target/classes/properties.txt" ), new String[][] {
             { "default", "p=trunk/src/it/configuration-entries r=\\d+ cr=\\d+ m=false s=M\\? ss=Mu" },
             { "single", "p=trunk/src/it/configuration-entries/src r=\\d+ cr=\\d+ m=false s= ss=" },
             { "multiple1", "p=trunk/src/it/configuration-entries/src r=\\d+ cr=\\d+ m=false s= ss=" },

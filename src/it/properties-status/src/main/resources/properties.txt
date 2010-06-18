@@ -1,0 +1,1 @@
+normal = p=${normal.path} r=${normal.revision} cr=${normal.committedRevision} m=${normal.mixedRevisions} s=${normal.status} ss=${normal.specialStatus}
