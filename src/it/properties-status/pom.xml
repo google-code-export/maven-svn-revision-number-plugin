@@ -64,16 +64,24 @@
                                     <reportIgnored>true</reportIgnored>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/missing</path>
+                                    <path>src/test/resources/missing/missing.txt</path>
                                     <prefix>missing</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/modifiedContent.txt</path>
+                                    <path>src/test/resources/missing</path>
+                                    <prefix>missingParent</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/modified/modifiedContent.txt</path>
                                     <prefix>modifiedContent</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/modifiedProperties.txt</path>
+                                    <path>src/test/resources/modified/modifiedProperties.txt</path>
                                     <prefix>modifiedProperties</prefix>
+                                </entry>
+                                 <entry>
+                                    <path>src/test/resources/modified</path>
+                                    <prefix>modifiedParent</prefix>
                                 </entry>
                                 <entry>
                                     <path>src/test/resources/obstructed</path>

@@ -20,10 +20,10 @@ try {
     FileUtils.fileDelete( new File( basedir, "src/test/resources/missing/missing.txt" ).getAbsolutePath() );
 
     // modified content
-    FileUtils.fileAppend( new File( basedir, "src/test/resources/modifiedContent.txt" ).getAbsolutePath(), "UTF-8", "modified content\n" );
+    FileUtils.fileAppend( new File( basedir, "src/test/resources/modified/modifiedContent.txt" ).getAbsolutePath(), "UTF-8", "modified content\n" );
 
     // modified properties
-    svnClient.doSetProperty( new File( basedir, "src/test/resources/modifiedProperties.txt" ), "x:property", SVNPropertyValue.create( "value" ), false, SVNDepth.IMMEDIATES, null, null );
+    svnClient.doSetProperty( new File( basedir, "src/test/resources/modified/modifiedProperties.txt" ), "x:property", SVNPropertyValue.create( "value" ), false, SVNDepth.IMMEDIATES, null, null );
 
     // obstructed
     FileUtils.fileDelete( new File( basedir, "src/test/resources/obstructed/obstructed.txt" ).getAbsolutePath() );

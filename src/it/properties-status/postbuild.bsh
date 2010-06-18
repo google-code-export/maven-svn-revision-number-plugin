@@ -12,12 +12,16 @@ try {
             { "deleted", "p=trunk/src/it/properties-status/src/test/resources/deleted/deleted.txt r=\\d+ cr=\\d+ m=false s=D ss=D" },
             { "deletedParent", "p=trunk/src/it/properties-status/src/test/resources/deleted r=\\d+ cr=\\d+ m=false s=D ss=D" },
 
-            { "ignored", "p=trunk/src/it/properties-status/src/test/resources/ignored.txt r=-1 cr=-1 m=false s=I ss=I" },
+            { "ignored", "p= r=-1 cr=-1 m=false s=I ss=I" },
             { "ignoredParent", "p=trunk/src/it/properties-status/src/test/resources/ignored r=\\d+ cr=\\d+ m=false s=I ss=I" },
 
-            { "missing", "p=trunk/src/it/properties-status/src/test/resources/missing r=\\d+ cr=\\d+ m=false s=! ss=m" },
-            { "modifiedContent", "p=trunk/src/it/properties-status/src/test/resources/modifiedContent.txt r=\\d+ cr=\\d+ m=false s=M ss=M" },
-            { "modifiedProperties", "p=trunk/src/it/properties-status/src/test/resources/modifiedProperties.txt r=\\d+ cr=\\d+ m=false s=M ss=M" },
+            { "missing", "p=trunk/src/it/properties-status/src/test/resources/missing/missing.txt r=\\d+ cr=\\d+ m=false s=! ss=m" },
+            { "missingParent", "p=trunk/src/it/properties-status/src/test/resources/missing r=\\d+ cr=\\d+ m=false s=! ss=m" },
+
+            { "modifiedContent", "p=trunk/src/it/properties-status/src/test/resources/modified/modifiedContent.txt r=\\d+ cr=\\d+ m=false s=M ss=M" },
+            { "modifiedProperties", "p=trunk/src/it/properties-status/src/test/resources/modified/modifiedProperties.txt r=\\d+ cr=\\d+ m=false s=M ss=M" },
+            { "modifiedParent", "p=trunk/src/it/properties-status/src/test/resources/modified r=\\d+ cr=\\d+ m=false s=M ss=M" },
+
             { "obstructed", "p=trunk/src/it/properties-status/src/test/resources/obstructed r=\\d+ cr=\\d+ m=false s=~ ss=o" },
             { "replaced", "p=trunk/src/it/properties-status/src/test/resources/replaced.txt r=\\d+ cr=\\d+ m=false s=R ss=R" },
             { "unversioned", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
