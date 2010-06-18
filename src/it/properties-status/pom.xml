@@ -87,6 +87,21 @@
                             <goal>revision</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>missing</id>
+                        <configuration>
+                            <entries>
+                                <entry>
+                                    <path>src/test/resources/missing.txt</path>
+                                    <prefix>missing</prefix>
+                                </entry>
+                            </entries>
+                            <verbose>true</verbose>
+                        </configuration>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
