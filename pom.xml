@@ -262,8 +262,7 @@
                         <configuration>
                             <projectsDirectory>src/it</projectsDirectory>
                             <pomIncludes>
-                                <!--<pomInclude>**/pom.xml</pomInclude>-->
-                                <pomInclude>properties-status/pom.xml</pomInclude>
+                                <pomInclude>**/pom.xml</pomInclude>
                             </pomIncludes>
                             <settingsFile>src/it/settings.xml</settingsFile>
                             <localRepositoryPath>${project.build.directory}/it-repository</localRepositoryPath>
