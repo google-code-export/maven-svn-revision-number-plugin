@@ -92,7 +92,7 @@
                         <configuration>
                             <entries>
                                 <entry>
-                                    <path>src/test/resources/missing.txt</path>
+                                    <path>src/test/resources/missing</path>
                                     <prefix>missing</prefix>
                                 </entry>
                             </entries>

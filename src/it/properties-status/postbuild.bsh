@@ -7,6 +7,7 @@ try {
             { "added", "p=trunk/src/it/properties-status/src/test/resources/added.txt r=0 cr=-1 m=false s=A ss=A" },
             { "deleted", "p=trunk/src/it/properties-status/src/test/resources/deleted r=\\d+ cr=\\d+ m=false s=D ss=D" },
             { "ignored", "p= r=-1 cr=-1 m=false s=I ss=I" },
+            { "missing", "p=trunk/src/it/properties-status/src/test/resources/missing r=\\d+ cr=\\d+ m=false s=! ss=m" },
     } );
 } catch ( Throwable t ) {
     t.printStackTrace();
