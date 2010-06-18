@@ -34,6 +34,10 @@
                                     <prefix>normal</prefix>
                                 </entry>
                                 <entry>
+                                    <path>src/test/resources/normal</path>
+                                    <prefix>normalParent</prefix>
+                                </entry>
+                                <entry>
                                     <path>src/test/resources/added.txt</path>
                                     <prefix>added</prefix>
                                 </entry>

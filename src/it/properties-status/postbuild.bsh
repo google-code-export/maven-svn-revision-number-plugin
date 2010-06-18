@@ -3,7 +3,9 @@ import oe.maven.plugins.revision.ItUtils;
 
 try {
     return ItUtils.checkProperties( new File( basedir, "target/classes/properties.txt" ), new String[][] {
-            { "normal", "p=trunk/src/it/properties-status/src/test/resources/normal.txt r=\\d+ cr=\\d+ m=false s= ss=" },
+            { "normal", "p=trunk/src/it/properties-status/src/test/resources/normal/normal.txt r=\\d+ cr=\\d+ m=false s= ss=" },
+            { "normalParent", "p=trunk/src/it/properties-status/src/test/resources/normal r=\\d+ cr=\\d+ m=false s= ss=" },
+
             { "added", "p=trunk/src/it/properties-status/src/test/resources/added.txt r=0 cr=-1 m=false s=A ss=A" },
             { "deleted", "p=trunk/src/it/properties-status/src/test/resources/deleted r=\\d+ cr=\\d+ m=false s=D ss=D" },
             { "ignored", "p= r=-1 cr=-1 m=false s=I ss=I" },
