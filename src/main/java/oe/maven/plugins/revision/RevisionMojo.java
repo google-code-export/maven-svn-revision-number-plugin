@@ -169,8 +169,8 @@ public class RevisionMojo extends AbstractMojo {
             properties.put( "specialStatus", EntryStatusSymbols.SPECIAL.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
         } else {
             SVNEntry svnEntry = svnStatus.getEntry();
-            String repositoryRoot = svnEntry.getRepositoryRoot();
-            String repositoryPath = svnEntry.getURL().substring( repositoryRoot.length() );
+            String repositoryRoot = svnEntry == null ? "" : svnEntry.getRepositoryRoot();
+            String repositoryPath = svnEntry == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
             if ( repositoryPath.startsWith( "/" ) ) {
                 repositoryPath = repositoryPath.substring( 1 );
             }
