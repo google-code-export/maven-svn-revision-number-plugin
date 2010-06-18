@@ -27,85 +27,29 @@
                 <version>@pom.version@</version>
                 <executions>
                     <execution>
-                        <id>normal</id>
                         <configuration>
                             <entries>
                                 <entry>
                                     <path>src/test/resources/normal.txt</path>
                                     <prefix>normal</prefix>
                                 </entry>
-                            </entries>
-                            <verbose>true</verbose>
-                        </configuration>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>added</id>
-                        <configuration>
-                            <entries>
                                 <entry>
                                     <path>src/test/resources/added.txt</path>
                                     <prefix>added</prefix>
                                 </entry>
-                            </entries>
-                            <verbose>true</verbose>
-                        </configuration>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>deleted</id>
-                        <configuration>
-                            <entries>
                                 <entry>
                                     <path>src/test/resources/deleted</path>
                                     <prefix>deleted</prefix>
                                 </entry>
-                            </entries>
-                            <verbose>true</verbose>
-                        </configuration>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>ignored</id>
-                        <configuration>
-                            <entries>
                                 <entry>
                                     <path>src/test/resources/ignored.txt</path>
                                     <prefix>ignored</prefix>
                                     <reportIgnored>true</reportIgnored>
                                 </entry>
-                            </entries>
-                            <verbose>true</verbose>
-                        </configuration>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>missing</id>
-                        <configuration>
-                            <entries>
                                 <entry>
                                     <path>src/test/resources/missing</path>
                                     <prefix>missing</prefix>
                                 </entry>
-                            </entries>
-                            <verbose>true</verbose>
-                        </configuration>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>modified</id>
-                        <configuration>
-                            <entries>
                                 <entry>
                                     <path>src/test/resources/modified.txt</path>
                                     <prefix>modified</prefix>
