@@ -273,7 +273,6 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>integration-test</id>
                                 <goals>
                                     <goal>install</goal>
                                     <goal>run</goal>

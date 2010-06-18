@@ -3,14 +3,14 @@
  ---
  Oleg Estekhin
  ---
- 2010-04-02
+ 2010-06-18
  ---
 
 Storing output properties in the resource file
 
-  The status properties can be stored in the file using the resource filtering mechanism.
+  The status properties can be stored to the file using the resource filtering mechanism.
 
-  Create the resource file <<<src/main/resources/revision.txt>>> containing:
+  Create the resource file <<<src/main/resources/revision.txt>>> containing references to the revision properties:
 
 +---
 repository = ${prefix.repository}

@@ -32,4 +32,6 @@ ${project.name}
 
   * {{{./examples/resource_filtering.html}Storing output properties in the resource file}}
 
+  * {{{./examples/artifact_name.html}Adding the revision number to the project artifact name}}
+
   []

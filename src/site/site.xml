@@ -12,6 +12,7 @@
 
         <menu name="Examples">
             <item name="Storing output properties in a file" href="examples/resource_filtering.html"/>
+            <item name="Adding the revision number to the artifact name" href="examples/artifact_name.html"/>
         </menu>
 
         <menu ref="reports"/>
