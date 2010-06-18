@@ -1,5 +1,9 @@
 normal = p=${normal.path} r=${normal.revision} cr=${normal.committedRevision} m=${normal.mixedRevisions} s=${normal.status} ss=${normal.specialStatus}
+normalParent = p=${normalParent.path} r=${normalParent.revision} cr=${normalParent.committedRevision} m=${normalParent.mixedRevisions} s=${normalParent.status} ss=${normalParent.specialStatus}
+
 added = p=${added.path} r=${added.revision} cr=${added.committedRevision} m=${added.mixedRevisions} s=${added.status} ss=${added.specialStatus}
+addedParent = p=${addedParent.path} r=${addedParent.revision} cr=${addedParent.committedRevision} m=${addedParent.mixedRevisions} s=${addedParent.status} ss=${addedParent.specialStatus}
+
 deleted = p=${deleted.path} r=${deleted.revision} cr=${deleted.committedRevision} m=${deleted.mixedRevisions} s=${deleted.status} ss=${deleted.specialStatus}
 ignored = p=${ignored.path} r=${ignored.revision} cr=${ignored.committedRevision} m=${ignored.mixedRevisions} s=${ignored.status} ss=${ignored.specialStatus}
 missing = p=${missing.path} r=${missing.revision} cr=${missing.committedRevision} m=${missing.mixedRevisions} s=${missing.status} ss=${missing.specialStatus}

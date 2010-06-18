@@ -30,7 +30,7 @@
                         <configuration>
                             <entries>
                                 <entry>
-                                    <path>src/test/resources/normal.txt</path>
+                                    <path>src/test/resources/normal/normal.txt</path>
                                     <prefix>normal</prefix>
                                 </entry>
                                 <entry>
@@ -38,8 +38,12 @@
                                     <prefix>normalParent</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/added.txt</path>
+                                    <path>src/test/resources/added/added.txt</path>
                                     <prefix>added</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/added</path>
+                                    <prefix>addedParent</prefix>
                                 </entry>
                                 <entry>
                                     <path>src/test/resources/deleted</path>

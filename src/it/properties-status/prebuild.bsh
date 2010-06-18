@@ -7,8 +7,8 @@ try {
     SVNWCClient svnClient = SVNClientManager.newInstance().getWCClient();
 
     // added
-    FileUtils.fileWrite( new File( basedir, "src/test/resources/added.txt" ).getAbsolutePath(), "UTF-8", "new file, added to svn" );
-    svnClient.doAdd( new File( basedir, "src/test/resources/added.txt" ), false, false, false, SVNDepth.INFINITY, false, false, false );
+    FileUtils.fileWrite( new File( basedir, "src/test/resources/added/added.txt" ).getAbsolutePath(), "UTF-8", "new file, added to svn" );
+    svnClient.doAdd( new File( basedir, "src/test/resources/added/added.txt" ), false, false, false, SVNDepth.INFINITY, false, false, false );
 
     // deleted
     svnClient.doDelete( new File( basedir, "src/test/resources/deleted/deleted.txt" ), false, true, false );
