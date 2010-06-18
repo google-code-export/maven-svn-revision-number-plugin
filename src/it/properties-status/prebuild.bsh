@@ -26,8 +26,8 @@ try {
     svnClient.doSetProperty( new File( basedir, "src/test/resources/modifiedProperties.txt" ), "x:property", SVNPropertyValue.create( "value" ), false, SVNDepth.IMMEDIATES, null, null );
 
     // obstructed
-    FileUtils.fileDelete( new File( basedir, "src/test/resources/obstructed.txt" ).getAbsolutePath() );
-    FileUtils.mkdir( new File( basedir, "src/test/resources/obstructed.txt" ).getAbsolutePath() );
+    FileUtils.fileDelete( new File( basedir, "src/test/resources/obstructed/obstructed.txt" ).getAbsolutePath() );
+    FileUtils.mkdir( new File( basedir, "src/test/resources/obstructed/obstructed.txt" ).getAbsolutePath() );
 
     // replaced
     svnClient.doDelete( new File( basedir, "src/test/resources/replaced.txt" ), false, true, false );

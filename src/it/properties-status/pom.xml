@@ -59,7 +59,7 @@
                                     <prefix>modifiedProperties</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/obstructed.txt</path>
+                                    <path>src/test/resources/obstructed</path>
                                     <prefix>obstructed</prefix>
                                 </entry>
                                 <entry>
@@ -69,7 +69,6 @@
                                 <entry>
                                     <path>src/test/resources/unversioned.txt</path>
                                     <prefix>unversioned</prefix>
-                                    <reportUnversioned>true</reportUnversioned>
                                 </entry>
                             </entries>
                             <verbose>true</verbose>

@@ -152,7 +152,8 @@ public class RevisionMojo extends AbstractMojo {
         try {
             svnStatus = statusClient.doStatus( entry.getPath(), false );
         } catch ( SVNException ignored ) {
-            // the entry path is not under version control
+            // the entry is not under version control or the entry was obstructed
+            // todo check the parent entry to differentiate between unversioned/obstructed
             svnStatus = null;
         }
 
