@@ -56,6 +56,21 @@
                             <goal>revision</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>deleted</id>
+                        <configuration>
+                            <entries>
+                                <entry>
+                                    <path>src/test/resources/deleted</path>
+                                    <prefix>deleted</prefix>
+                                </entry>
+                            </entries>
+                            <verbose>true</verbose>
+                        </configuration>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
