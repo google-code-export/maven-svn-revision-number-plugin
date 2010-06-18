@@ -46,8 +46,12 @@
                                     <prefix>addedParent</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/deleted</path>
+                                    <path>src/test/resources/deleted/deleted.txt</path>
                                     <prefix>deleted</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/deleted</path>
+                                    <prefix>deletedParent</prefix>
                                 </entry>
                                 <entry>
                                     <path>src/test/resources/ignored.txt</path>

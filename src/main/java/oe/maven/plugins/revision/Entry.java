@@ -153,16 +153,13 @@ public class Entry {
         if ( path == null ) {
             throw new MojoExecutionException( "entry path is not specified" );
         }
-        if ( !path.exists() ) {
-            throw new MojoExecutionException( "entry path does not exist: " + path );
-        }
         if ( prefix == null ) {
             throw new MojoExecutionException( "entry prefix is not specified" );
         }
-        if (depth == null) {
+        if ( depth == null ) {
             throw new MojoExecutionException( "entry depth is not specified" );
         }
-        if (!"empty".equals( depth ) && !"files".equals( depth ) && !"immediates".equals( depth ) && !"infinity".equals( depth )) {
+        if ( !"empty".equals( depth ) && !"files".equals( depth ) && !"immediates".equals( depth ) && !"infinity".equals( depth ) ) {
             throw new MojoExecutionException( "entry depth is not one of empty/files/immediates/infinity" );
         }
     }

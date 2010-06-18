@@ -6,10 +6,12 @@ try {
             { "normal", "p=trunk/src/it/properties-status/src/test/resources/normal/normal.txt r=\\d+ cr=\\d+ m=false s= ss=" },
             { "normalParent", "p=trunk/src/it/properties-status/src/test/resources/normal r=\\d+ cr=\\d+ m=false s= ss=" },
 
-            { "added", "p=trunk/src/it/properties-status/src/test/resources/added/added.txt r=0 cr=-1 m=false s=A ss=A" },
+            { "added", "p=trunk/src/it/properties-status/src/test/resources/added/added.txt r=\\d+ cr=\\d+ m=false s=A ss=A" },
             { "addedParent", "p=trunk/src/it/properties-status/src/test/resources/added r=0 cr=-1 m=false s=A ss=A" },
 
-            { "deleted", "p=trunk/src/it/properties-status/src/test/resources/deleted r=\\d+ cr=\\d+ m=false s=D ss=D" },
+            { "deleted", "p=trunk/src/it/properties-status/src/test/resources/deleted/deleted.txt r=\\d+ cr=\\d+ m=false s=D ss=D" },
+            { "deletedParent", "p=trunk/src/it/properties-status/src/test/resources/deleted r=\\d+ cr=\\d+ m=false s=D ss=D" },
+
             { "ignored", "p= r=-1 cr=-1 m=false s=I ss=I" },
             { "missing", "p=trunk/src/it/properties-status/src/test/resources/missing r=\\d+ cr=\\d+ m=false s=! ss=m" },
             { "modifiedContent", "p=trunk/src/it/properties-status/src/test/resources/modifiedContent.txt r=\\d+ cr=\\d+ m=false s=M ss=M" },
