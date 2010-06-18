@@ -10,6 +10,9 @@ try {
             { "missing", "p=trunk/src/it/properties-status/src/test/resources/missing r=\\d+ cr=\\d+ m=false s=! ss=m" },
             { "modifiedContent", "p=trunk/src/it/properties-status/src/test/resources/modifiedContent.txt r=\\d+ cr=\\d+ m=false s=M ss=M" },
             { "modifiedProperties", "p=trunk/src/it/properties-status/src/test/resources/modifiedProperties.txt r=\\d+ cr=\\d+ m=false s=M ss=M" },
+            { "obstructed", "p=trunk/src/it/properties-status/src/test/resources/obstructed.txt r=\\d+ cr=\\d+ m=false s=~ ss=o" },
+            { "replaced", "p=trunk/src/it/properties-status/src/test/resources/replaced.txt r=\\d+ cr=\\d+ m=false s=R ss=R" },
+            { "unversioned", "p= r=-1 cr=-1 m=false s=? ss=u" },
     } );
 } catch ( Throwable t ) {
     t.printStackTrace();

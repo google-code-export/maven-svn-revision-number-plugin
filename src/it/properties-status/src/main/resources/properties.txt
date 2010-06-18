@@ -5,3 +5,6 @@ ignored = p=${ignored.path} r=${ignored.revision} cr=${ignored.committedRevision
 missing = p=${missing.path} r=${missing.revision} cr=${missing.committedRevision} m=${missing.mixedRevisions} s=${missing.status} ss=${missing.specialStatus}
 modifiedContent = p=${modifiedContent.path} r=${modifiedContent.revision} cr=${modifiedContent.committedRevision} m=${modifiedContent.mixedRevisions} s=${modifiedContent.status} ss=${modifiedContent.specialStatus}
 modifiedProperties = p=${modifiedProperties.path} r=${modifiedProperties.revision} cr=${modifiedProperties.committedRevision} m=${modifiedProperties.mixedRevisions} s=${modifiedProperties.status} ss=${modifiedProperties.specialStatus}
+obstructed = p=${obstructed.path} r=${obstructed.revision} cr=${obstructed.committedRevision} m=${obstructed.mixedRevisions} s=${obstructed.status} ss=${obstructed.specialStatus}
+replaced = p=${replaced.path} r=${replaced.revision} cr=${replaced.committedRevision} m=${replaced.mixedRevisions} s=${replaced.status} ss=${replaced.specialStatus}
+unversioned = p=${unversioned.path} r=${unversioned.revision} cr=${unversioned.committedRevision} m=${unversioned.mixedRevisions} s=${unversioned.status} ss=${unversioned.specialStatus}

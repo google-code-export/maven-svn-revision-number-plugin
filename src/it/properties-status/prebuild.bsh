@@ -23,7 +23,19 @@ try {
     FileUtils.fileAppend( new File( basedir, "src/test/resources/modifiedContent.txt" ).getAbsolutePath(), "UTF-8", "modified content\n" );
 
     // modified properties
-    svnClient.doSetProperty( new File( basedir, "src/test/resources/modifiedProperties.txt" ).getAbsolutePath(), "test property", SVNPropertyValue.create( "test value" ), false, SVNDepth.IMMEDIATES, null, null );
+    svnClient.doSetProperty( new File( basedir, "src/test/resources/modifiedProperties.txt" ), "x:property", SVNPropertyValue.create( "value" ), false, SVNDepth.IMMEDIATES, null, null );
+
+    // obstructed
+    FileUtils.fileDelete( new File( basedir, "src/test/resources/obstructed.txt" ).getAbsolutePath() );
+    FileUtils.mkdir( new File( basedir, "src/test/resources/obstructed.txt" ).getAbsolutePath() );
+
+    // replaced
+    svnClient.doDelete( new File( basedir, "src/test/resources/replaced.txt" ), false, true, false );
+    FileUtils.fileWrite( new File( basedir, "src/test/resources/replaced.txt" ).getAbsolutePath(), "UTF-8", "new file, replaces deleted file" );
+    svnClient.doAdd( new File( basedir, "src/test/resources/replaced.txt" ), false, false, false, SVNDepth.INFINITY, false, false, false );
+
+    // unversioned
+    FileUtils.fileWrite( new File( basedir, "src/test/resources/unversioned.txt" ).getAbsolutePath(), "UTF-8", "new file, unversioned" );
 
     return true;
 } catch ( Throwable t ) {

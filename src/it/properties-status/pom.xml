@@ -58,6 +58,19 @@
                                     <path>src/test/resources/modifiedProperties.txt</path>
                                     <prefix>modifiedProperties</prefix>
                                 </entry>
+                                <entry>
+                                    <path>src/test/resources/obstructed.txt</path>
+                                    <prefix>obstructed</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/replaced.txt</path>
+                                    <prefix>replaced</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/unversioned.txt</path>
+                                    <prefix>unversioned</prefix>
+                                    <reportUnversioned>true</reportUnversioned>
+                                </entry>
                             </entries>
                             <verbose>true</verbose>
                         </configuration>
