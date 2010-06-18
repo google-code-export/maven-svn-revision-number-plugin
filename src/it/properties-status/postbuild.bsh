@@ -26,12 +26,15 @@ try {
             { "obstructedDirectory", "p=trunk/src/it/properties-status/src/test/resources/obstructed/obstructed r=\\d+ cr=\\d+ m=false s=~ ss=o" },
             { "obstructedParent", "p=trunk/src/it/properties-status/src/test/resources/obstructed r=\\d+ cr=\\d+ m=false s=~ ss=o" },
 
-            { "replaced", "p=trunk/src/it/properties-status/src/test/resources/replaced.txt r=\\d+ cr=\\d+ m=false s=R ss=R" },
-            { "replacedParent", "p=trunk/src/it/properties-status/src/test/resources/replaced.txt r=\\d+ cr=\\d+ m=false s=R ss=R" },
+            { "replaced", "p=trunk/src/it/properties-status/src/test/resources/replaced/replaced.txt r=\\d+ cr=\\d+ m=false s=R ss=R" },
+            { "replacedParent", "p=trunk/src/it/properties-status/src/test/resources/replaced r=\\d+ cr=\\d+ m=false s=R ss=R" },
 
             { "unversionedFile", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
             { "unversionedDirectory", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
-            { "unversionedParent", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
+            { "unversionedParent", "p=trunk/src/it/properties-status/src/test/resources/unversioned r=\\d+ cr=\\d+ m=false s=\\? ss=u" },
+
+            { "notWCFile", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
+            { "notWCDirectory", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
     } );
 } catch ( Throwable t ) {
     t.printStackTrace();

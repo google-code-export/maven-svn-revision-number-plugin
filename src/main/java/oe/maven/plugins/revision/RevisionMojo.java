@@ -152,14 +152,15 @@ public class RevisionMojo extends AbstractMojo {
         try {
             svnStatus = statusClient.doStatus( entry.getPath(), false );
         } catch ( SVNException ignored ) {
-            // the entry is not under version control or the entry was obstructed
-            // todo check the parent entry to differentiate between unversioned/obstructed
+            // the entry is not a working copy or the entry was obstructed
+            // todo check the parent entry to differentiate between notWC/obstructed
+            getLog().error( ignored );
             svnStatus = null;
         }
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         if ( svnStatus == null ) {
-            logDebugInfo( " the path is not under version control" );
+            logDebugInfo( " the path is not under a version control" );
 
             properties.put( "repository", "" );
             properties.put( "path", "" );
@@ -170,8 +171,9 @@ public class RevisionMojo extends AbstractMojo {
             properties.put( "specialStatus", EntryStatusSymbols.SPECIAL.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
         } else {
             SVNEntry svnEntry = svnStatus.getEntry();
+            // todo review null checks after the todo above is fixed
             String repositoryRoot = svnEntry == null ? "" : svnEntry.getRepositoryRoot();
-            String repositoryPath = svnEntry == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
+            String repositoryPath = svnEntry == null || svnEntry.getURL() == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
             if ( repositoryPath.startsWith( "/" ) ) {
                 repositoryPath = repositoryPath.substring( 1 );
             }

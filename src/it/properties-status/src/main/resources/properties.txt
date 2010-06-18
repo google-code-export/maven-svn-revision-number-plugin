@@ -27,3 +27,6 @@ replacedParent = p=${replacedParent.path} r=${replacedParent.revision} cr=${repl
 unversionedFile = p=${unversionedFile.path} r=${unversionedFile.revision} cr=${unversionedFile.committedRevision} m=${unversionedFile.mixedRevisions} s=${unversionedFile.status} ss=${unversionedFile.specialStatus}
 unversionedDirectory = p=${unversionedDirectory.path} r=${unversionedDirectory.revision} cr=${unversionedDirectory.committedRevision} m=${unversionedDirectory.mixedRevisions} s=${unversionedDirectory.status} ss=${unversionedDirectory.specialStatus}
 unversionedParent = p=${unversionedParent.path} r=${unversionedParent.revision} cr=${unversionedParent.committedRevision} m=${unversionedParent.mixedRevisions} s=${unversionedParent.status} ss=${unversionedParent.specialStatus}
+
+notWCFile = p=${notWCFile.path} r=${notWCFile.revision} cr=${notWCFile.committedRevision} m=${notWCFile.mixedRevisions} s=${notWCFile.status} ss=${notWCFile.specialStatus}
+notWCDirectory = p=${notWCDirectory.path} r=${notWCDirectory.revision} cr=${notWCDirectory.committedRevision} m=${notWCDirectory.mixedRevisions} s=${notWCDirectory.status} ss=${notWCDirectory.specialStatus}

@@ -41,6 +41,11 @@ try {
     FileUtils.fileWrite( new File( basedir, "src/test/resources/unversioned/unversioned.txt" ).getAbsolutePath(), "UTF-8", "new file, unversioned" );
     FileUtils.mkdir( new File( basedir, "src/test/resources/unversioned/unversioned" ).getAbsolutePath() );
 
+    // not a working copy
+    FileUtils.mkdir( new File( basedir, "src/test/resources/notWC" ).getAbsolutePath() );
+    FileUtils.mkdir( new File( basedir, "src/test/resources/notWC/notWC" ).getAbsolutePath() );
+    FileUtils.fileWrite( new File( basedir, "src/test/resources/notWC/notWC.txt" ).getAbsolutePath(), "UTF-8", "new file, unversioned" );
+
     return true;
 } catch ( Throwable t ) {
     t.printStackTrace();

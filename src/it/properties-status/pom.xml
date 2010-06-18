@@ -123,6 +123,15 @@
                                     <path>src/test/resources/unversioned</path>
                                     <prefix>unversionedParent</prefix>
                                 </entry>
+
+                                <entry>
+                                    <path>src/test/resources/notWC/notWC.txt</path>
+                                    <prefix>notWCFile</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/notWC/notWC</path>
+                                    <prefix>notWCDirectory</prefix>
+                                </entry>
                             </entries>
                             <verbose>true</verbose>
                         </configuration>
