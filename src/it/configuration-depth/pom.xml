@@ -32,18 +32,22 @@
                                 <entry>
                                     <path>src/test/resources</path>
                                     <prefix>empty</prefix>
+                                    <depth>empty</depth>
                                 </entry>
                                 <entry>
                                     <path>src/test/resources</path>
                                     <prefix>files</prefix>
+                                    <depth>files</depth>
                                 </entry>
                                 <entry>
                                     <path>src/test/resources</path>
                                     <prefix>immediates</prefix>
+                                    <depth>immediates</depth>
                                 </entry>
                                 <entry>
                                     <path>src/test/resources</path>
                                     <prefix>infinity</prefix>
+                                    <depth>infinity</depth>
                                 </entry>
                             </entries>
                             <verbose>true</verbose>
