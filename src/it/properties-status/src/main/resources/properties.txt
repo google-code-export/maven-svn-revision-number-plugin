@@ -17,6 +17,13 @@ modifiedContent = p=${modifiedContent.path} r=${modifiedContent.revision} cr=${m
 modifiedProperties = p=${modifiedProperties.path} r=${modifiedProperties.revision} cr=${modifiedProperties.committedRevision} m=${modifiedProperties.mixedRevisions} s=${modifiedProperties.status} ss=${modifiedProperties.specialStatus}
 modifiedParent = p=${modifiedParent.path} r=${modifiedParent.revision} cr=${modifiedParent.committedRevision} m=${modifiedParent.mixedRevisions} s=${modifiedParent.status} ss=${modifiedParent.specialStatus}
 
-obstructed = p=${obstructed.path} r=${obstructed.revision} cr=${obstructed.committedRevision} m=${obstructed.mixedRevisions} s=${obstructed.status} ss=${obstructed.specialStatus}
+obstructedFile = p=${obstructedFile.path} r=${obstructedFile.revision} cr=${obstructedFile.committedRevision} m=${obstructedFile.mixedRevisions} s=${obstructedFile.status} ss=${obstructedFile.specialStatus}
+obstructedDirectory = p=${obstructedDirectory.path} r=${obstructedDirectory.revision} cr=${obstructedDirectory.committedRevision} m=${obstructedDirectory.mixedRevisions} s=${obstructedDirectory.status} ss=${obstructedDirectory.specialStatus}
+obstructedParent = p=${obstructedParent.path} r=${obstructedParent.revision} cr=${obstructedParent.committedRevision} m=${obstructedParent.mixedRevisions} s=${obstructedParent.status} ss=${obstructedParent.specialStatus}
+
 replaced = p=${replaced.path} r=${replaced.revision} cr=${replaced.committedRevision} m=${replaced.mixedRevisions} s=${replaced.status} ss=${replaced.specialStatus}
-unversioned = p=${unversioned.path} r=${unversioned.revision} cr=${unversioned.committedRevision} m=${unversioned.mixedRevisions} s=${unversioned.status} ss=${unversioned.specialStatus}
+replacedParent = p=${replacedParent.path} r=${replacedParent.revision} cr=${replacedParent.committedRevision} m=${replacedParent.mixedRevisions} s=${replacedParent.status} ss=${replacedParent.specialStatus}
+
+unversionedFile = p=${unversionedFile.path} r=${unversionedFile.revision} cr=${unversionedFile.committedRevision} m=${unversionedFile.mixedRevisions} s=${unversionedFile.status} ss=${unversionedFile.specialStatus}
+unversionedDirectory = p=${unversionedDirectory.path} r=${unversionedDirectory.revision} cr=${unversionedDirectory.committedRevision} m=${unversionedDirectory.mixedRevisions} s=${unversionedDirectory.status} ss=${unversionedDirectory.specialStatus}
+unversionedParent = p=${unversionedParent.path} r=${unversionedParent.revision} cr=${unversionedParent.committedRevision} m=${unversionedParent.mixedRevisions} s=${unversionedParent.status} ss=${unversionedParent.specialStatus}

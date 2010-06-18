@@ -37,6 +37,7 @@
                                     <path>src/test/resources/normal</path>
                                     <prefix>normalParent</prefix>
                                 </entry>
+
                                 <entry>
                                     <path>src/test/resources/added/added.txt</path>
                                     <prefix>added</prefix>
@@ -45,6 +46,7 @@
                                     <path>src/test/resources/added</path>
                                     <prefix>addedParent</prefix>
                                 </entry>
+
                                 <entry>
                                     <path>src/test/resources/deleted/deleted.txt</path>
                                     <prefix>deleted</prefix>
@@ -53,6 +55,7 @@
                                     <path>src/test/resources/deleted</path>
                                     <prefix>deletedParent</prefix>
                                 </entry>
+
                                 <entry>
                                     <path>src/test/resources/ignored/ignored.txt</path>
                                     <prefix>ignored</prefix>
@@ -63,6 +66,7 @@
                                     <prefix>ignoredParent</prefix>
                                     <reportIgnored>true</reportIgnored>
                                 </entry>
+
                                 <entry>
                                     <path>src/test/resources/missing/missing.txt</path>
                                     <prefix>missing</prefix>
@@ -71,6 +75,7 @@
                                     <path>src/test/resources/missing</path>
                                     <prefix>missingParent</prefix>
                                 </entry>
+
                                 <entry>
                                     <path>src/test/resources/modified/modifiedContent.txt</path>
                                     <prefix>modifiedContent</prefix>
@@ -79,21 +84,44 @@
                                     <path>src/test/resources/modified/modifiedProperties.txt</path>
                                     <prefix>modifiedProperties</prefix>
                                 </entry>
-                                 <entry>
+                                <entry>
                                     <path>src/test/resources/modified</path>
                                     <prefix>modifiedParent</prefix>
                                 </entry>
+
                                 <entry>
-                                    <path>src/test/resources/obstructed</path>
-                                    <prefix>obstructed</prefix>
+                                    <path>src/test/resources/obstructed/obstructed.txt</path>
+                                    <prefix>obstructedFile</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/replaced.txt</path>
+                                    <path>src/test/resources/obstructed/obstructed</path>
+                                    <prefix>obstructedDirectory</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/obstructed</path>
+                                    <prefix>obstructedParent</prefix>
+                                </entry>
+
+                                <entry>
+                                    <path>src/test/resources/replaced/replaced.txt</path>
                                     <prefix>replaced</prefix>
                                 </entry>
                                 <entry>
-                                    <path>src/test/resources/unversioned.txt</path>
-                                    <prefix>unversioned</prefix>
+                                    <path>src/test/resources/replaced</path>
+                                    <prefix>replacedParent</prefix>
+                                </entry>
+
+                                <entry>
+                                    <path>src/test/resources/unversioned/unversioned.txt</path>
+                                    <prefix>unversionedFile</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/unversioned/unversioned</path>
+                                    <prefix>unversionedDirectory</prefix>
+                                </entry>
+                                <entry>
+                                    <path>src/test/resources/unversioned</path>
+                                    <prefix>unversionedParent</prefix>
                                 </entry>
                             </entries>
                             <verbose>true</verbose>
