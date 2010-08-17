@@ -132,6 +132,11 @@
                                     <path>src/test/resources/notWC/notWC</path>
                                     <prefix>notWCDirectory</prefix>
                                 </entry>
+
+                                <entry>
+                                    <path>src/test/resources</path>
+                                    <prefix>all</prefix>
+                                </entry>
                             </entries>
                             <verbose>true</verbose>
                         </configuration>

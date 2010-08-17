@@ -35,6 +35,8 @@ try {
 
             { "notWCFile", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
             { "notWCDirectory", "p= r=-1 cr=-1 m=false s=\\? ss=u" },
+
+            { "all", "p=.*/src/it/properties-status/src/test/resources r=\\d+ cr=\\d+ m=false s=ADMR\\?!~ ss=ADMRumo" },
     } );
 } catch ( Throwable t ) {
     t.printStackTrace();

@@ -30,3 +30,5 @@ unversionedParent = p=${unversionedParent.path} r=${unversionedParent.revision} 
 
 notWCFile = p=${notWCFile.path} r=${notWCFile.revision} cr=${notWCFile.committedRevision} m=${notWCFile.mixedRevisions} s=${notWCFile.status} ss=${notWCFile.specialStatus}
 notWCDirectory = p=${notWCDirectory.path} r=${notWCDirectory.revision} cr=${notWCDirectory.committedRevision} m=${notWCDirectory.mixedRevisions} s=${notWCDirectory.status} ss=${notWCDirectory.specialStatus}
+
+all = p=${all.path} r=${all.revision} cr=${all.committedRevision} m=${all.mixedRevisions} s=${all.status} ss=${all.specialStatus}
