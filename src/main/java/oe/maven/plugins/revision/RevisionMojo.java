@@ -178,30 +178,12 @@ public class RevisionMojo extends AbstractMojo {
     }
 
     private Map<String, Object> createVersionedEntryProperties( Entry entry, SVNStatus status, SVNStatusClient statusClient ) throws MojoExecutionException {
-        SVNEntry svnEntry = status.getEntry();
-        String repositoryRoot = svnEntry == null ? "" : svnEntry.getRepositoryRoot();
-        String repositoryPath = svnEntry == null || svnEntry.getURL() == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
-        if ( repositoryPath.startsWith( "/" ) ) {
-            repositoryPath = repositoryPath.substring( 1 );
-        }
-
         VersionedEntryStatusHandler entryStatusHandler = new VersionedEntryStatusHandler();
+        entryStatusHandler.setRepositoryProperties( status.getEntry() );
         try {
             logDebugInfo( " collecting status information" );
-            SVNDepth depth;
-            if ( "empty".equals( entry.getDepth() ) ) {
-                depth = SVNDepth.EMPTY;
-            } else if ( "files".equals( entry.getDepth() ) ) {
-                depth = SVNDepth.FILES;
-            } else if ( "immediates".equals( entry.getDepth() ) ) {
-                depth = SVNDepth.IMMEDIATES;
-            } else if ( "infinity".equals( entry.getDepth() ) ) {
-                depth = SVNDepth.INFINITY;
-            } else {
-                throw new AssertionError( entry.getDepth() );
-            }
             statusClient.doStatus( entry.getPath(),
-                    SVNRevision.UNDEFINED, depth,
+                    SVNRevision.WORKING, SVNDepth.fromString( entry.getDepth() ),
                     entry.reportOutOfDate(), true, entry.reportIgnored(), false,
                     entryStatusHandler,
                     null );
@@ -210,8 +192,8 @@ public class RevisionMojo extends AbstractMojo {
         }
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        properties.put( "repository", repositoryRoot );
-        properties.put( "path", repositoryPath );
+        properties.put( "repository", entryStatusHandler.getRepositoryRoot() );
+        properties.put( "path", entryStatusHandler.getRepositoryPath() );
         properties.put( "revision", entryStatusHandler.getMaximumRevisionNumber() );
         properties.put( "mixedRevisions", entryStatusHandler.isMixedRevisions() );
         properties.put( "committedRevision", entryStatusHandler.getMaximumCommittedRevisionNumber() );
@@ -226,13 +208,14 @@ public class RevisionMojo extends AbstractMojo {
         try {
             logDebugInfo( " collecting status information from the entry parent" );
             statusClient.doStatus( entry.getPath().getParentFile(),
-                    SVNRevision.UNDEFINED, SVNDepth.IMMEDIATES,
+                    SVNRevision.WORKING, SVNDepth.IMMEDIATES,
                     false, true, entry.reportIgnored(), false,
                     entryStatusHandler,
                     null );
         } catch ( SVNException e ) {
             throw new MojoExecutionException( e.getMessage(), e );
         }
+
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         properties.put( "repository", entryStatusHandler.getRepositoryRoot() );
         properties.put( "path", entryStatusHandler.getRepositoryPath() );
@@ -343,6 +326,11 @@ public class RevisionMojo extends AbstractMojo {
 
     private abstract class AbstractStatusHandler implements ISVNStatusHandler {
 
+        private String repositoryRoot;
+
+        private String repositoryPath;
+
+
         private long maximumRevisionNumber;
 
         private long minimumRevisionNumber;
@@ -357,6 +345,9 @@ public class RevisionMojo extends AbstractMojo {
 
 
         private AbstractStatusHandler() {
+            repositoryRoot = "";
+            repositoryPath = "";
+
             maximumRevisionNumber = Long.MIN_VALUE;
             minimumRevisionNumber = Long.MAX_VALUE;
 
@@ -366,6 +357,14 @@ public class RevisionMojo extends AbstractMojo {
             remoteStatusTypes = new HashSet<SVNStatusType>();
         }
 
+
+        protected void setRepositoryProperties( SVNEntry svnEntry ) {
+            repositoryRoot = svnEntry == null ? "" : svnEntry.getRepositoryRoot();
+            repositoryPath = svnEntry == null || svnEntry.getURL() == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
+            if ( repositoryPath.startsWith( "/" ) ) {
+                repositoryPath = repositoryPath.substring( 1 );
+            }
+        }
 
         protected void appendStatus( SVNStatus status ) {
             long revisionNumber = status.getRevision().getNumber();
@@ -405,6 +404,15 @@ public class RevisionMojo extends AbstractMojo {
         }
 
 
+        public String getRepositoryRoot() {
+            return repositoryRoot;
+        }
+
+        public String getRepositoryPath() {
+            return repositoryPath;
+        }
+
+
         public long getMaximumRevisionNumber() {
             return maximumRevisionNumber == Long.MIN_VALUE ? -1L : maximumRevisionNumber;
         }
@@ -439,7 +447,6 @@ public class RevisionMojo extends AbstractMojo {
         private VersionedEntryStatusHandler() {
         }
 
-
         public void handleStatus( SVNStatus status ) {
             appendStatus( status );
         }
@@ -450,37 +457,17 @@ public class RevisionMojo extends AbstractMojo {
 
         private final String entryName;
 
-        private String repositoryRoot;
-
-        private String repositoryPath;
-
-
         private SpecialEntryStatusHandler( String entryName ) {
             if ( entryName == null ) {
                 throw new IllegalArgumentException( "entryName is null" );
             }
             this.entryName = entryName;
-            repositoryRoot = "";
-            repositoryPath = "";
-        }
-
-
-        public String getRepositoryRoot() {
-            return repositoryRoot;
-        }
-
-        public String getRepositoryPath() {
-            return repositoryPath;
         }
 
         public void handleStatus( SVNStatus status ) {
             SVNEntry svnEntry = status.getEntry();
             if ( svnEntry != null && entryName.equals( svnEntry.getName() ) ) {
-                repositoryRoot = svnEntry.getRepositoryRoot();
-                repositoryPath = svnEntry.getURL() == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
-                if ( repositoryPath.startsWith( "/" ) ) {
-                    repositoryPath = repositoryPath.substring( 1 );
-                }
+                setRepositoryProperties( svnEntry );
                 appendStatus( status );
             }
         }
