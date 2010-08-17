@@ -54,7 +54,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusClient;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
 
 /**
- * Retrieves retrieves the revision number and the status of a file or a directory under Subversion version control.
+ * Retrieves the revision number and the status of a file or a directory under the Subversion version control.
  *
  * @goal revision
  * @phase initialize
@@ -95,8 +95,8 @@ public class RevisionMojo extends AbstractMojo {
      * &lt;entries&gt;
      * </pre>
      * <p/>
-     * If entries configuration is not specified then the goal will operate on the default entry with entry path equal
-     * to the project basedir and properties prefix equal to the project artifactId.
+     * If entries configuration is not specified then the goal will operate on the default entry with the entry path
+     * equal to the project basedir and the properties prefix equal to the project artifactId.
      *
      * @parameter
      */
@@ -112,40 +112,40 @@ public class RevisionMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         if ( entries == null ) {
-            logDebug( "entries configuration is not specified, using default entry" );
+            logDebug( "the entries configuration is missing, using default values" );
             // defaulting to the path = project.basedir, prefix = project.artifactId, depth = infinity, reporting unversioned
             entries = new Entry[] {
                     new Entry( project.getBasedir(), project.getArtifactId() ),
             };
         } else if ( entries.length == 0 ) {
-            throw new MojoExecutionException( "entries list is empty" );
+            throw new MojoExecutionException( "the entries configuration list is empty" );
         }
 
         SVNStatusClient statusClient = SVNClientManager.newInstance().getStatusClient();
 
         for ( Entry entry : entries ) {
             if ( entry.getPath() == null ) {
-                logDebug( "entry path is not specified, using project.basedir: " + project.getBasedir() );
+                logDebug( "the entry path is not specified, using project.basedir: " + project.getBasedir() );
                 entry.setPath( project.getBasedir() );
             }
+            logInfo( "inspecting " + entry.getPath() );
             if ( entry.getPrefix() == null ) {
-                logDebug( "entry properties prefix is not specified, using project.artifactId: " + project.getArtifactId() );
+                logDebug( "the entry prefix is not specified, using project.artifactId: " + project.getArtifactId() );
                 entry.setPrefix( project.getArtifactId() );
             }
+            logDebugInfo( "  prefix = " + entry.getPrefix() );
+            logDebugInfo( "  depth = " + entry.getDepth() );
+            logDebugInfo( "  report unversioned = " + entry.reportUnversioned() );
+            logDebugInfo( "  report ignored = " + entry.reportIgnored() );
+            logDebugInfo( "  report out-of-date = " + entry.reportOutOfDate() );
             entry.validate();
             Map<String, Object> entryProperties = getEntryProperties( entry, statusClient );
             setProjectProperties( entry.getPrefix(), entryProperties );
         }
     }
 
-    private Map<String, Object> getEntryProperties( Entry entry, SVNStatusClient statusClient ) throws MojoExecutionException {
-        logInfo( "inspecting " + entry.getPath() );
-        logDebugInfo( "  properties prefix = " + entry.getPrefix() );
-        logDebugInfo( "  depth = " + entry.getDepth() );
-        logDebugInfo( "  report unversioned = " + entry.reportUnversioned() );
-        logDebugInfo( "  report ignored = " + entry.reportIgnored() );
-        logDebugInfo( "  report out-of-date = " + entry.reportOutOfDate() );
 
+    private Map<String, Object> getEntryProperties( Entry entry, SVNStatusClient statusClient ) throws MojoExecutionException {
         try {
             SVNStatus status = statusClient.doStatus( entry.getPath(), false );
             return createVersionedEntryProperties( entry, status, statusClient );
@@ -185,7 +185,7 @@ public class RevisionMojo extends AbstractMojo {
             repositoryPath = repositoryPath.substring( 1 );
         }
 
-        EntryStatusHandler entryStatusHandler = new EntryStatusHandler();
+        VersionedEntryStatusHandler entryStatusHandler = new VersionedEntryStatusHandler();
         try {
             logDebugInfo( " collecting status information" );
             SVNDepth depth;
@@ -215,79 +215,54 @@ public class RevisionMojo extends AbstractMojo {
         properties.put( "revision", entryStatusHandler.getMaximumRevisionNumber() );
         properties.put( "mixedRevisions", entryStatusHandler.isMixedRevisions() );
         properties.put( "committedRevision", entryStatusHandler.getMaximumCommittedRevisionNumber() );
-        properties.put( "status", constructStatus( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.DEFAULT ) );
-        properties.put( "specialStatus", constructStatus( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.SPECIAL ) );
+        properties.put( "status", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.DEFAULT ) );
+        properties.put( "specialStatus", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.SPECIAL ) );
         return properties;
     }
 
     private Map<String, Object> createSpecialEntryProperties( final Entry entry, SVNStatusClient statusClient ) throws MojoExecutionException {
-        // hack: obtains the status of a single "problem" entry by asking the entry's parent 
-        final Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        properties.put( "repository", "" );
-        properties.put( "path", "" );
-        properties.put( "revision", -1L );
-        properties.put( "mixedRevisions", "false" );
-        properties.put( "committedRevision", -1L );
-        properties.put( "status", EntryStatusSymbols.DEFAULT.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
-        properties.put( "specialStatus", EntryStatusSymbols.SPECIAL.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
+        // hack: obtain the status of a single "problem" entry by asking the entry's parent
+        SpecialEntryStatusHandler entryStatusHandler = new SpecialEntryStatusHandler( entry.getPath().getName() );
         try {
-            final String entryName = entry.getPath().getName();
             logDebugInfo( " collecting status information from the entry parent" );
             statusClient.doStatus( entry.getPath().getParentFile(),
                     SVNRevision.UNDEFINED, SVNDepth.IMMEDIATES,
                     false, true, entry.reportIgnored(), false,
-                    new ISVNStatusHandler() {
-                        public void handleStatus( SVNStatus status ) throws SVNException {
-                            SVNEntry svnEntry = status.getEntry();
-                            if ( svnEntry != null && entryName.equals( svnEntry.getName() ) ) {
-                                String repositoryRoot = svnEntry.getRepositoryRoot();
-                                String repositoryPath = svnEntry.getURL() == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
-                                if ( repositoryPath.startsWith( "/" ) ) {
-                                    repositoryPath = repositoryPath.substring( 1 );
-                                }
-                                long revisionNumber = status.getRevision().getNumber();
-                                long committedRevisionNumber = status.getCommittedRevision().getNumber();
-                                SVNStatusType contentsStatusType = status.getContentsStatus();
-                                SVNStatusType propertiesStatusType = status.getPropertiesStatus();
-                                SVNStatusType remoteContentsStatusType = status.getRemoteContentsStatus();
-                                SVNStatusType remotePropertiesStatusType = status.getRemotePropertiesStatus();
-
-                                boolean entryOutOfDate = !SVNStatusType.STATUS_NONE.equals( remoteContentsStatusType )
-                                        || !SVNStatusType.STATUS_NONE.equals( remotePropertiesStatusType );
-
-                                properties.put( "repository", repositoryRoot );
-                                properties.put( "path", repositoryPath );
-                                properties.put( "revision", revisionNumber );
-                                properties.put( "committedRevision", committedRevisionNumber );
-                                Set<SVNStatusType> localStatusTypes = new HashSet<SVNStatusType>();
-                                localStatusTypes.add( contentsStatusType );
-                                localStatusTypes.add( propertiesStatusType );
-                                Set<SVNStatusType> remoteStatusTypes = new HashSet<SVNStatusType>();
-                                remoteStatusTypes.add( remoteContentsStatusType );
-                                remoteStatusTypes.add( remotePropertiesStatusType );
-                                properties.put( "status", constructStatus( entry, new HashSet<SVNStatusType>( localStatusTypes ), new HashSet<SVNStatusType>( remoteStatusTypes ), EntryStatusSymbols.DEFAULT ) );
-                                properties.put( "specialStatus", constructStatus( entry, new HashSet<SVNStatusType>( localStatusTypes ), new HashSet<SVNStatusType>( remoteStatusTypes ), EntryStatusSymbols.SPECIAL ) );
-
-                                StringBuilder buffer = new StringBuilder();
-                                buffer.append( "  " );
-                                buffer.append( contentsStatusType.getCode() ).append( propertiesStatusType.getCode() );
-                                buffer.append( entryOutOfDate ? '*' : ' ' );
-                                buffer.append( ' ' ).append( String.format( "%6d", revisionNumber ) );
-                                buffer.append( ' ' ).append( String.format( "%6d", committedRevisionNumber ) );
-                                buffer.append( ' ' ).append( status.getFile() );
-                                logDebugInfo( buffer.toString() );
-                            }
-                        }
-                    },
+                    entryStatusHandler,
                     null );
         } catch ( SVNException e ) {
             throw new MojoExecutionException( e.getMessage(), e );
         }
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        properties.put( "repository", entryStatusHandler.getRepositoryRoot() );
+        properties.put( "path", entryStatusHandler.getRepositoryPath() );
+        properties.put( "revision", entryStatusHandler.getMaximumRevisionNumber() );
+        properties.put( "mixedRevisions", entryStatusHandler.isMixedRevisions() );
+        properties.put( "committedRevision", entryStatusHandler.getMaximumCommittedRevisionNumber() );
+        properties.put( "status", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.DEFAULT ) );
+        properties.put( "specialStatus", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.SPECIAL ) );
         return properties;
     }
 
 
-    private String constructStatus( Entry entry, Set<SVNStatusType> localStatusTypes, Set<SVNStatusType> remoteStatusTypes, EntryStatusSymbols symbols ) {
+    private void setProjectProperties( String prefix, Map<String, Object> entryProperties ) {
+        logDebugInfo( " setting properties" );
+        for ( Map.Entry<String, Object> entryProperty : entryProperties.entrySet() ) {
+            setProjectProperty( prefix + '.' + entryProperty.getKey(), String.valueOf( entryProperty.getValue() ) );
+        }
+    }
+
+    private void setProjectProperty( String name, String value ) {
+        Properties projectProperties = project.getProperties();
+        if ( projectProperties.getProperty( name ) != null ) {
+            logWarning( "the \"" + name + "\" property is already defined, its value will be overwritten. Consider another value for the entry properties prefix." );
+        }
+        projectProperties.setProperty( name, value );
+        logDebugInfo( "  " + name + " = " + value );
+    }
+
+
+    private String createStatusString( Entry entry, Set<SVNStatusType> localStatusTypes, Set<SVNStatusType> remoteStatusTypes, EntryStatusSymbols symbols ) {
         StringBuilder status = new StringBuilder();
 
         localStatusTypes.remove( SVNStatusType.STATUS_NONE );
@@ -339,23 +314,6 @@ public class RevisionMojo extends AbstractMojo {
     }
 
 
-    private void setProjectProperties( String prefix, Map<String, Object> entryProperties ) {
-        logDebugInfo( " setting properties" );
-        for ( Map.Entry<String, Object> entryProperty : entryProperties.entrySet() ) {
-            setProjectProperty( prefix + '.' + entryProperty.getKey(), String.valueOf( entryProperty.getValue() ) );
-        }
-    }
-
-    private void setProjectProperty( String name, String value ) {
-        Properties projectProperties = project.getProperties();
-        if ( projectProperties.getProperty( name ) != null ) {
-            logWarning( "the \"" + name + "\" property is already defined, its value will be overwritten. Consider another value for the entry properties prefix." );
-        }
-        projectProperties.setProperty( name, value );
-        logDebugInfo( "  " + name + " = " + value );
-    }
-
-
     private void logInfo( CharSequence message ) {
         if ( getLog().isInfoEnabled() ) {
             getLog().info( message );
@@ -383,7 +341,7 @@ public class RevisionMojo extends AbstractMojo {
     }
 
 
-    private final class EntryStatusHandler implements ISVNStatusHandler {
+    private abstract class AbstractStatusHandler implements ISVNStatusHandler {
 
         private long maximumRevisionNumber;
 
@@ -398,7 +356,7 @@ public class RevisionMojo extends AbstractMojo {
         private final Set<SVNStatusType> remoteStatusTypes;
 
 
-        private EntryStatusHandler() {
+        private AbstractStatusHandler() {
             maximumRevisionNumber = Long.MIN_VALUE;
             minimumRevisionNumber = Long.MAX_VALUE;
 
@@ -409,7 +367,7 @@ public class RevisionMojo extends AbstractMojo {
         }
 
 
-        public void handleStatus( SVNStatus status ) {
+        protected void appendStatus( SVNStatus status ) {
             long revisionNumber = status.getRevision().getNumber();
             if ( SVNRevision.isValidRevisionNumber( revisionNumber ) ) {
                 maximumRevisionNumber = Math.max( maximumRevisionNumber, revisionNumber );
@@ -476,43 +434,55 @@ public class RevisionMojo extends AbstractMojo {
 
     }
 
-    private static class EntryStatusSymbols {
+    private final class VersionedEntryStatusHandler extends AbstractStatusHandler {
 
-        public static final EntryStatusSymbols DEFAULT = new EntryStatusSymbols();
+        private VersionedEntryStatusHandler() {
+        }
 
-        public static final EntryStatusSymbols SPECIAL = new EntryStatusSymbols() {
-            @Override
-            public char getStatusSymbol( SVNStatusType svnStatusType ) {
-                if ( SVNStatusType.STATUS_UNVERSIONED.equals( svnStatusType ) ) {
-                    return 'u';
-                } else if ( SVNStatusType.STATUS_MISSING.equals( svnStatusType ) ) {
-                    return 'm';
-                } else if ( SVNStatusType.STATUS_INCOMPLETE.equals( svnStatusType ) ) {
-                    return 'i';
-                } else if ( SVNStatusType.STATUS_OBSTRUCTED.equals( svnStatusType ) ) {
-                    return 'o';
-                } else {
-                    return super.getStatusSymbol( svnStatusType );
+
+        public void handleStatus( SVNStatus status ) {
+            appendStatus( status );
+        }
+
+    }
+
+    private final class SpecialEntryStatusHandler extends AbstractStatusHandler {
+
+        private final String entryName;
+
+        private String repositoryRoot;
+
+        private String repositoryPath;
+
+
+        private SpecialEntryStatusHandler( String entryName ) {
+            if ( entryName == null ) {
+                throw new IllegalArgumentException( "entryName is null" );
+            }
+            this.entryName = entryName;
+            repositoryRoot = "";
+            repositoryPath = "";
+        }
+
+
+        public String getRepositoryRoot() {
+            return repositoryRoot;
+        }
+
+        public String getRepositoryPath() {
+            return repositoryPath;
+        }
+
+        public void handleStatus( SVNStatus status ) {
+            SVNEntry svnEntry = status.getEntry();
+            if ( svnEntry != null && entryName.equals( svnEntry.getName() ) ) {
+                repositoryRoot = svnEntry.getRepositoryRoot();
+                repositoryPath = svnEntry.getURL() == null ? "" : svnEntry.getURL().substring( repositoryRoot.length() );
+                if ( repositoryPath.startsWith( "/" ) ) {
+                    repositoryPath = repositoryPath.substring( 1 );
                 }
+                appendStatus( status );
             }
-
-            @Override
-            public char getOutOfDateSymbol() {
-                return 'd';
-            }
-        };
-
-
-        private EntryStatusSymbols() {
-        }
-
-
-        public char getStatusSymbol( SVNStatusType svnStatusType ) {
-            return svnStatusType.getCode();
-        }
-
-        public char getOutOfDateSymbol() {
-            return '*';
         }
 
     }
