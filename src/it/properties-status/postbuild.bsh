@@ -23,7 +23,7 @@ try {
             { "modifiedParent", "p=.*/src/it/properties-status/src/test/resources/modified r=\\d+ cr=\\d+ m=false s=M ss=M" },
 
             { "obstructedFile", "p=.*/src/it/properties-status/src/test/resources/obstructed/obstructed.txt r=\\d+ cr=\\d+ m=false s=~ ss=o" },
-            { "obstructedDirectory", "p=.*/src/it/properties-status/src/test/resources/obstructed/obstructed r=\\d+ cr=\\d+ m=false s=~ ss=o" },
+            { "obstructedDirectory", "p=(.*/src/it/properties-status/src/test/resources/obstructed/obstructed)? r=-?\\d+ cr=-?\\d+ m=false s=~ ss=o" },
             { "obstructedParent", "p=.*/src/it/properties-status/src/test/resources/obstructed r=\\d+ cr=\\d+ m=false s=~ ss=o" },
 
             { "replaced", "p=.*/src/it/properties-status/src/test/resources/replaced/replaced.txt r=\\d+ cr=\\d+ m=false s=R ss=R" },
