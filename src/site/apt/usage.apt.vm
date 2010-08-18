@@ -3,16 +3,16 @@
  ---
  Oleg Estekhin
  ---
- 2010-05-24
+ 2010-08-18
  ---
 
 Usage
 
-  The ${project.name} retrieves the status and revision number of a file or a directory under Subversion version control
-  and exposes this information in the form of the project properties which can be used in the subsequent phases of the
-  build lifecycle.
+  The ${project.name} retrieves the status and revision number of a file or a directory under the Subversion version
+  control and exposes this information in the form of the project properties which can be used in the subsequent phases
+  of the build lifecycle.
 
-* Running the plugin automatically during a build
+* Running the plugin automatically during the build
 
   By default, the <<<revision>>> goal is bound to the <<<initialize>>> phase. Below is a sample <<<pom.xml>>> for
   running the <<<revision>>> goal every time the project is built:

@@ -61,7 +61,7 @@ class EntryStatusSymbols {
     };
 
 
-    EntryStatusSymbols() {
+    private EntryStatusSymbols() {
     }
 
 
