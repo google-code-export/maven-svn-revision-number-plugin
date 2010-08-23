@@ -67,7 +67,7 @@
         </snapshotRepository>
         <site>
             <id>local</id>
-            <url>file://${project.build.directory}/staging/deploy/site</url>
+            <url>file://${user.home}/maven/deploy/${project.groupId}/site</url>
         </site>
     </distributionManagement>
 
