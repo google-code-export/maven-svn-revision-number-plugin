@@ -1,16 +1,16 @@
- ---
- Adding the revision number to the project artifact name
- ---
- Oleg Estekhin
- ---
- 2010-06-18
- ---
+    ---
+    Adding the revision number to the project artifact name
+    ---
+    Oleg Estekhin
+    ---
+    2010-11-23
+    ---
 
 Adding the revision number to the project artifact name
 
-  The revision number (and other revision information) can be used as a part of the project artifact name.
-  Remember to use the <<<prefix.specialStatus>>> property instead of the <<<prefix.status>>> property as the latter can
-  contain symbols that are not allowed in the file names. 
+    The revision number (and other revision information) can be used as a part of the project artifact name.
+    Remember to use the <<<prefix.specialStatus>>> property instead of the <<<prefix.status>>> property as the latter can
+    contain symbols that are not allowed in the file names.
 
 +---
 <project>

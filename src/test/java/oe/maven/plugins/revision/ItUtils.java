@@ -41,16 +41,13 @@ public class ItUtils {
     public static boolean checkProperties( File file, String[][] tests ) throws IOException {
         System.out.println( "reading " + file );
         Properties properties = new Properties();
-        Reader reader = null;
+        Reader reader = new InputStreamReader( new FileInputStream( file ), "UTF-8" );
         try {
-            reader = new InputStreamReader( new FileInputStream( file ), "UTF-8" );
             properties.load( reader );
         } finally {
-            if ( reader != null ) {
-                try {
-                    reader.close();
-                } catch ( IOException ignored ) {
-                }
+            try {
+                reader.close();
+            } catch ( IOException ignored ) {
             }
         }
 

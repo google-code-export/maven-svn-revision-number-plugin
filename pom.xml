@@ -112,7 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -160,7 +160,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.0</version>
+                <version>2.1</version>
                 <configuration>
                     <releaseProfiles>sign-artifacts</releaseProfiles>
                 </configuration>
@@ -168,77 +168,76 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>2.1.1</version>
+                <version>3.0-beta-3</version>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-plugin-plugin</artifactId>
+                            <version>2.6</version>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-project-info-reports-plugin</artifactId>
+                            <version>2.2</version>
+                            <configuration>
+                                <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                            </configuration>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>summary</report>
+                                        <report>license</report>
+                                        <report>project-team</report>
+                                        <report>mailing-list</report>
+                                        <report>scm</report>
+                                        <report>issue-tracking</report>
+                                        <report>dependencies</report>
+                                        <report>plugins</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>2.7</version>
+                            <configuration>
+                                <quiet>true</quiet>
+                                <notimestamp>true</notimestamp>
+                                <tagletArtifacts>
+                                    <tagletArtifact>
+                                        <groupId>org.apache.maven.plugin-tools</groupId>
+                                        <artifactId>maven-plugin-tools-javadoc</artifactId>
+                                        <version>2.5</version>
+                                    </tagletArtifact>
+                                </tagletArtifacts>
+                            </configuration>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>javadoc</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-jxr-plugin</artifactId>
+                            <version>2.2</version>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>jxr</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>2.6</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>summary</report>
-                            <report>license</report>
-                            <report>project-team</report>
-                            <report>mailing-list</report>
-                            <report>scm</report>
-                            <report>issue-tracking</report>
-                            <report>dependencies</report>
-                            <report>plugins</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <quiet>true</quiet>
-                    <notimestamp>true</notimestamp>
-                    <tagletArtifacts>
-                        <tagletArtifact>
-                            <groupId>org.apache.maven.plugin-tools</groupId>
-                            <artifactId>maven-plugin-tools-javadoc</artifactId>
-                            <version>2.5</version>
-                        </tagletArtifact>
-                    </tagletArtifacts>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.2</version>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>jxr</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <profiles>
         <profile>
