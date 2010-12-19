@@ -127,6 +127,10 @@ Usage
     * <<<prefix.committedRevision>>> will contain the revision number when the entry was last changed (committed).\
         The value of this property can be safely used as an argument for <<<java.lang.Long.parseLong(String)>>> method.
 
+    * <<<prefix.committedDate>>> will contain the date when the entry was last changed (committed).\
+        The date is formatted by <<<String.format( Locale.ENGLISH, "%tF %<tT %<tz (%<ta, %<td %<tb %<tY)", date )>>> which
+        produces strings like <<<2010-06-18 19:51:59 +0300 (Fri, 18 Jun 2010)>>>.
+
     * <<<prefix.status>>> will contain a set of characters describing the status of the entry:
 
         * <<<'A'>>> - some item in the working copy is scheduled for addition to the repository.
@@ -184,8 +188,9 @@ Usage
     []
 
     If the entry is not under version control then <<<prefix.repository>>> and <<<prefix.path>>> will be empty strings,
-    <<<prefix.revision>>> and <<<prefix.committedRevision>>> will be set to <<<"-1">>>, <<<prefix.mixedRevisions>>> to
-    <<<"false">>>, <<<prefix.status>>> to <<<"?">>> and <<<prefix.specialStatus>>> to <<<"u">>>.
+    <<<prefix.revision>>> and <<<prefix.committedRevision>>> will be set to <<<"-1">>>, <<<prefix.committedDate>>> will
+    be empty string, <<<prefix.mixedRevisions>>> will be set to <<<"false">>>, <<<prefix.status>>> to <<<"?">>> and
+    <<<prefix.specialStatus>>> to <<<"u">>>.
 
     If the entry path denotes a file or if the <<<depth>>> parameter is equal to <<<empty>>> then the output properties
     will represent the status of the entry itself and <<<prefix.status>>> and <<<prefix.specialStatus>>> will contain at
@@ -194,5 +199,6 @@ Usage
     If the entry path denotes a directory and the <<<depth>>> parameter is one of <<<files>>>, <<<immediates>>> or
     <<<infinity>>> then <<<prefix.revision>>> will be set to the maximum revision number found inside the entry directory,
     the <<<prefix.committedRevision>>> will be set to the maximum last committed revision number found inside the entry
-    directory, and <<<prefix.status>>> and <<<prefix.specialStatus>>> will contain a set of characters that describe all
-    statuses encountered inside the entry directory.
+    directory and <<<prefix.committedDate>>> will be set to the timestamp of that revision, and <<<prefix.status>>> and
+    <<<prefix.specialStatus>>> will contain a set of characters that describe all statuses encountered inside the entry
+    directory.

@@ -18,6 +18,7 @@ path = ${prefix.path}
 revision = ${prefix.revision}
 mixedRevisions = ${prefix.mixedRevisions}
 committedRevision = ${prefix.committedRevision}
+committedDate = ${prefix.committedDate}
 status = ${prefix.status}
 specialStatus = ${prefix.specialStatus}
 +---

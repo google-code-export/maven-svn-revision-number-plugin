@@ -29,8 +29,10 @@
 
 package oe.maven.plugins.revision;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -172,6 +174,7 @@ public class RevisionMojo extends AbstractMojo {
         properties.put( "revision", -1L );
         properties.put( "mixedRevisions", "false" );
         properties.put( "committedRevision", -1L );
+        properties.put( "committedDate", "" );
         properties.put( "status", EntryStatusSymbols.DEFAULT.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
         properties.put( "specialStatus", EntryStatusSymbols.SPECIAL.getStatusSymbol( SVNStatusType.STATUS_UNVERSIONED ) );
         return properties;
@@ -197,6 +200,7 @@ public class RevisionMojo extends AbstractMojo {
         properties.put( "revision", entryStatusHandler.getMaximumRevisionNumber() );
         properties.put( "mixedRevisions", entryStatusHandler.isMixedRevisions() );
         properties.put( "committedRevision", entryStatusHandler.getMaximumCommittedRevisionNumber() );
+        properties.put( "committedDate", entryStatusHandler.getMaximumCommittedRevisionDate() );
         properties.put( "status", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.DEFAULT ) );
         properties.put( "specialStatus", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.SPECIAL ) );
         return properties;
@@ -222,6 +226,7 @@ public class RevisionMojo extends AbstractMojo {
         properties.put( "revision", entryStatusHandler.getMaximumRevisionNumber() );
         properties.put( "mixedRevisions", entryStatusHandler.isMixedRevisions() );
         properties.put( "committedRevision", entryStatusHandler.getMaximumCommittedRevisionNumber() );
+        properties.put( "committedDate", entryStatusHandler.getMaximumCommittedRevisionDate() );
         properties.put( "status", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.DEFAULT ) );
         properties.put( "specialStatus", createStatusString( entry, entryStatusHandler.getLocalStatusTypes(), entryStatusHandler.getRemoteStatusTypes(), EntryStatusSymbols.SPECIAL ) );
         return properties;
@@ -338,6 +343,8 @@ public class RevisionMojo extends AbstractMojo {
 
         private long maximumCommittedRevisionNumber;
 
+        private Date maximumCommittedRevisionDate;
+
 
         private final Set<SVNStatusType> localStatusTypes;
 
@@ -369,14 +376,17 @@ public class RevisionMojo extends AbstractMojo {
         protected void appendStatus( SVNStatus status ) {
             long revisionNumber = status.getRevision().getNumber();
             if ( SVNRevision.isValidRevisionNumber( revisionNumber ) ) {
-                maximumRevisionNumber = Math.max( maximumRevisionNumber, revisionNumber );
-                if ( revisionNumber != 0 ) {
-                    minimumRevisionNumber = Math.min( minimumRevisionNumber, revisionNumber );
+                if ( maximumRevisionNumber < revisionNumber ) {
+                    maximumRevisionNumber = revisionNumber;
+                }
+                if ( revisionNumber != 0 && minimumRevisionNumber > revisionNumber ) {
+                    minimumRevisionNumber = revisionNumber;
                 }
             }
             long committedRevisionNumber = status.getCommittedRevision().getNumber();
-            if ( SVNRevision.isValidRevisionNumber( committedRevisionNumber ) ) {
-                maximumCommittedRevisionNumber = Math.max( maximumCommittedRevisionNumber, committedRevisionNumber );
+            if ( SVNRevision.isValidRevisionNumber( committedRevisionNumber ) && maximumCommittedRevisionNumber < committedRevisionNumber ) {
+                maximumCommittedRevisionNumber = committedRevisionNumber;
+                maximumCommittedRevisionDate = status.getCommittedDate();
             }
 
             SVNStatusType contentsStatusType = status.getContentsStatus();
@@ -429,6 +439,12 @@ public class RevisionMojo extends AbstractMojo {
 
         public long getMaximumCommittedRevisionNumber() {
             return maximumCommittedRevisionNumber == Long.MIN_VALUE ? -1L : maximumCommittedRevisionNumber;
+        }
+
+        public String getMaximumCommittedRevisionDate() {
+            return maximumCommittedRevisionDate == null ?
+                    "" :
+                    String.format( Locale.ENGLISH, "%tF %<tT %<tz (%<ta, %<td %<tb %<tY)", maximumCommittedRevisionDate );
         }
 
 
