@@ -60,6 +60,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusType;
  *
  * @goal revision
  * @phase initialize
+ * @threadSafe
  * @requiresProject
  */
 public class RevisionMojo extends AbstractMojo {
