@@ -113,6 +113,14 @@ public class RevisionMojo extends AbstractMojo {
     private boolean verbose;
 
 
+    /**
+     * Indicates whether the build will continue even if there are errors related to obtaining the svn revision.
+     *
+     * @parameter expression="${svn-revision-number.failOnError}" default-value="true"
+     */
+    private boolean failOnError;
+
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if ( entries == null ) {
             logDebug( "the entries configuration is missing, using default values" );
@@ -142,7 +150,19 @@ public class RevisionMojo extends AbstractMojo {
             logDebugInfo( "  report ignored = " + entry.reportIgnored() );
             logDebugInfo( "  report out-of-date = " + entry.reportOutOfDate() );
             entry.validate();
-            Map<String, Object> entryProperties = getEntryProperties( entry, statusClient );
+            Map<String, Object> entryProperties = null;
+            try {
+                entryProperties = getEntryProperties( entry, statusClient );
+            } catch ( MojoExecutionException e ) {
+                if ( failOnError ) {
+                    throw e;
+                } else {
+                    if ( getLog().isErrorEnabled() ) {
+                        getLog().error( e );
+                    }
+                    entryProperties = createUnversionedEntryProperties();
+                }
+            }
             setProjectProperties( entry.getPrefix(), entryProperties );
         }
     }
