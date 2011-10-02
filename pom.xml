@@ -4,7 +4,7 @@
 
     <groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
     <artifactId>maven-svn-revision-number-plugin</artifactId>
-    <version>1.8-SNAPSHOT</version>
+    <version>1.7-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Maven SVN Revision Number Plugin</name>
