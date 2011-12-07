@@ -88,14 +88,14 @@ public class RevisionMojo extends AbstractMojo {
      * <pre>
      * &lt;entries&gt;
      *   &lt;entry&gt;
-     *     &lt;path&gt;${project.basedir}&lt;path&gt;
-     *     &lt;prefix&gt;${project.artifactId}&lt;prefix&gt;
-     *     &lt;depth&gt;infinity&lt;depth&gt;
-     *     &lt;reportUnversioned&gt;true&lt;reportUnversioned&gt;
-     *     &lt;reportIgnored&gt;false&lt;reportIgnored&gt;
-     *     &lt;reportOutOfDate&gt;false&lt;reportOutOfDate&gt;
-     *   &lt;entry&gt;
-     * &lt;entries&gt;
+     *     &lt;path&gt;${project.basedir}&lt;/path&gt;
+     *     &lt;prefix&gt;${project.artifactId}&lt;/prefix&gt;
+     *     &lt;depth&gt;infinity&lt;/depth&gt;
+     *     &lt;reportUnversioned&gt;true&lt;/reportUnversioned&gt;
+     *     &lt;reportIgnored&gt;false&lt;/reportIgnored&gt;
+     *     &lt;reportOutOfDate&gt;false&lt;/reportOutOfDate&gt;
+     *   &lt;/entry&gt;
+     * &lt;/entries&gt;
      * </pre>
      * <p/>
      * If entries configuration is not specified then the goal will operate on the default entry with the entry path
