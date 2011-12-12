@@ -29,6 +29,7 @@
 
 package oe.maven.plugins.revision;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -139,7 +140,7 @@ public class RevisionMojo extends AbstractMojo {
                 logDebug( "the entry path is not specified, using project.basedir: " + project.getBasedir() );
                 entry.setPath( project.getBasedir() );
             }
-            logInfo( "inspecting " + entry.getPath() );
+            logInfo( "inspecting " + entry.getPath() + ( entry.getPath().isFile() ? " (file)" : entry.getPath().isDirectory() ? " (directory)" : " (unknown)" ) );
             if ( entry.getPrefix() == null ) {
                 logDebug( "the entry prefix is not specified, using project.artifactId: " + project.getArtifactId() );
                 entry.setPrefix( project.getArtifactId() );
@@ -173,18 +174,10 @@ public class RevisionMojo extends AbstractMojo {
             SVNStatus status = statusClient.doStatus( entry.getPath(), false );
             return createVersionedEntryProperties( entry, status, statusClient );
         } catch ( SVNException e ) {
-            SVNErrorCode errorCode = e.getErrorMessage() == null ? null : e.getErrorMessage().getErrorCode();
-            if ( SVNErrorCode.WC_NOT_DIRECTORY.equals( errorCode ) ) {
-                if ( getLog().isDebugEnabled() ) {
-                    getLog().debug( e );
-                }
-                return createUnversionedEntryProperties();
-            } else {
-                if ( getLog().isErrorEnabled() ) {
-                    getLog().error( e );
-                }
-                return createSpecialEntryProperties( entry, statusClient );
+            if ( getLog().isDebugEnabled() ) {
+                getLog().debug( e );
             }
+            return createSpecialEntryProperties( entry, statusClient );
         }
     }
 
@@ -229,7 +222,7 @@ public class RevisionMojo extends AbstractMojo {
 
     private Map<String, Object> createSpecialEntryProperties( final Entry entry, SVNStatusClient statusClient ) throws MojoExecutionException {
         // hack: obtain the status of a single "problem" entry by asking the entry's parent
-        SpecialEntryStatusHandler entryStatusHandler = new SpecialEntryStatusHandler( entry.getPath().getName() );
+        SpecialEntryStatusHandler entryStatusHandler = new SpecialEntryStatusHandler( entry.getPath() );
         try {
             logDebugInfo( " collecting status information from the entry parent" );
             statusClient.doStatus( entry.getPath().getParentFile(),
@@ -238,7 +231,15 @@ public class RevisionMojo extends AbstractMojo {
                     entryStatusHandler,
                     null );
         } catch ( SVNException e ) {
-            throw new MojoExecutionException( e.getMessage(), e );
+            SVNErrorCode errorCode = e.getErrorMessage() == null ? null : e.getErrorMessage().getErrorCode();
+            if ( SVNErrorCode.WC_NOT_WORKING_COPY.equals( errorCode ) ) {
+                if ( getLog().isDebugEnabled() ) {
+                    getLog().debug( e );
+                }
+                return createUnversionedEntryProperties();
+            } else {
+                throw new MojoExecutionException( e.getMessage(), e );
+            }
         }
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -492,18 +493,18 @@ public class RevisionMojo extends AbstractMojo {
 
     private final class SpecialEntryStatusHandler extends AbstractStatusHandler {
 
-        private final String entryName;
+        private final File entryPath;
 
-        private SpecialEntryStatusHandler( String entryName ) {
-            if ( entryName == null ) {
-                throw new IllegalArgumentException( "entryName is null" );
+        private SpecialEntryStatusHandler( File entryPath ) {
+            if ( entryPath == null ) {
+                throw new IllegalArgumentException( "entryPath is null" );
             }
-            this.entryName = entryName;
+            this.entryPath = entryPath;
         }
 
         public void handleStatus( SVNStatus status ) {
             SVNEntry svnEntry = status.getEntry();
-            if ( svnEntry != null && entryName.equals( svnEntry.getName() ) ) {
+            if ( entryPath.equals( status.getFile() ) ) {
                 setRepositoryProperties( svnEntry );
                 appendStatus( status );
             }
