@@ -29,7 +29,7 @@ assert properties.revision == "1"
 assert properties.mixedRevisions == "false"
 assert properties.committedRevision == "1"
 assert properties.committedDate ==~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .*/
-assert properties.status == ""
-assert properties.specialStatus == ""
+assert properties.status == "A"
+assert properties.specialStatus == "A"
 
 return true
