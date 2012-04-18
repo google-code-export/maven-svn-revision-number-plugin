@@ -51,8 +51,7 @@
 
     <scm>
         <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/branches/svn7</connection>
-        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/branches/svn7
-        </developerConnection>
+        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/branches/svn7</developerConnection>
         <url>http://code.google.com/p/maven-svn-revision-number-plugin/source/browse</url>
     </scm>
 
@@ -98,13 +97,6 @@
             <artifactId>svnkit</artifactId>
             <version>1.7.4</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-utils</artifactId>
-            <version>3.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <repositories>
@@ -116,16 +108,6 @@
             </releases>
             <snapshots>
                 <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>tmatesoft-snapshots</id>
-            <url>http://maven.tmatesoft.com/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
@@ -195,7 +177,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.2.2</version>
                 <configuration>
-                    <releaseProfiles>sign-artifacts</releaseProfiles>
+                    <releaseProfiles>check-artifacts sign-artifacts</releaseProfiles>
                 </configuration>
             </plugin>
 
@@ -298,28 +280,6 @@
                     </reportPlugins>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>animal-sniffer-maven-plugin</artifactId>
-                <version>1.7</version>
-                <configuration>
-                    <signature>
-                        <groupId>org.codehaus.mojo.signature</groupId>
-                        <artifactId>java15</artifactId>
-                        <version>1.0</version>
-                    </signature>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>animal-sniffer</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -332,23 +292,56 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
                         <version>1.5</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy</artifactId>
+                                <version>1.8.6</version>
+                            </dependency>
+                        </dependencies>
                         <configuration>
                             <projectsDirectory>src/it</projectsDirectory>
                             <pomIncludes>
                                 <pomInclude>**/pom.xml</pomInclude>
                             </pomIncludes>
-                            <settingsFile>src/it/settings.xml</settingsFile>
-                            <localRepositoryPath>${project.build.directory}/it-repository</localRepositoryPath>
-                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                            <cloneAllFiles>true</cloneAllFiles>
+                            <preBuildHookScript>setup</preBuildHookScript>
+                            <postBuildHookScript>verify</postBuildHookScript>
                             <addTestClassPath>true</addTestClassPath>
-                            <streamLogs>true</streamLogs>
+                            <settingsFile>src/it/settings.xml</settingsFile>
+                            <cloneProjectsTo>target/it</cloneProjectsTo>
+                            <localRepositoryPath>target/it-repository</localRepositoryPath>
                         </configuration>
                         <executions>
                             <execution>
                                 <goals>
                                     <goal>install</goal>
                                     <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>check-artifacts</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>animal-sniffer-maven-plugin</artifactId>
+                        <version>1.7</version>
+                        <configuration>
+                            <signature>
+                                <groupId>org.codehaus.mojo.signature</groupId>
+                                <artifactId>java15</artifactId>
+                                <version>1.0</version>
+                            </signature>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
                                 </goals>
                             </execution>
                         </executions>
