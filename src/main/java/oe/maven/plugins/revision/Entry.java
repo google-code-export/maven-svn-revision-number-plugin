@@ -42,7 +42,7 @@ public class Entry {
     /** The prefix for entry properties. */
     private String prefix;
 
-    /** Specifies the depth of the entries whose status information should be collected. */
+    /** Specifies the depth of items below {@code path} whose status information should be collected. */
     private String depth = "infinity";
 
     /** Specifies whether to report items that are not under version control. */
@@ -65,7 +65,7 @@ public class Entry {
      * @param path the local path
      * @param prefix the properties prefix
      */
-    Entry( File path, String prefix ) {
+    public Entry( File path, String prefix ) {
         this.path = path;
         this.prefix = prefix;
     }
@@ -141,27 +141,6 @@ public class Entry {
      */
     public boolean reportOutOfDate() {
         return reportOutOfDate;
-    }
-
-
-    /**
-     * Validates the entry configuration.
-     *
-     * @throws MojoExecutionException if the entry configuration is invalid
-     */
-    public void validate() throws MojoExecutionException {
-        if ( path == null ) {
-            throw new MojoExecutionException( "entry path is not specified" );
-        }
-        if ( prefix == null ) {
-            throw new MojoExecutionException( "entry prefix is not specified" );
-        }
-        if ( depth == null ) {
-            throw new MojoExecutionException( "entry depth is not specified" );
-        }
-        if ( !"empty".equals( depth ) && !"files".equals( depth ) && !"immediates".equals( depth ) && !"infinity".equals( depth ) ) {
-            throw new MojoExecutionException( "entry depth is not one of {empty, files, immediates, infinity}" );
-        }
     }
 
 }
