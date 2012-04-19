@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.google.code.maven-svn-revision-number-plugin.it</groupId>
-    <artifactId>status-unversioned</artifactId>
+    <artifactId>wc6-status-unversioned</artifactId>
     <version>@pom.version@</version>
     <packaging>jar</packaging>
 

@@ -244,15 +244,16 @@ public class RevisionMojo extends AbstractMojo {
 
 
         public void receive( SvnTarget target, SvnStatus status ) throws SVNException {
-            logDebugInfo( format( "  %s%s%s %s%s%s  %6s %6s %6s  %s",
+            logDebugInfo( format( "  %s%s%s %s%s%s  %6s %6s %6s  %s (%s %s)",
                     status.getNodeStatus().getCode(), status.getPropertiesStatus().getCode(), status.getTextStatus().getCode(),
                     status.getRepositoryNodeStatus().getCode(), status.getRepositoryPropertiesStatus().getCode(), status.getRepositoryTextStatus().getCode(),
                     status.getRevision(), status.getChangedRevision(), status.getRepositoryChangedRevision(),
-                    target.getPathOrUrlString()
+                    target.getPathOrUrlString(),
+                    status.getRepositoryRootUrl(), status.getRepositoryRelativePath()
             ) );
 
             if ( repositoryRoot == null ) {
-                repositoryRoot = status.getRepositoryRootUrl().toString();
+                repositoryRoot = status.getRepositoryRootUrl() == null ? "" : status.getRepositoryRootUrl().toString();
                 repositoryPath = status.getRepositoryRelativePath();
             }
 
@@ -309,10 +310,9 @@ public class RevisionMojo extends AbstractMojo {
         }
 
         private String createStatusString( EntryStatusSymbols symbols ) {
-            Set<SVNStatusType> statusTypes = new HashSet<SVNStatusType>( localStatusTypes );
-
             StringBuilder status = new StringBuilder();
 
+            Set<SVNStatusType> statusTypes = new HashSet<SVNStatusType>( localStatusTypes );
             statusTypes.remove( SVNStatusType.STATUS_NONE );
             statusTypes.remove( SVNStatusType.STATUS_NORMAL );
             if ( statusTypes.remove( SVNStatusType.STATUS_ADDED ) ) {
@@ -348,7 +348,6 @@ public class RevisionMojo extends AbstractMojo {
             if ( statusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
                 status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_OBSTRUCTED ) );
             }
-
             if ( !statusTypes.isEmpty() ) {
                 if ( getLog().isWarnEnabled() ) {
                     getLog().warn( format( "the following svn statuses are not taken into account: %s", statusTypes ) );

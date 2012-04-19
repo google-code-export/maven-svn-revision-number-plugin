@@ -286,6 +286,9 @@
     <profiles>
         <profile>
             <id>integration-tests</id>
+            <!--
+            use -XX:MaxPermSize if getting failures related to Groovy+PermGen
+            -->
             <build>
                 <plugins>
                     <plugin>
@@ -310,6 +313,7 @@
                             <settingsFile>src/it/settings.xml</settingsFile>
                             <cloneProjectsTo>target/it</cloneProjectsTo>
                             <localRepositoryPath>target/it-repository</localRepositoryPath>
+                            <showErrors>true</showErrors>
                         </configuration>
                         <executions>
                             <execution>
