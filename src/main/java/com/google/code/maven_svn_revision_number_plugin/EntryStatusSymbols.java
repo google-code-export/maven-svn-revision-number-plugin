@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2009-2011, Oleg Estekhin
+ * Copyright (c) 2009-2012, Oleg Estekhin
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,7 @@
  * DAMAGE.
  */
 
-package oe.maven.plugins.revision;
+package com.google.code.maven_svn_revision_number_plugin;
 
 import org.tmatesoft.svn.core.wc.SVNStatusType;
 
