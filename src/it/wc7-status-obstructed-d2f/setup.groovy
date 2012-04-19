@@ -34,6 +34,11 @@ genericCheckout.run()
 
 println "  creating generic content"
 dir.mkdirs()
+if ( child.isDirectory() ) {
+    child.deleteDir()
+} else if ( child.isFile() ) {
+    child.delete()
+}
 child.mkdir()
 file << "content"
 
@@ -53,7 +58,7 @@ genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-child.delete()
+child.deleteDir()
 child << "obstructed"
 
 return true

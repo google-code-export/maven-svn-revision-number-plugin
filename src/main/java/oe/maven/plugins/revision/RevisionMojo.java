@@ -42,6 +42,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.tmatesoft.svn.core.SVNDepth;
+import org.tmatesoft.svn.core.SVNErrorCode;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
@@ -168,7 +169,9 @@ public class RevisionMojo extends AbstractMojo {
         try {
             status.run();
         } catch ( SVNException e ) {
-            if ( failOnError ) {
+            if ( e.getErrorMessage() != null && SVNErrorCode.WC_NOT_WORKING_COPY.equals( e.getErrorMessage().getErrorCode() ) ) {
+                statusHandler.resetProperties( true );
+            } else if ( failOnError ) {
                 throw new MojoExecutionException( e.getMessage(), e );
             } else {
                 if ( getLog().isErrorEnabled() ) {
@@ -283,6 +286,10 @@ public class RevisionMojo extends AbstractMojo {
         }
 
         public void resetProperties() {
+            resetProperties( false );
+        }
+
+        public void resetProperties( boolean forceUnversioned ) {
             repositoryRoot = null;
             repositoryPath = null;
 
@@ -294,6 +301,10 @@ public class RevisionMojo extends AbstractMojo {
 
             localStatusTypes = new HashSet<SVNStatusType>();
             outOfDate = false;
+
+            if ( forceUnversioned ) {
+                localStatusTypes.add( SVNStatusType.STATUS_UNVERSIONED );
+            }
         }
 
         public Map<String, Object> createProperties() {

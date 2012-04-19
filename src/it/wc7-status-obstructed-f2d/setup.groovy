@@ -33,6 +33,11 @@ genericCheckout.run()
 
 println "  creating generic content"
 dir.mkdirs()
+if ( file.isDirectory() ) {
+    file.deleteDir()
+} else if ( file.isFile() ) {
+    file.delete()
+}
 file << "content"
 
 def genericAdd = operationFactory.createScheduleForAddition()
