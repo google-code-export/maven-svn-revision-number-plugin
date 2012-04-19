@@ -23,7 +23,7 @@ def repositoryUrl = SVNRepositoryFactory.createLocalRepository( repositoryDir, n
 
 println "creating working copy"
 def operationFactory = new SvnOperationFactory()
-operationFactory.setPrimaryWcGeneration( SvnWcGeneration.V17 )
+operationFactory.setPrimaryWcGeneration( SvnWcGeneration.V16 )
 
 println "  checking out"
 def genericCheckout = operationFactory.createCheckout()
@@ -45,15 +45,12 @@ genericCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericCommit.setCommitMessage( "generic content" )
 genericCommit.run()
 
-def genericUpdate = operationFactory.createUpdate();
+def genericUpdate = operationFactory.createUpdate()
 genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-file << "modified"
-def testCommit = operationFactory.createCommit()
-testCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
-testCommit.setCommitMessage( "test content" )
-testCommit.run()
+file.delete()
+file.mkdir()
 
 return true

@@ -16,13 +16,22 @@ propertiesFile.withReader( "UTF-8" ) {
 
 println "checking properties"
 
-assert properties.repository =~ /\/repo$/
-assert properties.path == "directory"
-assert properties.revision == "1"
-assert properties.mixedRevisions == "false"
-assert properties.committedRevision == "1"
-assert properties.committedDate ==~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .*/
-assert properties.status == "?"
-assert properties.specialStatus == "u"
+assert properties[ "ignored.repository" ] =~ /\/repo$/
+assert properties[ "ignored.path" ] == "directory"
+assert properties[ "ignored.revision" ] == "1"
+assert properties[ "ignored.mixedRevisions" ] == "false"
+assert properties[ "ignored.committedRevision" ] == "1"
+assert properties[ "ignored.committedDate" ] ==~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .*/
+assert properties[ "ignored.status" ] == ""
+assert properties[ "ignored.specialStatus" ] == ""
+
+assert properties[ "reported.repository" ] =~ /\/repo$/
+assert properties[ "reported.path" ] == "directory"
+assert properties[ "reported.revision" ] == "1"
+assert properties[ "reported.mixedRevisions" ] == "false"
+assert properties[ "reported.committedRevision" ] == "1"
+assert properties[ "reported.committedDate" ] ==~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} .*/
+assert properties[ "reported.status" ] == "?"
+assert properties[ "reported.specialStatus" ] == "u"
 
 return true

@@ -29,7 +29,12 @@
                     <entries>
                         <entry>
                             <path>svn/wc/directory</path>
-                            <prefix>properties</prefix>
+                            <prefix>ignored</prefix>
+                            <reportUnversioned>false</reportUnversioned>
+                        </entry>
+                        <entry>
+                            <path>svn/wc/directory</path>
+                            <prefix>reported</prefix>
                         </entry>
                     </entries>
                     <verbose>true</verbose>

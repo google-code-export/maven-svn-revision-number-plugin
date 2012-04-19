@@ -45,15 +45,19 @@ genericCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericCommit.setCommitMessage( "generic content" )
 genericCommit.run()
 
-def genericUpdate = operationFactory.createUpdate();
+def genericUpdate = operationFactory.createUpdate()
 genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-file << "modified"
-def testCommit = operationFactory.createCommit()
-testCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
-testCommit.setCommitMessage( "test content" )
-testCommit.run()
+def removal = operationFactory.createScheduleForRemoval()
+removal.setSingleTarget( SvnTarget.fromFile( file ) )
+removal.run()
+
+file << "re-added"
+
+def addition = operationFactory.createScheduleForAddition()
+addition.setSingleTarget( SvnTarget.fromFile( file ) )
+addition.run()
 
 return true

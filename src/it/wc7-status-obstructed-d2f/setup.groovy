@@ -11,6 +11,7 @@ def repositoryDir = new File( tempDir, "repo" )
 def workingCopyDir = new File( tempDir, "wc" )
 
 def dir = new File( workingCopyDir, "directory" )
+def child = new File( dir, "child" )
 def file = new File( dir, "file.txt" )
 
 println "cleaning temp directory"
@@ -33,10 +34,12 @@ genericCheckout.run()
 
 println "  creating generic content"
 dir.mkdirs()
+child.mkdir()
 file << "content"
 
 def genericAdd = operationFactory.createScheduleForAddition()
 genericAdd.addTarget( SvnTarget.fromFile( dir ) )
+genericAdd.addTarget( SvnTarget.fromFile( child ) )
 genericAdd.addTarget( SvnTarget.fromFile( file ) )
 genericAdd.run()
 
@@ -45,15 +48,12 @@ genericCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericCommit.setCommitMessage( "generic content" )
 genericCommit.run()
 
-def genericUpdate = operationFactory.createUpdate();
+def genericUpdate = operationFactory.createUpdate()
 genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-file << "modified"
-def testCommit = operationFactory.createCommit()
-testCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
-testCommit.setCommitMessage( "test content" )
-testCommit.run()
+child.delete()
+child << "obstructed"
 
 return true

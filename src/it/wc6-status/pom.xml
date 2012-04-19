@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.google.code.maven-svn-revision-number-plugin.it</groupId>
-    <artifactId>wc7-status-unversioned</artifactId>
+    <artifactId>wc6-status</artifactId>
     <version>@pom.version@</version>
     <packaging>jar</packaging>
 
@@ -29,12 +29,7 @@
                     <entries>
                         <entry>
                             <path>svn/wc/directory</path>
-                            <prefix>ignored</prefix>
-                            <reportUnversioned>false</reportUnversioned>
-                        </entry>
-                        <entry>
-                            <path>svn/wc/directory</path>
-                            <prefix>reported</prefix>
+                            <prefix>properties</prefix>
                         </entry>
                     </entries>
                     <verbose>true</verbose>

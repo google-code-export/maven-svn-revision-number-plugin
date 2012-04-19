@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.google.code.maven-svn-revision-number-plugin.it</groupId>
-    <artifactId>wc6-status-normal</artifactId>
+    <artifactId>wc6-status-ignored</artifactId>
     <version>@pom.version@</version>
     <packaging>jar</packaging>
 
@@ -29,7 +29,12 @@
                     <entries>
                         <entry>
                             <path>svn/wc/directory</path>
-                            <prefix>properties</prefix>
+                            <prefix>ignored</prefix>
+                        </entry>
+                        <entry>
+                            <path>svn/wc/directory</path>
+                            <prefix>reported</prefix>
+                            <reportIgnored>true</reportIgnored>
                         </entry>
                     </entries>
                     <verbose>true</verbose>

@@ -1,8 +1,17 @@
-repository = ${properties.repository}
-path = ${properties.path}
-revision = ${properties.revision}
-mixedRevisions = ${properties.mixedRevisions}
-committedRevision = ${properties.committedRevision}
-committedDate = ${properties.committedDate}
-status = ${properties.status}
-specialStatus = ${properties.specialStatus}
+ignored.repository = ${ignored.repository}
+ignored.path = ${ignored.path}
+ignored.revision = ${ignored.revision}
+ignored.mixedRevisions = ${ignored.mixedRevisions}
+ignored.committedRevision = ${ignored.committedRevision}
+ignored.committedDate = ${ignored.committedDate}
+ignored.status = ${ignored.status}
+ignored.specialStatus = ${ignored.specialStatus}
+
+reported.repository = ${reported.repository}
+reported.path = ${reported.path}
+reported.revision = ${reported.revision}
+reported.mixedRevisions = ${reported.mixedRevisions}
+reported.committedRevision = ${reported.committedRevision}
+reported.committedDate = ${reported.committedDate}
+reported.status = ${reported.status}
+reported.specialStatus = ${reported.specialStatus}

@@ -51,9 +51,9 @@ genericUpdate.run()
 
 println "  creating test content"
 file << "modified"
-genericCommit = operationFactory.createCommit()
-genericCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
-genericCommit.setCommitMessage( "generic content" )
-genericCommit.run()
+def testCommit = operationFactory.createCommit()
+testCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
+testCommit.setCommitMessage( "test content" )
+testCommit.run()
 
 return true

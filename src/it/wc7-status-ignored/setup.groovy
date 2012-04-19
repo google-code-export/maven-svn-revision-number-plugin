@@ -1,3 +1,4 @@
+import org.tmatesoft.svn.core.SVNPropertyValue
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory
 import org.tmatesoft.svn.core.internal.wc2.SvnWcGeneration
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory
@@ -50,10 +51,18 @@ genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-file << "modified"
+def property = operationFactory.createSetProperty()
+property.setSingleTarget( SvnTarget.fromFile( dir ) )
+property.setPropertyName( "svn:ignore" )
+property.setPropertyValue( SVNPropertyValue.create( "ignored.txt" ) )
+property.run()
+
 def testCommit = operationFactory.createCommit()
 testCommit.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 testCommit.setCommitMessage( "test content" )
 testCommit.run()
+
+def ignoredFile = new File( dir, "ignored.txt" )
+ignoredFile << "ignored"
 
 return true
