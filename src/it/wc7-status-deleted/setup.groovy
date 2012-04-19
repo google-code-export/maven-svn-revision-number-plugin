@@ -50,7 +50,6 @@ genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-
 def removal = operationFactory.createScheduleForRemoval()
 removal.setSingleTarget( SvnTarget.fromFile( file ) )
 removal.run()

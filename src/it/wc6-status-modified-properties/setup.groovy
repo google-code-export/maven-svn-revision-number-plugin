@@ -1,3 +1,4 @@
+import org.tmatesoft.svn.core.SVNPropertyValue
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory
 import org.tmatesoft.svn.core.internal.wc2.SvnWcGeneration
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory
@@ -23,7 +24,7 @@ def repositoryUrl = SVNRepositoryFactory.createLocalRepository( repositoryDir, n
 
 println "creating working copy"
 def operationFactory = new SvnOperationFactory()
-operationFactory.setPrimaryWcGeneration( SvnWcGeneration.V17 )
+operationFactory.setPrimaryWcGeneration( SvnWcGeneration.V16 )
 
 println "  checking out"
 def genericCheckout = operationFactory.createCheckout()
@@ -50,6 +51,10 @@ genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-file << "modified"
+def property = operationFactory.createSetProperty()
+property.setSingleTarget( SvnTarget.fromFile( file ) )
+property.setPropertyName( "svn:mime-type" );
+property.setPropertyValue( SVNPropertyValue.create( "text/x-special-variant" ) )
+property.run()
 
 return true
