@@ -3,7 +3,7 @@
     ---
     Oleg Estekhin
     ---
-    2010-11-23
+    2012-04-19
     ---
 
 Usage
@@ -169,7 +169,7 @@ Usage
 
         The <<<prefix.status>>> will be empty if the entry has no local modifications.
 
-    * <<<prefix.specialStatus>>> will contain the same information as <<<prefix.status>>> except that it uses lower-case
+    * <<<prefix.specialStatus>>> will contain the same information as the <<<prefix.status>>> except that it uses lower-case
         letters instead of the characters that can not be used in the file names:
 
         * Unversioned items are reported using the <<<'u'>>> instead of the <<<'?'>>>.
@@ -184,7 +184,7 @@ Usage
         []
 
         The <<<prefix.specialStatus>>> will be empty if the entry has no local modifications.
-  
+
     []
 
     If the entry is not under version control then <<<prefix.repository>>> and <<<prefix.path>>> will be empty strings,
