@@ -1,4 +1,5 @@
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory
+import org.tmatesoft.svn.core.internal.wc2.SvnWcGeneration
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory
 import org.tmatesoft.svn.core.wc2.SvnTarget
@@ -22,6 +23,7 @@ def repositoryUrl = SVNRepositoryFactory.createLocalRepository( repositoryDir, n
 
 println "creating working copy"
 def operationFactory = new SvnOperationFactory()
+operationFactory.setPrimaryWcGeneration( SvnWcGeneration.V17 )
 
 println "  checking out"
 def genericCheckout = operationFactory.createCheckout()

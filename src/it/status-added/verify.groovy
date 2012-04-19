@@ -9,16 +9,9 @@ def file = new File( dir, "file.txt" )
 
 println "reading properties"
 def propertiesFile = new File( basedir, "target/classes/properties.txt" )
-
 def properties = new Properties();
-def reader = propertiesFile.newReader( "UTF-8" )
-try {
-    properties.load( reader );
-} finally {
-    try {
-        reader.close();
-    } catch ( IOException ignored ) {
-    }
+propertiesFile.withReader( "UTF-8" ) {
+    properties.load( it )
 }
 
 println "checking properties"

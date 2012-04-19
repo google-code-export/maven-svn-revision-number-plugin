@@ -50,7 +50,7 @@ genericUpdate.setSingleTarget( SvnTarget.fromFile( workingCopyDir ) )
 genericUpdate.run()
 
 println "  creating test content"
-
-file << "modified"
+def unversionedFile = new File( dir, "unversioned.txt" )
+unversionedFile << "unversioned"
 
 return true

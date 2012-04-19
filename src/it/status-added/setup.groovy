@@ -1,6 +1,10 @@
+import org.tmatesoft.svn.core.SVNDepth
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory
+import org.tmatesoft.svn.core.internal.wc2.SvnWcGeneration
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory
+import org.tmatesoft.svn.core.wc2.SvnInfo
 import org.tmatesoft.svn.core.wc2.SvnOperationFactory
+import org.tmatesoft.svn.core.wc2.SvnStatus
 import org.tmatesoft.svn.core.wc2.SvnTarget
 
 def tempDir = new File( basedir, "svn" )
@@ -22,6 +26,7 @@ def repositoryUrl = SVNRepositoryFactory.createLocalRepository( repositoryDir, n
 
 println "creating working copy"
 def operationFactory = new SvnOperationFactory()
+operationFactory.setPrimaryWcGeneration( SvnWcGeneration.V17 )
 
 println "  checking out"
 def genericCheckout = operationFactory.createCheckout()
@@ -54,5 +59,27 @@ addedFile << "added"
 def add = operationFactory.createScheduleForAddition()
 add.addTarget( SvnTarget.fromFile( addedFile ) )
 add.run()
+
+
+println "debug"
+println "info"
+def info = operationFactory.createGetInfo()
+info.setSingleTarget( SvnTarget.fromFile( dir ) )
+info.setDepth( SVNDepth.INFINITY )
+def run = info.run( new ArrayList<SvnInfo>() )
+run.each {
+    println it
+    println "  " + it.getRepositoryRootUrl() + " " + it.getRevision() + " " + it.getUrl()
+}
+
+println "status"
+def status = operationFactory.createGetStatus()
+status.setSingleTarget( SvnTarget.fromFile( dir ) )
+status.setDepth( SVNDepth.INFINITY )
+def run1 = status.run( new ArrayList<SvnStatus>() )
+run1.each {
+    println it
+    println "  " + it.getRepositoryRootUrl() + " " + it.getRevision() + " " + it.getPath() + " " + it.getNodeStatus() + " " + it.getPropertiesStatus() + " " + it.getTextStatus()
+}
 
 return true

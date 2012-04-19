@@ -124,27 +124,24 @@ public class RevisionMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         if ( entries == null ) {
-            logDebug( "the entries configuration is missing, using default values" );
-            // defaulting to the path = project.basedir, prefix = project.artifactId, depth = infinity, reporting unversioned
+            logDebug( "configuration/entries is not specified, using default entry" );
             entries = new Entry[] {
                     new Entry( project.getBasedir(), project.getArtifactId() ),
             };
         } else if ( entries.length == 0 ) {
-            throw new MojoExecutionException( "the entries configuration list is empty" );
+            throw new MojoExecutionException( "configuration/entries is empty" );
         }
 
         SVNStatusClient statusClient = SVNClientManager.newInstance().getStatusClient();
 
         for ( Entry entry : entries ) {
             if ( entry.getPath() == null ) {
-                logDebug( "the entry path is not specified, using project.basedir: " + project.getBasedir() );
                 entry.setPath( project.getBasedir() );
             }
-            logInfo( "inspecting " + entry.getPath() + ( entry.getPath().isFile() ? " (file)" : entry.getPath().isDirectory() ? " (directory)" : " (unknown)" ) );
             if ( entry.getPrefix() == null ) {
-                logDebug( "the entry prefix is not specified, using project.artifactId: " + project.getArtifactId() );
                 entry.setPrefix( project.getArtifactId() );
             }
+            logInfo( "inspecting " + entry.getPath() + ( entry.getPath().isFile() ? " (file)" : entry.getPath().isDirectory() ? " (directory)" : " (unknown)" ) );
             logDebugInfo( "  prefix = " + entry.getPrefix() );
             logDebugInfo( "  depth = " + entry.getDepth() );
             logDebugInfo( "  report unversioned = " + entry.reportUnversioned() );
@@ -256,7 +253,7 @@ public class RevisionMojo extends AbstractMojo {
 
 
     private void setProjectProperties( String prefix, Map<String, Object> entryProperties ) {
-        logDebugInfo( " setting properties" );
+        logDebugInfo( "setting properties" );
         for ( Map.Entry<String, Object> entryProperty : entryProperties.entrySet() ) {
             setProjectProperty( prefix + '.' + entryProperty.getKey(), String.valueOf( entryProperty.getValue() ) );
         }
@@ -265,7 +262,7 @@ public class RevisionMojo extends AbstractMojo {
     private void setProjectProperty( String name, String value ) {
         Properties projectProperties = project.getProperties();
         if ( projectProperties.getProperty( name ) != null ) {
-            logWarning( "the \"" + name + "\" property is already defined, its value will be overwritten. Consider another value for the entry properties prefix." );
+            logWarning( "the \"" + name + "\" property is already defined and will be overwritten. Consider another value for the entry properties prefix." );
         }
         projectProperties.setProperty( name, value );
         logDebugInfo( "  " + name + " = " + value );
