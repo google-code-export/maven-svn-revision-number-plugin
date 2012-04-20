@@ -21,7 +21,7 @@
 
     <licenses>
         <license>
-            <name>New BSD License</name>
+            <name>The BSD 2-Clause License</name>
             <url>${basedir}/license.txt</url>
             <distribution>repo</distribution>
         </license>
