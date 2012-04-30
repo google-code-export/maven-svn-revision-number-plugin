@@ -3,8 +3,9 @@
     ---
     Oleg Estekhin
     ---
-    2010-11-23
+    2012-04-20
     ---
+    #set( $D = '$' )
 
 Usage
 
@@ -14,7 +15,7 @@ Usage
 
 * Running the plugin automatically during the build
 
-    By default, the <<<revision>>> goal is bound to the <<<initialize>>> phase. Below is a sample <<<pom.xml>>> for
+    By default, the <<<revision>>> goal is bound to the <<<initialize>>> phase. Below is a sample <<<pom.xml>>> fragment for
     running the <<<revision>>> goal every time the project is built:
 
 +---
@@ -25,7 +26,7 @@ Usage
             <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <version>${project.version}</version> <!-- please use the latest version -->
                 <executions>
                     <execution>
                         <goals>
@@ -34,7 +35,7 @@ Usage
                     </execution>
                 </executions>
                 <configuration>
-                    <!-- put your configurations here -->
+                    <!-- put required configuration here -->
                 </configuration>
             </plugin>
         </plugins>
@@ -56,28 +57,28 @@ Usage
 <configuration>
     <entries>
         <entry>
-            <path>\${project.basedir}</path>
-            <prefix>\${project.artifactId}</prefix>
+            <path>${D}{project.basedir}</path>
+            <prefix>${D}{project.artifactId}</prefix>
             <depth>infinity</depth>
             <reportUnversioned>true</reportUnversioned>
             <reportIgnored>false</reportIgnored>
             <reportOutOfDate>false</reportOutOfDate>
-        <entry>
+        </entry>
     </entries>
 </configuration>
 +---
 
     Each entry can specify its own parameters:
 
-    * <<<path>>> is the local path to a file or a directory whose status will be inspected.\
+    * <<path>> is the local path to a file or a directory whose status will be inspected.\
         The default value is the project's <<<basedir>>>.
 
-    * <<<prefix>>> is the prefix for the properties that will contain the entry status.\
+    * <<prefix>> is the prefix for the properties that will contain the entry status.\
         If two or more entries use the same prefix then the plugin will emit a warning and the values of the output properties
         with that prefix will be determined by the last checked entry.\
         The default value is the project's <<<artifactId>>>.
 
-    * <<<depth>>> specifies the depth of the entries whose status information should be collected. The possible values
+    * <<depth>> specifies the depth of the entries whose status information should be collected. The possible values
         are:
 
         * <<<empty>>> - checks the status of the target entry only.
@@ -93,17 +94,17 @@ Usage
         []
 
         The default value is <<<infinity>>>. The semantics of the <<<depth>>> parameter are consistent with the Subversion
-        {{{http://svnbook.red-bean.com/nightly/en/svn.advanced.sparsedirs.html}depth}} option.
+        {{{http://svnbook.red-bean.com/en/1.7/svn.advanced.sparsedirs.html}depth}} option.
 
-    * <<<reportUnversioned>>> specifies whether to report items that are not under version control.\
+    * <<reportUnversioned>> specifies whether to report items that are not under version control.\
         The default value is <<<true>>>.
 
-    * <<<reportIgnored>>> specifies whether to report items that were set to be
-        {{{http://svnbook.red-bean.com/nightly/en/svn.advanced.props.special.ignore.html}ignored}} either in the global
+    * <<reportIgnored>> specifies whether to report items that were set to be
+        {{{http://svnbook.red-bean.com/en/1.7/svn.advanced.props.special.ignore.html}ignored}} either in the global
         Subversion configuration or by the <<<svn:ignore>>> property.\
         The default value is <<<false>>>.
 
-    * <<<reportOutOfDate>>> specifies whether to report items that are out of date. If this option is enabled then
+    * <<reportOutOfDate>> specifies whether to report items that are out of date. If this option is enabled then
         the plugin will check the repository for modifications.\
         The default value is <<<false>>>.
 
@@ -113,25 +114,25 @@ Usage
 
     For each configured entry the plugin will set a number of project properties:
 
-    * <<<prefix.repository>>> will contain the remote repository root.
+    * <<prefix.repository>> will contain the remote repository root.
 
-    * <<<prefix.path>>> will contain the entry path relative to the root of the remote repository.
+    * <<prefix.path>> will contain the entry path relative to the root of the remote repository.
 
-    * <<<prefix.revision>>> will contain the current revision number of the entry in the working copy.\
-        The value of this property can be safely used as an argument for <<<java.lang.Long.parseLong(String)>>> method.
+    * <<prefix.revision>> will contain the current revision number of the entry in the working copy.\
+        The value of this property can be safely used as an argument for the <<<java.lang.Long.parseLong(String)>>> method.
 
-    * <<<prefix.mixedRevisions>>> will indicate whether the working copy below the entry path contains
-        {{{http://svnbook.red-bean.com/nightly/en/svn.basic.in-action.html#svn.basic.in-action.mixedrevs}mixed revisions}}.\
-        The value of this property can be safely used as an argument for <<<java.lang.Boolean.parseBoolean(String)>>> method.
+    * <<prefix.mixedRevisions>> will indicate whether the working copy below the entry path contains
+        {{{http://svnbook.red-bean.com/en/1.7/svn.basic.in-action.html#svn.basic.in-action.mixedrevs}mixed revisions}}.\
+        The value of this property can be safely used as an argument for the <<<java.lang.Boolean.parseBoolean(String)>>> method.
 
-    * <<<prefix.committedRevision>>> will contain the revision number when the entry was last changed (committed).\
-        The value of this property can be safely used as an argument for <<<java.lang.Long.parseLong(String)>>> method.
+    * <<prefix.committedRevision>> will contain the revision number when the entry was last changed (committed).\
+        The value of this property can be safely used as an argument for the <<<java.lang.Long.parseLong(String)>>> method.
 
-    * <<<prefix.committedDate>>> will contain the date when the entry was last changed (committed).\
-        The date is formatted by <<<String.format( Locale.ENGLISH, "%tF %<tT %<tz (%<ta, %<td %<tb %<tY)", date )>>> which
+    * <<prefix.committedDate>> will contain the date when the entry was last changed (committed).\
+        The date is formatted by the <<<String.format( Locale.ENGLISH, "%tF %\<tT %\<tz (%\<ta, %\<td %\<tb %\<tY)", date )>>> call which
         produces strings like <<<2010-06-18 19:51:59 +0300 (Fri, 18 Jun 2010)>>>.
 
-    * <<<prefix.status>>> will contain a set of characters describing the status of the entry:
+    * <<prefix.status>> will contain a set of characters describing the status of the entry:
 
         * <<<'A'>>> - some item in the working copy is scheduled for addition to the repository.
 
@@ -165,11 +166,11 @@ Usage
         []
 
         The status characters for <<<prefix.status>>> property are consistent with the output of the
-        {{{http://svnbook.red-bean.com/nightly/en/svn.ref.svn.c.status.html}svn status}} command.
+        {{{http://svnbook.red-bean.com/en/1.7/svn.ref.svn.c.status.html}svn status}} command.
 
         The <<<prefix.status>>> will be empty if the entry has no local modifications.
 
-    * <<<prefix.specialStatus>>> will contain the same information as <<<prefix.status>>> except that it uses lower-case
+    * <<prefix.specialStatus>> will contain the same information as the <<<prefix.status>>> except that it uses lower-case
         letters instead of the characters that can not be used in the file names:
 
         * Unversioned items are reported using the <<<'u'>>> instead of the <<<'?'>>>.
@@ -184,21 +185,21 @@ Usage
         []
 
         The <<<prefix.specialStatus>>> will be empty if the entry has no local modifications.
-  
+
     []
 
-    If the entry is not under version control then <<<prefix.repository>>> and <<<prefix.path>>> will be empty strings,
-    <<<prefix.revision>>> and <<<prefix.committedRevision>>> will be set to <<<"-1">>>, <<<prefix.committedDate>>> will
-    be empty string, <<<prefix.mixedRevisions>>> will be set to <<<"false">>>, <<<prefix.status>>> to <<<"?">>> and
-    <<<prefix.specialStatus>>> to <<<"u">>>.
+    If the entry is not under version control then the <<<prefix.repository>>> and the <<<prefix.path>>> will be empty strings,
+    the <<<prefix.revision>>> and the <<<prefix.committedRevision>>> will be set to <<<"-1">>>, the <<<prefix.committedDate>>> will
+    be empty string, the <<<prefix.mixedRevisions>>> will be set to <<<"false">>>, the <<<prefix.status>>> to <<<"?">>> and
+    the <<<prefix.specialStatus>>> to <<<"u">>>.
 
-    If the entry path denotes a file or if the <<<depth>>> parameter is equal to <<<empty>>> then the output properties
-    will represent the status of the entry itself and <<<prefix.status>>> and <<<prefix.specialStatus>>> will contain at
+    If the entry path denotes a file or if the <<<depth>>> value is <<<empty>>> then the output properties
+    will represent the status of the entry itself and the <<<prefix.status>>> and the <<<prefix.specialStatus>>> will contain at
     most one character.
 
-    If the entry path denotes a directory and the <<<depth>>> parameter is one of <<<files>>>, <<<immediates>>> or
-    <<<infinity>>> then <<<prefix.revision>>> will be set to the maximum revision number found inside the entry directory,
+    If the entry path denotes a directory and the <<<depth>>> value is one of <<<files>>>, <<<immediates>>> or
+    <<<infinity>>> then the <<<prefix.revision>>> will be set to the maximum revision number found inside the entry directory,
     the <<<prefix.committedRevision>>> will be set to the maximum last committed revision number found inside the entry
-    directory and <<<prefix.committedDate>>> will be set to the timestamp of that revision, and <<<prefix.status>>> and
-    <<<prefix.specialStatus>>> will contain a set of characters that describe all statuses encountered inside the entry
+    directory and the <<<prefix.committedDate>>> will be set to the timestamp of that revision, the <<<prefix.status>>> and
+    the <<<prefix.specialStatus>>> will contain a set of characters that describe all statuses encountered inside the entry
     directory.
