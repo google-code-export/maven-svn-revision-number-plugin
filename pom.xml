@@ -4,7 +4,7 @@
 
     <groupId>com.google.code.maven-svn-revision-number-plugin</groupId>
     <artifactId>svn-revision-number-maven-plugin</artifactId>
-    <version>1.11-SVN7-SNAPSHOT</version>
+    <version>1.11-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Maven SVN Revision Number Plugin</name>
@@ -50,8 +50,8 @@
     </prerequisites>
 
     <scm>
-        <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/branches/svn7</connection>
-        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/branches/svn7</developerConnection>
+        <connection>scm:svn:http://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</connection>
+        <developerConnection>scm:svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/trunk</developerConnection>
         <url>http://code.google.com/p/maven-svn-revision-number-plugin/source/browse</url>
     </scm>
 
@@ -62,12 +62,12 @@
 
     <distributionManagement>
         <repository>
-            <id>maven-svn-revision-number-plugin.googlecode.com</id>
-            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/releases</url>
+            <id>oss.sonatype.org</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
-            <id>maven-svn-revision-number-plugin.googlecode.com</id>
-            <url>svn:https://maven-svn-revision-number-plugin.googlecode.com/svn/m2/snapshots</url>
+            <id>oss.sonatype.org</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <site>
             <id>local</id>
@@ -95,22 +95,9 @@
         <dependency>
             <groupId>org.tmatesoft.svnkit</groupId>
             <artifactId>svnkit</artifactId>
-            <version>1.7.4</version>
+            <version>1.7.4-v1</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>tmatesoft-releases</id>
-            <url>http://maven.tmatesoft.com/content/repositories/releases/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
@@ -128,7 +115,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>2.4</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -164,18 +151,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.7</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.google.code.maven-svn-wagon</groupId>
-                        <artifactId>maven-svn-wagon</artifactId>
-                        <version>1.4</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.2.2</version>
+                <version>2.3</version>
                 <configuration>
                     <releaseProfiles>check-artifacts sign-artifacts</releaseProfiles>
                 </configuration>
@@ -216,7 +196,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.1</version>
                 <configuration>
                     <reportPlugins>
                         <plugin>
