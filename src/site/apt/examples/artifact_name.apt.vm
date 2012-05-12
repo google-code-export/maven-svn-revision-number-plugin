@@ -3,8 +3,9 @@
     ---
     Oleg Estekhin
     ---
-    2010-11-23
+    2012-04-20
     ---
+    #set( $D = '$' )
 
 Adding the revision number to the project artifact name
 
@@ -17,14 +18,14 @@ Adding the revision number to the project artifact name
     ...
     <build>
         ...
-        <!-- <finalName>\${project.artifactId}-\${project.version}</finalName> -->
-        <finalName>\${project.artifactId}-\${project.version}-r${prefix.revision}${prefix.specialStatus}</finalName>
+        <!-- <finalName>${D}{project.artifactId}-${D}{project.version}</finalName> -->
+        <finalName>${D}{project.artifactId}-${D}{project.version}-r${D}{prefix.revision}${D}{prefix.specialStatus}</finalName>
         ...
         <plugins>
             <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <version>${project.version}</version> <!-- please use the latest version -->
                 <executions>
                     <execution>
                         <goals>

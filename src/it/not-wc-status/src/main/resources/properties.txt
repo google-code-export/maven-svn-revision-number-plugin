@@ -1,0 +1,8 @@
+repository = ${properties.repository}
+path = ${properties.path}
+revision = ${properties.revision}
+mixedRevisions = ${properties.mixedRevisions}
+committedRevision = ${properties.committedRevision}
+committedDate = ${properties.committedDate}
+status = ${properties.status}
+specialStatus = ${properties.specialStatus}

@@ -3,24 +3,25 @@
     ---
     Oleg Estekhin
     ---
-    2010-11-23
+    2012-04-20
     ---
+    #set( $D = '$' )
 
 Storing output properties in the resource file
 
-    The status properties can be stored to the file using the resource filtering mechanism.
+    The status properties can be stored into the file using the resource filtering mechanism.
 
-    Create the resource file <<<src/main/resources/revision.txt>>> containing references to the revision properties:
+    Create the resource file <<<src/main/resources/revision.txt>>> with references to the revision properties:
 
 +---
-repository = ${prefix.repository}
-path = ${prefix.path}
-revision = ${prefix.revision}
-mixedRevisions = ${prefix.mixedRevisions}
-committedRevision = ${prefix.committedRevision}
-committedDate = ${prefix.committedDate}
-status = ${prefix.status}
-specialStatus = ${prefix.specialStatus}
+repository = ${D}{prefix.repository}
+path = ${D}{prefix.path}
+revision = ${D}{prefix.revision}
+mixedRevisions = ${D}{prefix.mixedRevisions}
+committedRevision = ${D}{prefix.committedRevision}
+committedDate = ${D}{prefix.committedDate}
+status = ${D}{prefix.status}
+specialStatus = ${D}{prefix.specialStatus}
 +---
 
     Enable resource filtering:
@@ -53,7 +54,7 @@ specialStatus = ${prefix.specialStatus}
             <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>${project.artifactId}</artifactId>
-                <version>${project.version}</version>
+                <version>${project.version}</version> <!-- please use the latest version -->
                 <executions>
                     <execution>
                         <goals>
