@@ -16,8 +16,8 @@ propertiesFile.withReader( "UTF-8" ) {
 
 println "checking properties"
 
-//assert properties.repository =~ /\/repo$/
-//assert properties.path == "directory"
+assert properties.repository =~ /\/repo$/
+assert properties.path == "directory"
 assert properties.revision == "2"
 assert properties.mixedRevisions == "true"
 assert properties.committedRevision == "2"

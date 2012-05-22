@@ -16,8 +16,8 @@ propertiesFile.withReader( "UTF-8" ) {
 
 println "checking properties"
 
-//assert properties[ "ignored.repository" ] =~ /\/repo$/
-//assert properties[ "ignored.path" ] == "directory"
+assert properties[ "ignored.repository" ] =~ /\/repo$/
+assert properties[ "ignored.path" ] == "directory"
 assert properties[ "ignored.revision" ] == "2"
 assert properties[ "ignored.mixedRevisions" ] == "true"
 assert properties[ "ignored.committedRevision" ] == "2"
@@ -25,8 +25,8 @@ assert properties[ "ignored.committedDate" ] ==~ /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}
 assert properties[ "ignored.status" ] == ""
 assert properties[ "ignored.specialStatus" ] == ""
 
-//assert properties[ "reported.repository" ] =~ /\/repo$/
-//assert properties[ "reported.path" ] == "directory"
+assert properties[ "reported.repository" ] =~ /\/repo$/
+assert properties[ "reported.path" ] == "directory"
 assert properties[ "reported.revision" ] == "2"
 assert properties[ "reported.mixedRevisions" ] == "true"
 assert properties[ "reported.committedRevision" ] == "2"
