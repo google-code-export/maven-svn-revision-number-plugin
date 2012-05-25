@@ -44,7 +44,6 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
-import org.tmatesoft.svn.core.internal.wc2.SvnWcGeneration;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
 import org.tmatesoft.svn.core.wc2.ISvnObjectReceiver;
@@ -159,34 +158,9 @@ public class RevisionMojo extends AbstractMojo {
         SvnOperationFactory operationFactory = new SvnOperationFactory();
         StatusHandler statusHandler = new StatusHandler( entry );
         try {
-            SvnWcGeneration wcGeneration = SvnOperationFactory.detectWcGeneration( entry.getPath(), true );
-            switch ( wcGeneration ) {
-                case V16:
-                    logDebugInfo( "  wc format = 1.6" );
-                    break;
-                case V17:
-                    logDebugInfo( "  wc format = 1.7" );
-                    break;
-                default:
-                    logDebugInfo( "  wc format = unknown" );
-                    break;
-            }
-
-            SvnGetInfo infoOperation = operationFactory.createGetInfo();
-            infoOperation.setSingleTarget( SvnTarget.fromFile( entry.getPath() ) );
-            SvnInfo infoResult = infoOperation.run();
-            statusHandler.repositoryRoot = infoResult.getRepositoryRootUrl().toString();
-            statusHandler.repositoryPath = infoResult.getUrl().toString().substring( statusHandler.repositoryRoot.length() + 1 );
-
-            SvnGetStatus statusOperation = operationFactory.createGetStatus();
-            statusOperation.setSingleTarget( SvnTarget.fromFile( entry.getPath() ) );
-            statusOperation.setDepth( SVNDepth.fromString( entry.getDepth() ) );
-            statusOperation.setRevision( SVNRevision.WORKING );
-            statusOperation.setReportAll( true );
-            statusOperation.setReportIgnored( entry.reportIgnored() );
-            statusOperation.setRemote( entry.reportOutOfDate() );
-            statusOperation.setReceiver( statusHandler );
-            statusOperation.run();
+            logDebugInfo( format( "  wc format = %s", SvnOperationFactory.detectWcGeneration( entry.getPath(), true ) ) );
+            fillStatus( entry, operationFactory, statusHandler );
+            fillInfo( entry, operationFactory, statusHandler );
         } catch ( SVNException e ) {
             if ( e.getErrorMessage() != null && ( SVNErrorCode.WC_NOT_WORKING_COPY.equals( e.getErrorMessage().getErrorCode() ) || SVNErrorCode.WC_PATH_NOT_FOUND.equals( e.getErrorMessage().getErrorCode() ) ) ) {
                 statusHandler.resetProperties( true );
@@ -200,6 +174,29 @@ public class RevisionMojo extends AbstractMojo {
             }
         }
         setProjectProperties( entry.getPrefix(), statusHandler.createProperties() );
+    }
+
+
+    private void fillStatus( Entry entry, SvnOperationFactory operationFactory, StatusHandler statusHandler ) throws SVNException {
+        SvnGetStatus statusOperation = operationFactory.createGetStatus();
+        statusOperation.setSingleTarget( SvnTarget.fromFile( entry.getPath() ) );
+        statusOperation.setDepth( SVNDepth.fromString( entry.getDepth() ) );
+        statusOperation.setRevision( SVNRevision.WORKING );
+        statusOperation.setReportAll( true );
+        statusOperation.setReportIgnored( entry.reportIgnored() );
+        statusOperation.setRemote( entry.reportOutOfDate() );
+        statusOperation.setReceiver( statusHandler );
+        statusOperation.run();
+    }
+
+    private void fillInfo( Entry entry, SvnOperationFactory operationFactory, StatusHandler statusHandler ) throws SVNException {
+        if ( statusHandler.repositoryPath == null || statusHandler.repositoryPath.isEmpty() ) {
+            SvnGetInfo infoOperation = operationFactory.createGetInfo();
+            infoOperation.setSingleTarget( SvnTarget.fromFile( entry.getPath() ) );
+            SvnInfo infoResult = infoOperation.run();
+            statusHandler.repositoryRoot = infoResult.getRepositoryRootUrl().toString();
+            statusHandler.repositoryPath = infoResult.getUrl().toString().substring( statusHandler.repositoryRoot.length() + 1 );
+        }
     }
 
 
