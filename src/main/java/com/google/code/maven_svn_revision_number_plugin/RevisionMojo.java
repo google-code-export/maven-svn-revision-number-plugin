@@ -211,7 +211,11 @@ public class RevisionMojo extends AbstractMojo {
         Properties projectProperties = project.getProperties();
         if ( projectProperties.getProperty( name ) != null ) {
             if ( getLog().isWarnEnabled() ) {
-                getLog().warn( format( "the \"%s\" property is already defined and will be overwritten. Consider another value for the entry prefix.", name ) );
+                getLog().warn( format( "the \"%s\" property is already defined and will be overwritten. The possible causes for this are:" +
+                        "  1) the plugin configuration contains two or more entries with the same prefix.%n" +
+                        "  2) the plugin runs multiple times with the same configuration.%n" +
+                        "  3) the property is already defined in the POM or by some other plugin.%n",
+                        name ) );
             }
         }
         projectProperties.setProperty( name, value );
