@@ -190,7 +190,7 @@ public class RevisionMojo extends AbstractMojo {
     }
 
     private void fillInfo( Entry entry, SvnOperationFactory operationFactory, StatusHandler statusHandler ) throws SVNException {
-        if ( statusHandler.repositoryPath == null || statusHandler.repositoryPath.isEmpty() ) {
+        if ( statusHandler.repositoryPath == null || statusHandler.repositoryPath.length() == 0 ) {
             SvnGetInfo infoOperation = operationFactory.createGetInfo();
             infoOperation.setSingleTarget( SvnTarget.fromFile( entry.getPath() ) );
             SvnInfo infoResult = infoOperation.run();
