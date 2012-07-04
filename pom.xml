@@ -285,8 +285,11 @@
                         <configuration>
                             <projectsDirectory>src/it</projectsDirectory>
                             <pomIncludes>
-                                <pomInclude>**/pom.xml</pomInclude>
+                                <pomInclude>*/pom.xml</pomInclude>
                             </pomIncludes>
+                            <pomExcludes>
+                                <pomExclude>parallel/pom.xml</pomExclude>
+                            </pomExcludes>
                             <preBuildHookScript>setup</preBuildHookScript>
                             <postBuildHookScript>verify</postBuildHookScript>
                             <addTestClassPath>true</addTestClassPath>
