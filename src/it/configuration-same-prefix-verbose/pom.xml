@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.google.code.maven-svn-revision-number-plugin.it</groupId>
-    <artifactId>configuration-same-prefix</artifactId>
+    <artifactId>configuration-same-prefix-verbose</artifactId>
     <version>@pom.version@</version>
     <packaging>jar</packaging>
 
@@ -36,7 +36,7 @@
                             <prefix>properties</prefix>
                         </entry>
                     </entries>
-                    <verbose>false</verbose>
+                    <verbose>true</verbose>
                 </configuration>
                 <executions>
                     <execution>

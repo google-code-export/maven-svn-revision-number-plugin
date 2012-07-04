@@ -76,7 +76,7 @@ public class RevisionMojo extends AbstractMojo {
     /**
      * The maven project.
      *
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @readonly
      */
     private MavenProject project;
@@ -117,7 +117,7 @@ public class RevisionMojo extends AbstractMojo {
     /**
      * Specifies whether the build should stop or continue if there are errors related to obtaining the svn revision.
      *
-     * @parameter expression="${svn-revision-number.failOnError}" default-value="true"
+     * @parameter property="svn-revision-number.failOnError" default-value="true"
      */
     private boolean failOnError;
 
@@ -210,13 +210,11 @@ public class RevisionMojo extends AbstractMojo {
     private void setProjectProperty( String name, String value ) {
         Properties projectProperties = project.getProperties();
         if ( projectProperties.getProperty( name ) != null ) {
-            if ( getLog().isWarnEnabled() ) {
-                getLog().warn( format( "the \"%s\" property is already defined and will be overwritten. The possible causes for this are:%n" +
-                        "  - the plugin configuration contains two or more entries with the same prefix.%n" +
-                        "  - the plugin runs multiple times with the same configuration.%n" +
-                        "  - the property is already defined in the POM or by some other plugin.",
-                        name ) );
-            }
+            logDebugWarning( format( "the \"%s\" property is already defined and will be overwritten. The possible causes for this are:%n" +
+                    "  - the plugin configuration contains two or more entries with the same prefix.%n" +
+                    "  - the plugin runs multiple times with the same configuration.%n" +
+                    "  - the property is already defined in the POM or by some other plugin.",
+                    name ) );
         }
         projectProperties.setProperty( name, value );
         logDebugInfo( format( "  %s = %s", name, value ) );
@@ -227,6 +225,18 @@ public class RevisionMojo extends AbstractMojo {
         if ( verbose ) {
             if ( getLog().isInfoEnabled() ) {
                 getLog().info( message );
+            }
+        } else {
+            if ( getLog().isDebugEnabled() ) {
+                getLog().debug( message );
+            }
+        }
+    }
+
+    private void logDebugWarning( CharSequence message ) {
+        if ( verbose ) {
+            if ( getLog().isWarnEnabled() ) {
+                getLog().warn( message );
             }
         } else {
             if ( getLog().isDebugEnabled() ) {
