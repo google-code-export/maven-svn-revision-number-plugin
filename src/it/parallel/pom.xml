@@ -17,6 +17,17 @@
         <module>module-7</module>
         <module>module-8</module>
         <module>module-9</module>
+
+        <module>module-a</module>
+        <module>module-b</module>
+        <module>module-c</module>
+        <module>module-d</module>
+        <module>module-e</module>
+        <module>module-f</module>
+        <module>module-g</module>
+        <module>module-h</module>
+        <module>module-i</module>
+        <module>module-j</module>
     </modules>
 
     <properties>
