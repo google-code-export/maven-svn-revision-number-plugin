@@ -71,7 +71,7 @@
         </snapshotRepository>
         <site>
             <id>local</id>
-            <url>file://${user.home}/maven/deploy/${project.groupId}/site</url>
+            <url>file://${basedir}/target/site-deploy</url>
         </site>
     </distributionManagement>
 
