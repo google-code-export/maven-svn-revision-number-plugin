@@ -172,6 +172,8 @@ public class RevisionMojo extends AbstractMojo {
                 }
                 statusHandler.resetProperties();
             }
+        } finally {
+            operationFactory.dispose();
         }
         setProjectProperties( entry.getPrefix(), statusHandler.createProperties() );
     }
