@@ -154,6 +154,7 @@ public class RevisionMojo extends AbstractMojo {
 
     private void processEntry( Entry entry ) throws MojoExecutionException {
         if ( getLog().isInfoEnabled() ) {
+            // todo remove debug thread name
             getLog().info( format( "[%s] inspecting %s %s", Thread.currentThread().getName(), entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
         }
         logDebugInfo( format( "  prefix = %s", entry.getPrefix() ) );
@@ -170,6 +171,11 @@ public class RevisionMojo extends AbstractMojo {
             fillStatus( entry, operationFactory, statusHandler );
             fillInfo( entry, operationFactory, statusHandler );
         } catch ( SVNException e ) {
+            // todo remove debug log
+            // todo remove this debug logging
+            getLog().info( format( "[%s] exception %s",
+                    Thread.currentThread().getName(),
+                    e ) );
             if ( e.getErrorMessage() != null && ( SVNErrorCode.WC_NOT_WORKING_COPY.equals( e.getErrorMessage().getErrorCode() ) || SVNErrorCode.WC_PATH_NOT_FOUND.equals( e.getErrorMessage().getErrorCode() ) ) ) {
                 statusHandler.resetProperties( true );
             } else if ( failOnError ) {
