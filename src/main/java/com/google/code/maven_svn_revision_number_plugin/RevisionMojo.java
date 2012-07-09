@@ -123,6 +123,13 @@ public class RevisionMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        // todo remove this debug logging
+        getLog().info( format( "identities: thread=%s, plugin=%s, plugin's class=%s, classloader=%s",
+                System.identityHashCode( Thread.currentThread() ),
+                System.identityHashCode( this ),
+                System.identityHashCode( getClass() ),
+                System.identityHashCode( getClass().getClassLoader() ) ) );
+
         if ( entries == null || entries.length == 0 ) {
             if ( getLog().isDebugEnabled() ) {
                 getLog().debug( "configuration/entries is not specified or empty, using default entry" );
