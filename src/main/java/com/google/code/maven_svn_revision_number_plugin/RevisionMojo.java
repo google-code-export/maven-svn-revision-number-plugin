@@ -124,7 +124,8 @@ public class RevisionMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         // todo remove this debug logging
-        getLog().info( format( "identities: thread=%s, plugin=%s, plugin's class=%s, classloader=%s",
+        getLog().info( format( "[%s] identities: thread=%s, plugin=%s, plugin's class=%s, classloader=%s",
+                Thread.currentThread().getName(),
                 System.identityHashCode( Thread.currentThread() ),
                 System.identityHashCode( this ),
                 System.identityHashCode( getClass() ),
@@ -153,7 +154,7 @@ public class RevisionMojo extends AbstractMojo {
 
     private void processEntry( Entry entry ) throws MojoExecutionException {
         if ( getLog().isInfoEnabled() ) {
-            getLog().info( format( "inspecting %s %s", entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
+            getLog().info( format( "[%s] inspecting %s %s", Thread.currentThread().getName(), entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
         }
         logDebugInfo( format( "  prefix = %s", entry.getPrefix() ) );
         logDebugInfo( format( "  depth = %s", entry.getDepth() ) );
