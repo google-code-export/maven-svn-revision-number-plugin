@@ -123,14 +123,6 @@ public class RevisionMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // todo remove this debug logging
-        getLog().info( format( "[%s] identities: thread=%s, plugin=%s, plugin's class=%s, classloader=%s",
-                Thread.currentThread().getName(),
-                System.identityHashCode( Thread.currentThread() ),
-                System.identityHashCode( this ),
-                System.identityHashCode( getClass() ),
-                System.identityHashCode( getClass().getClassLoader() ) ) );
-
         if ( entries == null || entries.length == 0 ) {
             if ( getLog().isDebugEnabled() ) {
                 getLog().debug( "configuration/entries is not specified or empty, using default entry" );
@@ -140,22 +132,26 @@ public class RevisionMojo extends AbstractMojo {
             };
         }
 
-        for ( Entry entry : entries ) {
-            if ( entry.getPath() == null ) {
-                entry.setPath( project.getBasedir() );
+        SvnOperationFactory operationFactory = new SvnOperationFactory();
+        try {
+            for ( Entry entry : entries ) {
+                if ( entry.getPath() == null ) {
+                    entry.setPath( project.getBasedir() );
+                }
+                if ( entry.getPrefix() == null ) {
+                    entry.setPrefix( project.getArtifactId() );
+                }
+                processEntry( operationFactory, entry );
             }
-            if ( entry.getPrefix() == null ) {
-                entry.setPrefix( project.getArtifactId() );
-            }
-            processEntry( entry );
+        } finally {
+            operationFactory.dispose();
         }
     }
 
 
-    private void processEntry( Entry entry ) throws MojoExecutionException {
+    private void processEntry( SvnOperationFactory operationFactory, Entry entry ) throws MojoExecutionException {
         if ( getLog().isInfoEnabled() ) {
-            // todo remove debug thread name
-            getLog().info( format( "[%s] inspecting %s %s", Thread.currentThread().getName(), entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
+            getLog().info( format( "inspecting %s %s", entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
         }
         logDebugInfo( format( "  prefix = %s", entry.getPrefix() ) );
         logDebugInfo( format( "  depth = %s", entry.getDepth() ) );
@@ -164,18 +160,12 @@ public class RevisionMojo extends AbstractMojo {
         logDebugInfo( format( "  report out-of-date = %s", entry.reportOutOfDate() ) );
 
         logDebugInfo( "calculating properties" );
-        SvnOperationFactory operationFactory = new SvnOperationFactory();
         StatusHandler statusHandler = new StatusHandler( entry );
         try {
             logDebugInfo( format( "  wc format = %s", SvnOperationFactory.detectWcGeneration( entry.getPath(), true ) ) );
             fillStatus( entry, operationFactory, statusHandler );
             fillInfo( entry, operationFactory, statusHandler );
         } catch ( SVNException e ) {
-            // todo remove debug log
-            // todo remove this debug logging
-            getLog().info( format( "[%s] exception %s",
-                    Thread.currentThread().getName(),
-                    e ) );
             if ( e.getErrorMessage() != null && ( SVNErrorCode.WC_NOT_WORKING_COPY.equals( e.getErrorMessage().getErrorCode() ) || SVNErrorCode.WC_PATH_NOT_FOUND.equals( e.getErrorMessage().getErrorCode() ) ) ) {
                 statusHandler.resetProperties( true );
             } else if ( failOnError ) {
@@ -186,8 +176,6 @@ public class RevisionMojo extends AbstractMojo {
                 }
                 statusHandler.resetProperties();
             }
-        } finally {
-            operationFactory.dispose();
         }
         setProjectProperties( entry.getPrefix(), statusHandler.createProperties() );
     }
