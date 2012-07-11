@@ -26,6 +26,8 @@
 
 package com.google.code.maven_svn_revision_number_plugin;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -38,6 +40,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.tmatesoft.sqljet.core.internal.fs.SqlJetFileLockManager;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNErrorCode;
 import org.tmatesoft.svn.core.SVNException;
@@ -123,6 +126,16 @@ public class RevisionMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        // todo remove this debug logging
+        getLog().info( format( "[%s] identities: thread=0x%X, this=0x%X, this.class=0x%X, this.class.loader=0x%X, SqlJetFileLockManager.class=0x%X",
+                Thread.currentThread().getName(),
+                System.identityHashCode( Thread.currentThread() ),
+                System.identityHashCode( this ),
+                System.identityHashCode( getClass() ),
+                System.identityHashCode( getClass().getClassLoader() ),
+                System.identityHashCode( SqlJetFileLockManager.class )
+        ) );
+
         if ( entries == null || entries.length == 0 ) {
             if ( getLog().isDebugEnabled() ) {
                 getLog().debug( "configuration/entries is not specified or empty, using default entry" );
@@ -151,7 +164,8 @@ public class RevisionMojo extends AbstractMojo {
 
     private void processEntry( SvnOperationFactory operationFactory, Entry entry ) throws MojoExecutionException {
         if ( getLog().isInfoEnabled() ) {
-            getLog().info( format( "inspecting %s %s", entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
+            // todo remove debug thread name
+            getLog().info( format( "[%s] inspecting %s %s", Thread.currentThread().getName(), entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
         }
         logDebugInfo( format( "  prefix = %s", entry.getPrefix() ) );
         logDebugInfo( format( "  depth = %s", entry.getDepth() ) );
@@ -166,6 +180,13 @@ public class RevisionMojo extends AbstractMojo {
             fillStatus( entry, operationFactory, statusHandler );
             fillInfo( entry, operationFactory, statusHandler );
         } catch ( SVNException e ) {
+            // todo remove debug log
+            // todo remove this debug logging
+            StringWriter sWriter = new StringWriter();
+            PrintWriter pWriter = new PrintWriter( sWriter );
+            e.printStackTrace( pWriter );
+            getLog().error( format( "[%s] svn-revision-number-maven-plugin caught svn exception %s%n%s", Thread.currentThread().getName(), e, sWriter.toString() ) );
+
             if ( e.getErrorMessage() != null && ( SVNErrorCode.WC_NOT_WORKING_COPY.equals( e.getErrorMessage().getErrorCode() ) || SVNErrorCode.WC_PATH_NOT_FOUND.equals( e.getErrorMessage().getErrorCode() ) ) ) {
                 statusHandler.resetProperties( true );
             } else if ( failOnError ) {
@@ -176,6 +197,13 @@ public class RevisionMojo extends AbstractMojo {
                 }
                 statusHandler.resetProperties();
             }
+        } catch ( RuntimeException e ) {
+            // todo remove this debug logging
+            StringWriter sWriter = new StringWriter();
+            PrintWriter pWriter = new PrintWriter( sWriter );
+            e.printStackTrace( pWriter );
+            getLog().error( format( "[%s] svn-revision-number-maven-plugin caught runtime exception %s%n%s", Thread.currentThread().getName(), e, sWriter.toString() ) );
+            throw e;
         }
         setProjectProperties( entry.getPrefix(), statusHandler.createProperties() );
     }
