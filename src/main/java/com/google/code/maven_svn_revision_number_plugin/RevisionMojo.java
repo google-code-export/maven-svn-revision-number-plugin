@@ -26,8 +26,6 @@
 
 package com.google.code.maven_svn_revision_number_plugin;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -40,7 +38,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.tmatesoft.sqljet.core.internal.fs.SqlJetFileLockManager;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNErrorCode;
 import org.tmatesoft.svn.core.SVNException;
@@ -110,9 +107,9 @@ public class RevisionMojo extends AbstractMojo {
     private Entry[] entries;
 
     /**
-     * Specifies whether the goal runs in verbose mode.
+     * Specifies whether the goal runs in the verbose mode.
      *
-     * @parameter default-value="false"
+     * @parameter property="svn-revision-number.verbose" default-value="false"
      */
     private boolean verbose;
 
@@ -126,19 +123,9 @@ public class RevisionMojo extends AbstractMojo {
 
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        // todo remove this debug logging
-        getLog().info( format( "[%s] identities: thread=0x%X, this=0x%X, this.class=0x%X, this.class.loader=0x%X, SqlJetFileLockManager.class=0x%X",
-                Thread.currentThread().getName(),
-                System.identityHashCode( Thread.currentThread() ),
-                System.identityHashCode( this ),
-                System.identityHashCode( getClass() ),
-                System.identityHashCode( getClass().getClassLoader() ),
-                System.identityHashCode( SqlJetFileLockManager.class )
-        ) );
-
         if ( entries == null || entries.length == 0 ) {
             if ( getLog().isDebugEnabled() ) {
-                getLog().debug( "configuration/entries is not specified or empty, using default entry" );
+                getLog().debug( "configuration/entries section is not specified or is empty, defaulting to ${project.basedir}" );
             }
             entries = new Entry[] {
                     new Entry( project.getBasedir(), project.getArtifactId() ),
@@ -164,8 +151,7 @@ public class RevisionMojo extends AbstractMojo {
 
     private void processEntry( SvnOperationFactory operationFactory, Entry entry ) throws MojoExecutionException {
         if ( getLog().isInfoEnabled() ) {
-            // todo remove debug thread name
-            getLog().info( format( "[%s] inspecting %s %s", Thread.currentThread().getName(), entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
+            getLog().info( format( "inspecting %s %s", entry.getPath().isFile() ? "file" : entry.getPath().isDirectory() ? "directory" : "path", entry.getPath() ) );
         }
         logDebugInfo( format( "  prefix = %s", entry.getPrefix() ) );
         logDebugInfo( format( "  depth = %s", entry.getDepth() ) );
@@ -180,13 +166,6 @@ public class RevisionMojo extends AbstractMojo {
             fillStatus( entry, operationFactory, statusHandler );
             fillInfo( entry, operationFactory, statusHandler );
         } catch ( SVNException e ) {
-            // todo remove debug log
-            // todo remove this debug logging
-            StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter( sWriter );
-            e.printStackTrace( pWriter );
-            getLog().error( format( "[%s] svn-revision-number-maven-plugin caught svn exception %s%n%s", Thread.currentThread().getName(), e, sWriter.toString() ) );
-
             if ( e.getErrorMessage() != null && ( SVNErrorCode.WC_NOT_WORKING_COPY.equals( e.getErrorMessage().getErrorCode() ) || SVNErrorCode.WC_PATH_NOT_FOUND.equals( e.getErrorMessage().getErrorCode() ) ) ) {
                 statusHandler.resetProperties( true );
             } else if ( failOnError ) {
@@ -197,13 +176,6 @@ public class RevisionMojo extends AbstractMojo {
                 }
                 statusHandler.resetProperties();
             }
-        } catch ( RuntimeException e ) {
-            // todo remove this debug logging
-            StringWriter sWriter = new StringWriter();
-            PrintWriter pWriter = new PrintWriter( sWriter );
-            e.printStackTrace( pWriter );
-            getLog().error( format( "[%s] svn-revision-number-maven-plugin caught runtime exception %s%n%s", Thread.currentThread().getName(), e, sWriter.toString() ) );
-            throw e;
         }
         setProjectProperties( entry.getPrefix(), statusHandler.createProperties() );
     }
@@ -309,13 +281,15 @@ public class RevisionMojo extends AbstractMojo {
 
 
         public void receive( SvnTarget target, SvnStatus status ) throws SVNException {
-            logDebugInfo( format( "  %s%s%s %s%s%s  %6s %6s %6s  %s (%s %s)",
-                    status.getNodeStatus().getCode(), status.getPropertiesStatus().getCode(), status.getTextStatus().getCode(),
-                    status.getRepositoryNodeStatus().getCode(), status.getRepositoryPropertiesStatus().getCode(), status.getRepositoryTextStatus().getCode(),
-                    status.getRevision(), status.getChangedRevision(), status.getRepositoryChangedRevision(),
-                    target.getPathOrUrlString(),
-                    status.getRepositoryRootUrl(), status.getRepositoryRelativePath()
-            ) );
+            if ( verbose && getLog().isDebugEnabled() ) {
+                getLog().debug( format( "  %s%s%s %s%s%s  %6s %6s %6s  %s (%s %s)",
+                        status.getNodeStatus().getCode(), status.getPropertiesStatus().getCode(), status.getTextStatus().getCode(),
+                        status.getRepositoryNodeStatus().getCode(), status.getRepositoryPropertiesStatus().getCode(), status.getRepositoryTextStatus().getCode(),
+                        status.getRevision(), status.getChangedRevision(), status.getRepositoryChangedRevision(),
+                        target.getPathOrUrlString(),
+                        status.getRepositoryRootUrl(), status.getRepositoryRelativePath()
+                ) );
+            }
 
             if ( repositoryRoot == null ) {
                 repositoryRoot = status.getRepositoryRootUrl() == null ? "" : status.getRepositoryRootUrl().toString();
@@ -421,10 +395,8 @@ public class RevisionMojo extends AbstractMojo {
             if ( statusTypes.remove( SVNStatusType.STATUS_OBSTRUCTED ) ) {
                 status.append( symbols.getStatusSymbol( SVNStatusType.STATUS_OBSTRUCTED ) );
             }
-            if ( !statusTypes.isEmpty() ) {
-                if ( getLog().isWarnEnabled() ) {
-                    getLog().warn( format( "the following svn statuses are not taken into account: %s", statusTypes ) );
-                }
+            if ( !statusTypes.isEmpty() && getLog().isWarnEnabled() ) {
+                getLog().warn( format( "the following svn statuses are not taken into account: %s", statusTypes ) );
             }
 
             if ( outOfDate && entry.reportOutOfDate() ) {
